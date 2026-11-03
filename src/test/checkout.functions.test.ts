@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { z } from "zod";
 import { isPlanId } from "@/lib/plans";
-import { checkoutParams } from "@/lib/stripe.server";
+import { buildLemonSqueezyCheckoutBody } from "@/lib/billing/lemonsqueezy-provider";
 
 vi.mock("@tanstack/react-start/server", () => ({
   getRequest: vi.fn(),
@@ -16,6 +16,15 @@ import { getAdminAuth } from "@/integrations/firebase/admin.server";
 import { requireFirebaseAuth } from "@/integrations/firebase/auth-middleware";
 
 const startCheckoutInput = z.object({ plan: z.string().refine(isPlanId) });
+
+const env = {
+  LEMONSQUEEZY_API_KEY: "k",
+  LEMONSQUEEZY_STORE_ID: "1",
+  LEMONSQUEEZY_WEBHOOK_SECRET: "w",
+  LEMONSQUEEZY_VARIANT_ID_SECTIONS: "9001",
+  LEMONSQUEEZY_VARIANT_ID_SECTIONS_TEMPLATES: "9002",
+  LEMONSQUEEZY_VARIANT_ID_LIFETIME: "9003",
+};
 
 type FunctionMiddleware = {
   options?: {
@@ -47,20 +56,19 @@ describe("S4 checkout server function", () => {
     ).rejects.toThrow(/Unauthorized: No authorization header/);
   });
 
-  it("rejects an unknown plan id before Stripe is called", () => {
+  it("rejects an unknown plan id before checkout is created", () => {
     expect(() => startCheckoutInput.parse({ plan: "not-a-real-plan" })).toThrow();
     expect(() => startCheckoutInput.parse({ plan: "sections" })).not.toThrow();
   });
 
-  it("sets subscription plan metadata on the server-side Stripe session params", () => {
-    const params = checkoutParams(
-      "sections-templates",
-      "member-1",
-      undefined,
+  it("sets plan metadata on the server-side Lemon Squeezy checkout body", () => {
+    const body = buildLemonSqueezyCheckoutBody(
+      { plan: "sections-templates", userId: "member-1", origin: "https://substrates.app" },
+      env,
       "https://substrates.app",
     );
-    expect(params.get("metadata[plan]")).toBe("sections-templates");
-    expect(params.get("metadata[user_id]")).toBe("member-1");
-    expect(params.get("line_items[0][price_data][unit_amount]")).toBe("3900");
+    const custom = body.data.attributes["checkout_data"] as { custom: Record<string, string> };
+    expect(custom.custom["plan"]).toBe("sections-templates");
+    expect(custom.custom["user_id"]).toBe("member-1");
   });
 });

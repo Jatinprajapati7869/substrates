@@ -1,7 +1,7 @@
 import { getAdminFirestore } from "@/integrations/firebase/admin.server";
 import { buildAccountDashboardView } from "./account-dashboard";
 import { getEntitlement } from "./entitlements.server";
-import { listPurchasesForUser, resolveStripeCustomerId } from "./purchases.server";
+import { listPurchasesForUser } from "./purchases.server";
 
 export async function listUnlockSlugsForUser(userId: string): Promise<string[]> {
   const db = await getAdminFirestore();
@@ -15,11 +15,15 @@ export async function listUnlockSlugsForUser(userId: string): Promise<string[]> 
 }
 
 export async function loadAccountDashboardForUser(userId: string) {
-  const [entitlement, unlockSlugs, purchases, stripeCustomerId] = await Promise.all([
+  const [entitlement, unlockSlugs, purchases] = await Promise.all([
     getEntitlement(userId),
     listUnlockSlugsForUser(userId),
     listPurchasesForUser(userId),
-    resolveStripeCustomerId(userId),
   ]);
-  return buildAccountDashboardView({ entitlement, unlockSlugs, purchases, stripeCustomerId });
+  return buildAccountDashboardView({
+    entitlement,
+    unlockSlugs,
+    purchases,
+    providerCustomerPortalUrl: entitlement?.providerCustomerPortalUrl ?? null,
+  });
 }

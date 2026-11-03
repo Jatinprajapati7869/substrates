@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "event_name": "order_refunded",
+    "custom_data": {
+      "user_id": "user-sub",
+      "plan": "sections-templates"
+    }
+  },
+  "data": {
+    "type": "orders",
+    "id": "101",
+    "attributes": {
+      "customer_id": 77,
+      "status": "refunded"
+    }
+  }
+}

@@ -7,7 +7,19 @@ export type BillingEventType =
   | "subscription_cycle_paid"
   | "subscription_canceled"
   | "subscription_past_due"
-  | "refunded";
+  | "refunded"
+  | "portal_url_updated";
+
+export type BillingCheckoutPayload = {
+  checkoutId: string;
+  userId: string;
+  plan: string;
+  customerId: string | null;
+  subscriptionId?: string | null;
+  amountCents?: number | null;
+  currency?: string | null;
+  paid: boolean;
+};
 
 export type BillingEvent = {
   type: BillingEventType;
@@ -26,11 +38,7 @@ export type BillingEvent = {
   /** Provider checkout reference (Stripe session id today; Lemon Squeezy order id in P23). */
   checkoutReference?: string;
   paid?: boolean;
-  /**
-   * Opaque provider payload for purchase recording until purchases are fully neutral (P23).
-   * Stripe webhook dispatch passes the checkout session object here.
-   */
-  checkoutPayload?: unknown;
+  checkoutPayload?: BillingCheckoutPayload;
 };
 
 export type BillingCheckoutPlan = PlanId | VideoPlanId | `template:${string}`;

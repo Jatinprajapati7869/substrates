@@ -39,6 +39,7 @@ Every prompt reads this first and updates its own row. Mark done only when the p
 | Id  | Title                                       | Status | Notes                                                                                                                                              |
 | --- | ------------------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | P22 | Billing spec + provider-neutral core        | done   | `docs/specs/billing-lemonsqueezy.md`, `lemonsqueezy-setup.md`; `src/lib/billing/*`; branch `p22-billing-spec`                                      |
+| P23 | Lemon Squeezy checkout + remove Stripe      | done   | `lemonsqueezy-provider`, `/api/public/lemonsqueezy-webhook`; branch `p23-lemonsqueezy`                                                            |
 
 ## Human steps (cannot be done by an agent)
 

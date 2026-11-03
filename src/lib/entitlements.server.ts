@@ -18,8 +18,8 @@ export function entitlementFromPlan(
     unlimitedTemplates: plan.unlimitedTemplates,
     sectionAccess: plan.sectionAccess,
     templateAccess: plan.templateAccess,
-    stripeCustomerId: null,
-    stripeSubscriptionId: null,
+    billingCustomerId: null,
+    billingSubscriptionId: null,
     updatedAt: now,
     ...partial,
   };
@@ -41,17 +41,17 @@ export function hasVideoSkillsAccess(ent: EntitlementDoc | null | undefined): bo
   return ent?.videoSkillsStatus === "active";
 }
 
-export async function resolveUserIdByStripeCustomer(customerId: string): Promise<string | null> {
+export async function resolveUserIdByBillingCustomer(customerId: string): Promise<string | null> {
   const db = await getAdminFirestore();
   const profiles = await db
     .collection("profiles")
-    .where("stripeCustomerId", "==", customerId)
+    .where("billingCustomerId", "==", customerId)
     .limit(1)
     .get();
   if (!profiles.empty) return profiles.docs[0]!.id;
   const purchases = await db
     .collection("purchases")
-    .where("stripeCustomerId", "==", customerId)
+    .where("billingCustomerId", "==", customerId)
     .limit(1)
     .get();
   if (!purchases.empty) return (purchases.docs[0]!.data() as { userId: string }).userId;
@@ -95,8 +95,8 @@ export async function applyLifetimeEntitlementFromCheckout(
   await writeEntitlement(
     userId,
     entitlementFromPlan("lifetime", {
-      stripeCustomerId: customerId,
-      stripeSubscriptionId: subscriptionId,
+      billingCustomerId: customerId,
+      billingSubscriptionId: subscriptionId,
       creditsRemaining: null,
       creditsPeriodStart: null,
       creditsPeriodEnd: null,
@@ -111,6 +111,7 @@ export async function applyInvoicePaidEntitlement(
   periodEndUnix: number,
   customerId: string | null,
   subscriptionId: string | null,
+  portalUrl?: string | null,
 ): Promise<void> {
   const plan = planFromMetadata(planMeta);
   if (!plan || plan.mode !== "subscription") return;
@@ -118,10 +119,19 @@ export async function applyInvoicePaidEntitlement(
   const periodEnd = new Date(periodEndUnix * 1000);
   await writeEntitlement(userId, {
     ...creditsStateForInvoicePaid(plan.id, periodStart, periodEnd),
-    stripeCustomerId: customerId,
-    stripeSubscriptionId: subscriptionId,
+    billingCustomerId: customerId,
+    billingSubscriptionId: subscriptionId,
+    ...(portalUrl ? { providerCustomerPortalUrl: portalUrl } : {}),
     updatedAt: new Date(),
   });
+}
+
+export async function refreshProviderPortalUrl(userId: string, portalUrl: string): Promise<void> {
+  const db = await getAdminFirestore();
+  await db
+    .collection("entitlements")
+    .doc(userId)
+    .set({ providerCustomerPortalUrl: portalUrl, updatedAt: new Date() }, { merge: true });
 }
 
 export async function applyVideoInvoicePaidEntitlement(
@@ -141,8 +151,8 @@ export async function applyVideoInvoicePaidEntitlement(
     {
       videoSkillsStatus: "active",
       videoSkillsPlan: videoPlan.id,
-      videoStripeSubscriptionId: subscriptionId,
-      stripeCustomerId: customerId,
+      videoBillingSubscriptionId: subscriptionId,
+      billingCustomerId: customerId,
       updatedAt: new Date(),
     },
     { merge: true },
@@ -183,7 +193,7 @@ export async function applyRefundedEntitlement(
       {
         videoSkillsStatus: "refunded",
         videoSkillsPlan: null,
-        videoStripeSubscriptionId: null,
+        videoBillingSubscriptionId: null,
         updatedAt: new Date(),
       },
       { merge: true },

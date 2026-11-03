@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "event_name": "order_created",
+    "custom_data": {
+      "user_id": "user-lifetime",
+      "plan": "lifetime"
+    }
+  },
+  "data": {
+    "type": "orders",
+    "id": "101",
+    "attributes": {
+      "customer_id": 55,
+      "status": "paid",
+      "total_usd": 49900,
+      "first_order_item": {
+        "variant_id": 9003
+      }
+    }
+  }
+}

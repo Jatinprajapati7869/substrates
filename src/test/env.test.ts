@@ -16,20 +16,22 @@ afterEach(() => {
 });
 
 describe("getServerEnv", () => {
-  it("lists missing stripe variable names without secret values", () => {
-    delete process.env["STRIPE_SECRET_KEY"];
-    delete process.env["STRIPE_WEBHOOK_SECRET"];
-    process.env["STRIPE_SECRET_KEY"] = "sk_test_never_in_error";
-    delete process.env["STRIPE_WEBHOOK_SECRET"];
+  it("lists missing Lemon Squeezy variable names without secret values", () => {
+    delete process.env["LEMONSQUEEZY_WEBHOOK_SECRET"];
+    process.env["LEMONSQUEEZY_API_KEY"] = "lsk_never_in_error";
+    process.env["LEMONSQUEEZY_STORE_ID"] = "1";
+    process.env["LEMONSQUEEZY_VARIANT_ID_SECTIONS"] = "1";
+    process.env["LEMONSQUEEZY_VARIANT_ID_SECTIONS_TEMPLATES"] = "2";
+    process.env["LEMONSQUEEZY_VARIANT_ID_LIFETIME"] = "3";
 
     let message = "";
     try {
-      getServerEnv("stripe");
+      getServerEnv("lemonsqueezy");
     } catch (e) {
       message = e instanceof Error ? e.message : String(e);
     }
-    expect(message).toContain("STRIPE_WEBHOOK_SECRET");
-    expect(message).not.toContain("sk_test_never_in_error");
+    expect(message).toContain("LEMONSQUEEZY_WEBHOOK_SECRET");
+    expect(message).not.toContain("lsk_never_in_error");
   });
 
   it("lists missing firebase admin variable names only", () => {

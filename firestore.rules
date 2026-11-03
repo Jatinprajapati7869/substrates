@@ -10,7 +10,7 @@ service cloud.firestore {
     }
 
     function billingProfileFields() {
-      return ['stripeCustomerId'];
+      return ['billingCustomerId'];
     }
 
     function profileClientCreateOk() {
@@ -46,7 +46,7 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
-    match /stripe_events/{eventId} {
+    match /billing_processed_events/{eventId} {
       allow read, write: if false;
     }
 

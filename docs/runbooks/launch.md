@@ -15,12 +15,12 @@ Production host: **Heroku** (`NITRO_PRESET=node-server`, `Procfile` → `node .o
 3. Create a service account; set `FIREBASE_*` server env vars (never expose private key to the client).
 4. Set `VITE_FIREBASE_*` from the Firebase web app config.
 
-## Stripe
+## Lemon Squeezy
 
-1. Set live `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET`.
-2. Register webhook URL: `https://<your-domain>/api/public/stripe-webhook`.
-3. Enable the **Customer portal** in Stripe Dashboard (Settings → Billing → Customer portal).
-4. Run a test checkout in Stripe test mode on a staging app first.
+1. Follow `docs/specs/lemonsqueezy-setup.md` (test mode first).
+2. Set `LEMONSQUEEZY_*` vars from `.env.example` on Heroku.
+3. Register webhook URL: `https://<your-domain>/api/public/lemonsqueezy-webhook` with signing secret in `LEMONSQUEEZY_WEBHOOK_SECRET`.
+4. Run a **test mode** checkout on staging; confirm webhook 2xx and entitlement write before disabling `LEMONSQUEEZY_TEST_MODE`.
 
 ## Heroku Scheduler (optional cron)
 
@@ -32,6 +32,6 @@ Production host: **Heroku** (`NITRO_PRESET=node-server`, `Procfile` → `node .o
 - `GET /api/health` returns 200 JSON; `configured.*` matches env (no secret values).
 - Homepage loads.
 - Google sign-in completes.
-- Stripe test checkout + webhook 2xx; billing portal opens from `/signin`.
+- Lemon Squeezy test checkout + webhook 2xx; billing portal link opens from `/signin` when subscribed.
 - `GET /.well-known/oauth-protected-resource/mcp` returns JSON when Firebase admin env is set.
 - Product page shows related items when `OPENAI_API_KEY` is set, fallback when not.

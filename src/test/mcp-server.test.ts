@@ -30,7 +30,7 @@ const PRIVATE_FIELD_MARKERS = [
   "entitlement",
   "unlock",
   "product_content",
-  "stripeCustomerId",
+  "billingCustomerId",
   "userId",
   "displayName",
 ] as const;

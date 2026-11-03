@@ -1,0 +1,23 @@
+{
+  "meta": {
+    "event_name": "subscription_created",
+    "custom_data": {
+      "user_id": "user-sub",
+      "plan": "sections-templates"
+    }
+  },
+  "data": {
+    "type": "subscriptions",
+    "id": "200",
+    "attributes": {
+      "customer_id": 77,
+      "variant_id": 9002,
+      "status": "active",
+      "created_at": "2026-01-01T00:00:00.000000Z",
+      "renews_at": "2026-02-01T00:00:00.000000Z",
+      "urls": {
+        "customer_portal": "https://store.lemonsqueezy.com/billing?sig=abc"
+      }
+    }
+  }
+}

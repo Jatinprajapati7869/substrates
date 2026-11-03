@@ -4,35 +4,18 @@ import { z } from "zod";
 import { requireFirebaseAuth } from "@/integrations/firebase/auth-middleware";
 import { trustedCheckoutOrigin } from "@/lib/checkout-origin.server";
 import { createBillingPortalUrl } from "@/lib/billing-portal.server";
+import { getDefaultBillingProvider } from "@/lib/billing/lemonsqueezy-provider";
 import { listPurchasesForUser } from "@/lib/purchases.server";
 import { getEntitlement, hasVideoSkillsAccess } from "./entitlements.server";
 import { isPlanId, isVideoPlanId } from "./plans";
-import {
-  createCheckoutSession,
-  createTemplateCheckoutSession,
-  createVideoCheckoutSession,
-  getCheckoutSession,
-  recordSession,
-} from "./stripe.server";
 
 export const startVideoCheckout = createServerFn({ method: "POST" })
   .middleware([requireFirebaseAuth])
   .inputValidator((d) => z.object({ plan: z.string().refine(isVideoPlanId) }).parse(d))
-  .handler(async ({ data, context }) => {
-    const origin = trustedCheckoutOrigin(getRequest());
-    const email = context.email ?? undefined;
-    try {
-      const url = await createVideoCheckoutSession(
-        data.plan as never,
-        context.userId,
-        email,
-        origin,
-      );
-      return { url, error: null as string | null };
-    } catch (e) {
-      return { url: null, error: e instanceof Error ? e.message : "Checkout failed." };
-    }
-  });
+  .handler(async () => ({
+    url: null as string | null,
+    error: "Video membership checkout is not available yet on Lemon Squeezy.",
+  }));
 
 export const startCheckout = createServerFn({ method: "POST" })
   .middleware([requireFirebaseAuth])
@@ -41,7 +24,12 @@ export const startCheckout = createServerFn({ method: "POST" })
     const origin = trustedCheckoutOrigin(getRequest());
     const email = context.email ?? undefined;
     try {
-      const url = await createCheckoutSession(data.plan as never, context.userId, email, origin);
+      const url = await getDefaultBillingProvider().createCheckout({
+        plan: data.plan as never,
+        userId: context.userId,
+        ...(email ? { email } : {}),
+        origin,
+      });
       return { url, error: null as string | null };
     } catch (e) {
       return { url: null, error: e instanceof Error ? e.message : "Checkout failed." };
@@ -55,10 +43,13 @@ export const startTemplateCheckout = createServerFn({ method: "POST" })
     const origin = trustedCheckoutOrigin(getRequest());
     const email = context.email ?? undefined;
     try {
-      return {
-        url: await createTemplateCheckoutSession(data.slug, context.userId, email, origin),
-        error: null as string | null,
-      };
+      const url = await getDefaultBillingProvider().createCheckout({
+        plan: `template:${data.slug}`,
+        userId: context.userId,
+        ...(email ? { email } : {}),
+        origin,
+      });
+      return { url, error: null as string | null };
     } catch (e) {
       const msg = e instanceof Error ? e.message : "";
       return {
@@ -73,16 +64,13 @@ export const startTemplateCheckout = createServerFn({ method: "POST" })
 
 export const confirmCheckout = createServerFn({ method: "POST" })
   .middleware([requireFirebaseAuth])
-  .inputValidator((d) => z.object({ sessionId: z.string().min(5).max(255) }).parse(d))
-  .handler(async ({ data, context }) => {
-    try {
-      const s = await getCheckoutSession(data.sessionId);
-      if (s.metadata?.user_id !== context.userId) return { ok: false, plan: null };
-      const ok = await recordSession(s);
-      return { ok, plan: (s.metadata?.plan as string) ?? null };
-    } catch {
-      return { ok: false, plan: null };
+  .inputValidator((d) => z.object({ plan: z.string().min(1).max(120) }).parse(d))
+  .handler(async ({ data }) => {
+    const plan = data.plan;
+    if (plan.startsWith("template:") || isPlanId(plan) || isVideoPlanId(plan)) {
+      return { ok: true, plan };
     }
+    return { ok: false, plan: null };
   });
 
 export const getMyEntitlement = createServerFn({ method: "GET" })
@@ -113,9 +101,8 @@ export const myPurchases = createServerFn({ method: "GET" })
 export const openBillingPortal = createServerFn({ method: "POST" })
   .middleware([requireFirebaseAuth])
   .handler(async ({ context }) => {
-    const origin = trustedCheckoutOrigin(getRequest());
     try {
-      return await createBillingPortalUrl(context.userId, origin);
+      return await createBillingPortalUrl(context.userId);
     } catch (e) {
       return { url: null, error: e instanceof Error ? e.message : "Billing portal unavailable." };
     }
