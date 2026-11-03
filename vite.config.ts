@@ -5,7 +5,8 @@ import { nitro } from "nitro/vite";
 import { defineConfig, loadEnv } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-const nitroPreset = process.env.NITRO_PRESET ?? (process.env.VERCEL ? "vercel" : "node-server");
+const nitroPreset =
+  process.env["NITRO_PRESET"] ?? (process.env["VERCEL"] ? "vercel" : "node-server");
 
 export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd(), "VITE_");
@@ -30,7 +31,7 @@ export default defineConfig(({ mode, command }) => {
     css: { transformer: "lightningcss" as const },
     server: {
       host: "::",
-      port: Number(process.env.PORT) || 8080,
+      port: Number(process.env["PORT"]) || 8080,
     },
     plugins: [
       tailwindcss(),

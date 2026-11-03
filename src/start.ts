@@ -2,11 +2,16 @@ import { createStart, createCsrfMiddleware, createMiddleware } from "@tanstack/r
 
 import { renderErrorPage } from "./lib/error-page";
 import { attachFirebaseAuth } from "@/integrations/firebase/auth-attacher";
+import { captureServerException } from "@/lib/sentry.server";
+import { shouldReportThrownError } from "@/lib/sentry-config";
 
 const errorMiddleware = createMiddleware().server(async ({ next }) => {
   try {
     return await next();
   } catch (error) {
+    if (shouldReportThrownError(error)) {
+      captureServerException(error, { tags: { area: "server-fn" } });
+    }
     if (error != null && typeof error === "object" && "statusCode" in error) {
       throw error;
     }

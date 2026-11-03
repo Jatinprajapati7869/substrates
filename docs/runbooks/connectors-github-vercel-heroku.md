@@ -1,94 +1,140 @@
-# Connect GitHub, Vercel, and Heroku
+# Connect GitHub and Heroku (production)
 
 Canonical repo: [github.com/Jatinprajapati7869/substrates](https://github.com/Jatinprajapati7869/substrates)  
 Production domain: [https://substrates.app](https://substrates.app)  
 Support: jatin@substrates.app
 
-This app is **SSR on Vercel** (primary). **Heroku** is optional (cron/aux only — see below).
+**Production host:** Heroku (see `docs/DECISIONS.md` D3). The app is TanStack Start + Nitro SSR with preset **`node-server`**. Vercel remains a supported fallback (short section at the end).
 
 ---
 
 ## 1. GitHub (source of truth)
 
-Local folder is not a git repo until initialized. One-time:
+Connect the repo to Heroku for automatic deploys from `main` (see §3). Local development:
 
 ```powershell
 cd C:\Users\Xingzi\Documents\oversight-supply-studio
-git init
-git remote add origin https://github.com/Jatinprajapati7869/substrates.git
-git add .
-git commit -m "Initial Substrates template SaaS (Firebase, Stripe, TanStack Start)"
-git branch -M main
-git push -u origin main
+npm install
+npm run dev
 ```
 
-If the GitHub repo already has a README commit, pull with rebase first or force-push only if you intend to replace remote history.
+Never commit `.env` or service-account JSON. Copy variable **names** from `.env.example`.
 
-**Cursor / agent access:** Open this folder (or clone `substrates` elsewhere). Agents edit code here; they do **not** log into Vercel/Heroku unless you add MCP integrations or paste env vars.
+**Cursor / agents:** Edit code in this repo. Agents do not log into Heroku unless you approve shell + credentials on your machine.
 
 ---
 
-## 2. Vercel (production SSR)
+## 2. Heroku app (production SSR)
 
-1. [vercel.com/new](https://vercel.com/new) → Import **Jatinprajapati7869/substrates**.
-2. Framework: **Other** (Nitro/TanStack Start — `vercel.json` sets build).
-3. Build: `npm run build` · Install: `npm install` · Output: handled by Nitro preset `vercel`.
-4. **Environment variables** (Production + Preview) — copy from `.env.example`:
+### Create and connect
 
-| Variable | Notes |
-|----------|--------|
-| `VITE_FIREBASE_*` | Web app config |
-| `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY` | Admin SDK (server only) |
-| `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` | Live or test per environment |
-| `OPENAI_API_KEY` | Optional recommendations |
-| `NITRO_PRESET` | `vercel` (default when `VERCEL=1`) |
-| `CRON_SECRET` | If you call cron routes from Heroku |
+1. [dashboard.heroku.com/new-app](https://dashboard.heroku.com/new-app) → create app (e.g. `substrates-production`).
+2. **Deploy** tab → **GitHub** → connect `Jatinprajapati7869/substrates` → enable **Automatic deploys** from `main` (optional: wait for CI).
+3. **Settings** → **Buildpacks:** `heroku/nodejs` (default).
+4. **Settings** → **Config Vars** — set at minimum:
 
-5. **Domains:** Project → Settings → Domains → add `substrates.app` and `www.substrates.app` (redirect www → apex if you prefer).
-6. **Firebase:** Authentication → Settings → Authorized domains → add `substrates.app` and `*.vercel.app` previews.
-7. **Stripe webhook:** `https://substrates.app/api/public/stripe-webhook` (use test secret on preview if you add a preview URL).
+| Variable                                                               | Notes                                                                         |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `NITRO_PRESET`                                                         | **`node-server`** (required on Heroku)                                        |
+| `VITE_FIREBASE_*`                                                      | Web app config (also baked at build; set on Heroku for SSR health + rebuilds) |
+| `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY` | Admin SDK (server only)                                                       |
+| `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`                           | Live or test per environment                                                  |
+| `OPENAI_API_KEY`                                                       | Optional AI recommendations                                                   |
+| `CRON_SECRET`                                                          | If you call cron routes from Scheduler                                        |
 
-**Cursor ↔ Vercel:** There is no required “connector” in-repo. Options:
+Heroku sets `PORT` and `SOURCE_VERSION` (commit slug) automatically.
 
-- Deploy via git push (Vercel Git integration).
-- Optional: Vercel CLI (`vercel link`) in this directory for previews from terminal.
-- Optional: Cursor MCP/deployment plugins if you install them in Cursor Settings → MCP (not shipped in this repo).
+### Build and process
+
+- **Build:** `package.json` runs `heroku-postbuild` → `npm run build` → Nitro output in `.output/server/`.
+- **Web dyno:** `Procfile`:
+
+  ```
+  web: node .output/server/index.mjs
+  ```
+
+- **Node version:** `engines.node` in `package.json` (`22.x`).
+
+Manual local production smoke (same artifact Heroku runs):
+
+```powershell
+$env:NITRO_PRESET="node-server"
+$env:VITE_FIREBASE_API_KEY="placeholder"
+$env:VITE_FIREBASE_AUTH_DOMAIN="placeholder.firebaseapp.com"
+$env:VITE_FIREBASE_PROJECT_ID="placeholder"
+$env:VITE_FIREBASE_APP_ID="placeholder"
+npm run build
+$env:PORT="8080"
+node .output/server/index.mjs
+```
+
+Then `GET /api/health` — JSON lists `configured.*` booleans (no secret values). Missing server groups show `false`; pages should still return **200**.
+
+### Domain and TLS
+
+1. Heroku app → **Settings** → **Domains** → add `substrates.app` and `www.substrates.app`.
+2. Point DNS (apex + www) to Heroku’s targets (ALIAS/ANAME or CNAME per Heroku docs).
+3. **ACM** enables TLS on Heroku automatically once DNS validates.
+
+### Firebase
+
+Authentication → Settings → **Authorized domains** → add `substrates.app`, `www.substrates.app`, and any preview hosts you use.
+
+Deploy Firestore rules from this repo (`firestore.rules`).
+
+### Stripe
+
+Webhook URL:
+
+`https://substrates.app/api/public/stripe-webhook`
+
+Use the matching signing secret in `STRIPE_WEBHOOK_SECRET`. Enable **Customer portal** in Stripe Dashboard.
+
+### Logs and ops
+
+```powershell
+heroku logs --tail -a your-app-name
+heroku releases -a your-app-name
+heroku ps -a your-app-name
+```
+
+After deploy, confirm commit: `GET https://substrates.app/api/health` → `commit` should match `SOURCE_VERSION` / latest `main` SHA.
+
+### Optional: Heroku Scheduler (cron)
+
+POST to cron routes with `Authorization: Bearer $CRON_SECRET` (see `scripts/cron-trigger.mjs`, `docs/runbooks/launch.md`). Scheduler can run on the same app or a minimal worker app.
 
 ---
 
-## 3. Heroku (optional — cron only)
+## 3. Checklist after connect
 
-Do **not** run the full TanStack SSR app on Heroku unless you want a second host. Intended pattern from `Procfile`:
-
-```
-web: node .output/server/index.mjs
-```
-
-For **cron triggers only**, create a small Heroku app that POSTs to your Vercel cron routes with `Authorization: Bearer $CRON_SECRET` (see `scripts/cron-trigger.mjs`, `docs/runbooks/launch.md`).
-
-1. Heroku Dashboard → Create app.
-2. Connect GitHub **same repo** *or* use Heroku only as Scheduler + curl (no deploy).
-3. Config vars: `CRON_SECRET` (match Vercel), target URL `https://substrates.app/...`.
-4. Heroku Scheduler: daily/hourly job running `node scripts/cron-trigger.mjs` if you deploy that script, or a one-line curl.
-
-**Cursor ↔ Heroku:** Heroku CLI + git remote `heroku` after `heroku git:remote -a your-app`. Agents can run CLI only if you approve shell + login on your machine.
-
----
-
-## 4. Checklist after connect
-
-- [ ] `git push` → Vercel production deploy green
-- [ ] `https://substrates.app/signin` loads, logo + Firebase auth works
-- [ ] Stripe test checkout → webhook 200 → Firestore purchase
+- [ ] `git push` to `main` → Heroku build green
+- [ ] `GET /api/health` → `configured` reflects env (no secrets in body)
+- [ ] `https://substrates.app/signin` loads; Google / email auth works
+- [ ] Stripe test checkout → webhook 2xx → Firestore purchase
 - [ ] Customer portal from `/signin`
-- [ ] Old learner Substrata hosts redirected or disabled
 
 ---
 
-## 5. What agents need from you (paste once in chat or `.env`)
+## 4. Vercel (fallback only)
 
-Never commit secrets. For deployment debugging, share **names only** in chat; paste values in Vercel/Heroku UI or local `.env`:
+Use if you move off Heroku or need preview deploys on a commercial plan.
 
-- Firebase web + admin
-- Stripe keys + webhook signing secret
-- Whether production Stripe is test or live mode
+1. Import the GitHub repo at [vercel.com/new](https://vercel.com/new).
+2. Build: `npm run build`. Nitro preset defaults to **`vercel`** when `VERCEL=1` (or set `NITRO_PRESET=vercel`).
+3. Set the same env vars as §2. `VERCEL_GIT_COMMIT_SHA` populates `/api/health` `commit`.
+4. Domains and Firebase authorized domains: add `*.vercel.app` if using previews.
+
+Do not rely on Vercel Hobby for commercial production (see D3).
+
+---
+
+## 5. What operators need (never commit)
+
+Paste values only in Heroku/Vercel config or local `.env`:
+
+- Firebase web (`VITE_*`) + admin (`FIREBASE_*`)
+- Stripe secret + webhook signing secret
+- Whether production Stripe is test or live
+
+For debugging, share **variable names** in chat; use `/api/health` to see which groups are unset.
