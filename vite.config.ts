@@ -47,6 +47,15 @@ export default defineConfig(({ mode, command }) => {
         ? [
             nitro({
               preset: nitroPreset,
+              rollupConfig: {
+                external: [
+                  "firebase-admin",
+                  /^@google-cloud\//,
+                  /^@firebase\//,
+                  "@grpc/grpc-js",
+                  "google-gax",
+                ],
+              },
             }),
           ]
         : []),

@@ -12,7 +12,7 @@ export const requireFirebaseAuth = createMiddleware({ type: "function" }).server
   if (!token) throw new Error("Unauthorized: No token provided");
 
   try {
-    const decoded = await getAdminAuth().verifyIdToken(token);
+    const decoded = await (await getAdminAuth()).verifyIdToken(token);
     if (!decoded.uid) throw new Error("Unauthorized: No user ID in token");
     return next({
       context: {

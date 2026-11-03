@@ -19,7 +19,7 @@ export function createFirebaseMcpVerifier(): OAuthTokenVerifier {
   return {
     async verifyAccessToken(token: string): Promise<AuthInfo> {
       try {
-        const decoded = await getAdminAuth().verifyIdToken(token);
+        const decoded = await (await getAdminAuth()).verifyIdToken(token);
         if (decoded.aud !== projectId) {
           throw new OAuthError(OAuthErrorCode.InvalidToken, "Token audience mismatch");
         }

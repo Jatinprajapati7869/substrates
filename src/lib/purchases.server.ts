@@ -15,7 +15,7 @@ export async function upsertPurchaseFromStripeSession(session: {
   if (!userId || !plan) return false;
   if (session.payment_status !== "paid" && session.status !== "complete") return false;
 
-  const db = getAdminFirestore();
+  const db = await getAdminFirestore();
   await db
     .collection("purchases")
     .doc(session.id)
@@ -42,7 +42,7 @@ export async function upsertPurchaseFromStripeSession(session: {
 }
 
 export async function resolveStripeCustomerId(userId: string): Promise<string | null> {
-  const db = getAdminFirestore();
+  const db = await getAdminFirestore();
   const profile = await db.collection("profiles").doc(userId).get();
   const fromProfile = profile.data()?.stripeCustomerId;
   if (typeof fromProfile === "string" && fromProfile) return fromProfile;
@@ -59,7 +59,7 @@ export async function resolveStripeCustomerId(userId: string): Promise<string | 
 }
 
 export async function listPurchasesForUser(userId: string) {
-  const snap = await getAdminFirestore().collection("purchases").where("userId", "==", userId).get();
+  const snap = await (await getAdminFirestore()).collection("purchases").where("userId", "==", userId).get();
   return snap.docs
     .map((doc) => doc.data() as { plan: string; createdAt?: { toDate?: () => Date } | Date })
     .map((row) => ({
