@@ -3,7 +3,7 @@
 ## Assets worth protecting
 
 1. Paid access (purchases, licensed source).
-2. Stripe and Firebase Admin credentials.
+2. Payment provider and Firebase Admin credentials.
 3. User accounts and email addresses.
 4. OpenAI budget.
 
@@ -11,7 +11,7 @@
 
 | Threat                             | Control                                                                | Prompt   |
 | ---------------------------------- | ---------------------------------------------------------------------- | -------- |
-| Forged Stripe webhook              | Verify signature on raw body, tolerance window, event-id idempotency   | P09      |
+| Forged payment webhook               | Verify signature on raw body, event-key idempotency (see `billing-lemonsqueezy.md`) | P09, P22 |
 | Client picks its own price or plan | Server reads `PLANS`; metadata set server-side                         | P09      |
 | Reading another user's purchases   | Firestore rules, server filters by token uid                           | P07      |
 | Open redirect after sign-in        | `safeReturnPath` allow-list                                            | P07      |
@@ -45,7 +45,7 @@ CSP is **report-only** first. Promote to enforcing after reports are clean.
 | `default-src`     | `'self'`                                                  | App scripts and documents                                 |
 | `script-src`      | `'self'`, `'unsafe-inline'`                               | Vite/TanStack inline hydration                            |
 | `script-src`      | `https://apis.google.com`, `https://www.gstatic.com`      | Google sign-in popup (`signin.tsx`)                       |
-| `script-src`      | `https://js.stripe.com`                                   | Stripe checkout scripts                                   |
+| `script-src`      | `https://js.stripe.com`                                   | Stripe checkout scripts (removed when P23 drops Stripe)   |
 | `style-src`       | `'self'`, `'unsafe-inline'`                               | Captured CSS + Tailwind                                   |
 | `font-src`        | `'self'`, `data:`                                         | Inter woff2 under `/site-assets/` (`src/styles/site.css`) |
 | `img-src`         | `'self'`, `data:`, `blob:`                                | Local assets                                              |
@@ -61,7 +61,7 @@ CSP is **report-only** first. Promote to enforcing after reports are clean.
 | `form-action`     | `'self'`, `https://checkout.stripe.com`                   | Checkout redirect                                         |
 | `frame-ancestors` | `'none'`                                                  | Clickjacking protection                                   |
 
-Browser CSP does not restrict server-side Stripe/OpenAI fetches.
+Browser CSP does not restrict server-side payment-provider or OpenAI fetches.
 
 ## AI recommendation rate limit (S14)
 

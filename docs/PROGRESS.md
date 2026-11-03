@@ -34,6 +34,12 @@ Every prompt reads this first and updates its own row. Mark done only when the p
 | P20 | Repair and v0.1.0                           | done   | P20 security/spec fixes; typecheck green; `docs/QA/pack1-record.md`, `docs/LEARNINGS.md`                                                           |
 | P21 | Video skills checkout (optional)            | done   | S22; [PR #1](https://github.com/Jatinprajapati7869/substrates/pull/1) on `p01-p21-pack1` |
 
+## Pack 2: Lemon Squeezy migration
+
+| Id  | Title                                       | Status | Notes                                                                                                                                              |
+| --- | ------------------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| P22 | Billing spec + provider-neutral core        | done   | `docs/specs/billing-lemonsqueezy.md`, `lemonsqueezy-setup.md`; `src/lib/billing/*`; branch `p22-billing-spec`                                      |
+
 ## Human steps (cannot be done by an agent)
 
 - [x] Open Pack 1 PR — [#1](https://github.com/Jatinprajapati7869/substrates/pull/1) on `p01-p21-pack1`; **CI verify** and **Vercel preview** green (2026-11-03). Merge when ready.
