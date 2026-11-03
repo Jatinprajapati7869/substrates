@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "sdk_version": "3.4.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://jtmzoxxnjzafpzgzffdh.supabase.co/auth/v1",
+    "require_oauth_client_claim": true,
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "oversight-supply-co",
+      "version": "0.1.0",
+      "title": "Oversight Supply Co."
+    },
+    "tools": [
+      {
+        "name": "search_catalog",
+        "title": "Search product catalog",
+        "description": "Search Oversight Supply templates and sections by name, description or category; returns catalog prices and preview references only, not purchased source code.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "maxLength": 200,
+              "default": ""
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "all",
+                "template",
+                "section"
+              ],
+              "default": "all"
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_product",
+        "title": "Read product details",
+        "description": "Read a catalog product's description, price, photo reference and demo links without accessing private accounts or licensed source code.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "template",
+                "section"
+              ]
+            },
+            "slug": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "pattern": "^[a-z0-9-]+$"
+            }
+          },
+          "required": [
+            "kind",
+            "slug"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
