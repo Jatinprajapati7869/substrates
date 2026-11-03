@@ -36,3 +36,4 @@ dist-ssr
 # Local monorepo / import artifacts (not part of Substrates deploy)
 Startup/
 .site-import/
+supabase/
