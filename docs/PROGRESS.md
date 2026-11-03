@@ -41,14 +41,44 @@ Every prompt reads this first and updates its own row. Mark done only when the p
 | P22 | Billing spec + provider-neutral core        | done   | `docs/specs/billing-lemonsqueezy.md`, `lemonsqueezy-setup.md`; `src/lib/billing/*`; branch `p22-billing-spec`                                      |
 | P23 | Lemon Squeezy checkout + remove Stripe      | done   | `lemonsqueezy-provider`, `/api/public/lemonsqueezy-webhook`; branch `p23-lemonsqueezy`                                                            |
 
+## Pack 3: launch readiness (`docs/prompts/PACK-3.md`)
+
+| Id  | Title                                          | Status | Notes |
+| --- | ---------------------------------------------- | ------ | ----- |
+| P24 | Repo hygiene and doc reconciliation            | todo   |       |
+| P25 | Billing hardening from the P23 review          | todo   |       |
+| P26 | Video skills checkout on Lemon Squeezy (S22)   | todo   |       |
+| P27 | Kit licenses and the Substrates license        | skipped | deferred by owner (D22) |
+| P28 | Legal pages for Substrates                     | todo   |       |
+| P29 | Heroku-ready build and runbook                 | todo   |       |
+| P30 | Firestore rules tests and deploy checklist     | todo   |       |
+| P31 | Product-content tooling                        | todo   |       |
+| P32 | Launch catalog gating                          | todo   |       |
+| P33 | Marketing claims audit                         | todo   |       |
+| P34 | Account lifecycle                              | todo   |       |
+| P35 | Assistant wrapper contract tests               | todo   |       |
+| P36 | Observability                                  | todo   |       |
+| P37 | Static asset caching, compression, bundle size | todo   |       |
+| P38 | Accessibility pass II                          | todo   |       |
+| P39 | SEO pass II                                    | todo   |       |
+| P40 | Abuse limits and CSP enforcement               | todo   |       |
+| P41 | Billing reconcile, backup, and admin CLI       | todo   |       |
+| P42 | Full review, no fixes                          | todo   |       |
+| P43 | Repair and v0.2.0                              | todo   |       |
+
 ## Human steps (cannot be done by an agent)
+
+- [ ] Merge order: PR #1, then `p22-billing-spec`, then `p23-lemonsqueezy`; start P24 from updated `main`
+- [ ] `gh auth login -h github.com -s repo,workflow` (the earlier refresh timed out)
+- [ ] Lemon Squeezy: account, store, identity verification, payout method for India, three plan variants (+2 video variants if wanted), API key, webhook secret, test mode first (`docs/specs/lemonsqueezy-setup.md`)
 
 - [x] Open Pack 1 PR — [#1](https://github.com/Jatinprajapati7869/substrates/pull/1) on `p01-p21-pack1`; **CI verify** and **Vercel preview** green (2026-11-03). Merge when ready.
 - [ ] Disconnect the Lovable project from this GitHub repo (Lovable project settings)
 - [ ] Create the Heroku app, activate the student credit, connect GitHub deploys from `main`, set config vars from `.env.example`, add `substrates.app` domain and TLS
-- [ ] Update Firebase authorized domains and the Stripe webhook URL to the Heroku/production domain
+- [ ] Update Firebase authorized domains and set the Lemon Squeezy webhook URL (`/api/public/lemonsqueezy-webhook`) to the Heroku/production domain
 - [ ] Fill `docs/QA/licenses.md` per UI kit (resale of derived templates allowed or not) before P11 ships real content
-- [ ] Answer D14 (legal entity) in `docs/DECISIONS.md`
+- [x] D14 answered: Substrates, Chennai, India (solo founder)
 - [ ] Sentry education account
 - [ ] Keep the real product bodies out of git; they go in Firestore through the upload script
-- [ ] Stripe live keys and live webhook
+- [ ] Lemon Squeezy live mode, live webhook, and one real purchase plus refund by you
+- [ ] Lawyer review of the license, terms, and privacy text
