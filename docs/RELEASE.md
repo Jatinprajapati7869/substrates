@@ -2,8 +2,8 @@
 
 ## Ready to launch means
 
-- [ ] Every scenario S1 to S22 in `docs/SPEC.md` is `proven` or has a recorded `manual` pass. (S22 open; S2/S6/S18 manual — see `docs/QA/baseline.md`.)
-- [x] CI is green on `main`: lint, typecheck, test, build, audit. (Verified locally 2026-11-03: `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`, `npm run check:vendors`. GitHub Actions not re-run here.)
+- [ ] Every scenario S1 to S22 in `docs/SPEC.md` is `proven` or has a recorded `manual` pass. (S2, S6, S18 manual — see `docs/QA/baseline.md`; S22 proven in P21.)
+- [x] CI is green on the Pack 1 PR: [PR #1](https://github.com/Jatinprajapati7869/substrates/pull/1) **verify** job SUCCESS (2026-11-03). Local match: lint (0 errors), typecheck, 116 tests, build, `check:vendors`.
 - [ ] The production host is a commercial plan (Heroku with student credit, or Vercel Pro; Hobby is non-commercial). Production env has every variable from `.env.example` (names checked by `/api/health`).
 - [ ] Stripe is in live mode: live keys, live webhook endpoint `https://substrates.app/api/public/stripe-webhook`, Customer Portal configured.
 - [ ] One real purchase (smallest plan) made by the operator, refunded afterwards, with webhook, account entry, and delivery verified.

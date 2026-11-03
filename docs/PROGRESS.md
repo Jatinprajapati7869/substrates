@@ -36,8 +36,8 @@ Every prompt reads this first and updates its own row. Mark done only when the p
 
 ## Human steps (cannot be done by an agent)
 
+- [x] Open Pack 1 PR — [#1](https://github.com/Jatinprajapati7869/substrates/pull/1) on `p01-p21-pack1`; **CI verify** and **Vercel preview** green (2026-11-03). Merge when ready.
 - [ ] Disconnect the Lovable project from this GitHub repo (Lovable project settings)
-- [ ] Commit `.github/`, `.kiro/`, `.cursor/`, `docs/` setup on a branch and open a PR — **PR [#1](https://github.com/Jatinprajapati7869/substrates/pull/1)** open on `p01-p21-pack1`; add `.github/workflows/ci.yml` on GitHub (copy from repo `docs/ci-workflow.yml.example`) — local git token lacks `workflow` scope
 - [ ] Create the Heroku app, activate the student credit, connect GitHub deploys from `main`, set config vars from `.env.example`, add `substrates.app` domain and TLS
 - [ ] Update Firebase authorized domains and the Stripe webhook URL to the Heroku/production domain
 - [ ] Fill `docs/QA/licenses.md` per UI kit (resale of derived templates allowed or not) before P11 ships real content
