@@ -37,3 +37,4 @@ dist-ssr
 Startup/
 .site-import/
 supabase/
+content/

@@ -21,4 +21,4 @@
 - [x] AI photos for 6 sample products (daylight, lumenis, wings, evergrid, signal, portfolio-collage)
 - [x] Finish and verify the first 111 AI photo replacements
 - [ ] Remaining 133 AI product photos (paused until the user asks to continue)
-- [ ] Checkout page showing product photos (not built yet; waiting on user)
+- [x] Checkout page showing product photos (P12: plan summary + catalog previews before Stripe)

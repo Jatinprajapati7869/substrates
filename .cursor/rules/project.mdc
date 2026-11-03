@@ -1,0 +1,25 @@
+---
+description: Substrates project guardrails. Always on.
+alwaysApply: true
+---
+
+# Substrates
+
+Template and section marketplace. TanStack Start (Nitro SSR) on Vercel, Firebase Auth + Firestore, Stripe, catalog MCP at `/mcp`.
+
+Read before coding: `AGENTS.md`, `PRODUCT.md`, `docs/PROGRESS.md`, then the doc the prompt names (`docs/SPEC.md`, `docs/ARCHITECTURE.md`).
+
+## Hard rules
+
+- Single catalog source: `src/lib/catalog.json`. Do not duplicate product data.
+- Imported page markup stays in route files with separate source CSS. Do not reformat or "clean up" captured markup unless the prompt says so.
+- One `AccountProvider` listener. Server functions require a Firebase ID token.
+- Stripe purchases are written only by the webhook through the Admin SDK. Firestore rules deny client writes to `purchases`.
+- Never commit `.env`, service-account JSON, Stripe keys, or private keys. Never print secret values; report variable names only.
+- `Startup/`, `.site-import/`, `supabase/`, `.output/` are out of scope and gitignored. Read from `Startup/` only when a prompt tells you to.
+- "Lovable" as an assistant copy target (Copy for Lovable) is product content. Lovable as a platform dependency is being removed.
+
+## Commands
+
+- `npm run lint`, `npm test`, `npm run build`. Add `npm run typecheck` once prompt P05 lands.
+- Dev server: do not start it from the agent. Ask the user to run `npm run dev` (port 8080).

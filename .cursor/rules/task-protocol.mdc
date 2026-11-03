@@ -1,0 +1,31 @@
+---
+description: Task protocol for every agent run. Always on.
+alwaysApply: true
+---
+
+# Task protocol
+
+## Before editing
+
+1. Inspect the files you will touch. Reuse existing patterns. Do not invent files, APIs, or architecture.
+2. List every file you will change and why.
+3. STOP and ask before: deleting files not named in the prompt, adding an npm dependency, changing Firestore rules or data shape, changing env var names, or touching billing amounts.
+
+## While editing
+
+- Surgical changes only. No renames, no refactors, no "while I'm here" fixes. Mention unrelated problems in the report instead.
+- Every changed line must trace to the prompt.
+- Remove imports and variables that your own change orphaned. Leave other dead code.
+
+## After editing
+
+1. Run `npm run lint`, `npm test`, `npm run build` (plus `npm run typecheck` when it exists). Paste real results. Never hide a failure.
+2. Update `docs/PROGRESS.md` for the prompt id you completed. Only mark done when the prompt's Done-when is true.
+3. Final report with these headings: **Changed**, **Verified**, **Not Verified**, **Remaining**, **Risks**, **Next**.
+
+## Git
+
+- Work on a branch named `pNN-short-name` (for example `p02-lovable-purge`). Never commit to `main` directly.
+- **Commit and push after every prompt**, and at minimum after every 2 prompts. One prompt = at least one commit with a conventional message such as `feat(p22): ...`. Never leave finished work uncommitted. Check `git status` at the start of each prompt; if the tree holds uncommitted work from an earlier prompt, stop and commit it first.
+- Push the branch and stop. The human merges after CI is green and the preview is checked. Pushing a feature branch is allowed; pushing to `main` is not.
+- Never force-push, rebase pushed commits, or amend pushed commits.
