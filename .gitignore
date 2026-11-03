@@ -38,3 +38,8 @@ Startup/
 .site-import/
 supabase/
 content/
+prompt-master-main/
+
+# Local agent / CI capture files (never commit)
+.tsc-out.txt
+lint-out.txt
