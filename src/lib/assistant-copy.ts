@@ -1,7 +1,17 @@
 import { z } from "zod";
 import { findProduct } from "./catalog";
 
-export const assistantSchema = z.enum(["Claude Code", "Cursor", "Windsurf", "v0", "Bolt", "Lovable", "Replit", "Codex", "grokbuild"]);
+export const assistantSchema = z.enum([
+  "Claude Code",
+  "Cursor",
+  "Windsurf",
+  "v0",
+  "Bolt",
+  "Lovable",
+  "Replit",
+  "Codex",
+  "grokbuild",
+]);
 export function sectionPrompt(slug: string, assistant: string, origin: string) {
   const target = assistantSchema.parse(assistant);
   const product = findProduct("section", slug);
@@ -12,6 +22,7 @@ export function sectionPrompt(slug: string, assistant: string, origin: string) {
 }
 export async function copySectionPrompt(slug: string, assistant: string) {
   const prompt = sectionPrompt(slug, assistant, window.location.origin);
-  if (!navigator.clipboard) throw new Error("Clipboard is unavailable. Please use a secure browser connection.");
+  if (!navigator.clipboard)
+    throw new Error("Clipboard is unavailable. Please use a secure browser connection.");
   await navigator.clipboard.writeText(prompt);
 }

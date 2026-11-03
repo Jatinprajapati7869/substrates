@@ -19,12 +19,15 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RefundsRouteImport } from './routes/refunds'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as SectionsRouteImport } from './routes/sections'
 import { Route as SigninRouteImport } from './routes/signin'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TemplatesRouteImport } from './routes/templates'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as VideosRouteImport } from './routes/videos'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as Guides404PageDesignExamplesRouteImport } from './routes/guides_.404-page-design-examples'
 import { Route as GuidesAiGeneratedWebsitesLessGenericRouteImport } from './routes/guides_.ai-generated-websites-less-generic'
 import { Route as GuidesAnimatedExplainerVideosWithClaudeRouteImport } from './routes/guides_.animated-explainer-videos-with-claude'
@@ -51,6 +54,7 @@ import { Route as VideosKilnRouteImport } from './routes/videos_.kiln'
 import { Route as VideosOrganicRouteImport } from './routes/videos_.organic'
 import { Route as VideosRaysRouteImport } from './routes/videos_.rays'
 import { Route as VideosSmallDetailsRouteImport } from './routes/videos_.small-details'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceMcpRouteImport } from './routes/[.well-known]/oauth-protected-resource/mcp'
 import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api/public/stripe-webhook'
 
 const IndexRoute = IndexRouteImport.update({
@@ -103,6 +107,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SectionsRoute = SectionsRouteImport.update({
   id: '/sections',
   path: '/sections',
@@ -111,6 +120,11 @@ const SectionsRoute = SectionsRouteImport.update({
 const SigninRoute = SigninRouteImport.update({
   id: '/signin',
   path: '/signin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TemplatesRoute = TemplatesRouteImport.update({
@@ -134,6 +148,11 @@ const Char91DotwellKnownChar93OauthProtectedResourceRoute =
     path: '/.well-known/oauth-protected-resource',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiHealthRoute = ApiHealthRouteImport.update({
+  id: '/api/health',
+  path: '/api/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const Guides404PageDesignExamplesRoute =
   Guides404PageDesignExamplesRouteImport.update({
     id: '/guides_/404-page-design-examples',
@@ -281,6 +300,12 @@ const VideosSmallDetailsRoute = VideosSmallDetailsRouteImport.update({
   path: '/videos/small-details',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceMcpRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceMcpRouteImport.update({
+    id: '/mcp',
+    path: '/mcp',
+    getParentRoute: () => Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  } as any)
 const ApiPublicStripeWebhookRoute = ApiPublicStripeWebhookRouteImport.update({
   id: '/api/public/stripe-webhook',
   path: '/api/public/stripe-webhook',
@@ -298,12 +323,15 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/refunds': typeof RefundsRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/sections': typeof SectionsRoute
   '/signin': typeof SigninRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/templates': typeof TemplatesRoute
   '/terms': typeof TermsRoute
   '/videos': typeof VideosRoute
-  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRouteWithChildren
+  '/api/health': typeof ApiHealthRoute
   '/guides/404-page-design-examples': typeof Guides404PageDesignExamplesRoute
   '/guides/ai-generated-websites-less-generic': typeof GuidesAiGeneratedWebsitesLessGenericRoute
   '/guides/animated-explainer-videos-with-claude': typeof GuidesAnimatedExplainerVideosWithClaudeRoute
@@ -330,6 +358,7 @@ export interface FileRoutesByFullPath {
   '/videos/organic': typeof VideosOrganicRoute
   '/videos/rays': typeof VideosRaysRoute
   '/videos/small-details': typeof VideosSmallDetailsRoute
+  '/.well-known/oauth-protected-resource/mcp': typeof Char91DotwellKnownChar93OauthProtectedResourceMcpRoute
   '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -343,12 +372,15 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/refunds': typeof RefundsRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/sections': typeof SectionsRoute
   '/signin': typeof SigninRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/templates': typeof TemplatesRoute
   '/terms': typeof TermsRoute
   '/videos': typeof VideosRoute
-  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRouteWithChildren
+  '/api/health': typeof ApiHealthRoute
   '/guides/404-page-design-examples': typeof Guides404PageDesignExamplesRoute
   '/guides/ai-generated-websites-less-generic': typeof GuidesAiGeneratedWebsitesLessGenericRoute
   '/guides/animated-explainer-videos-with-claude': typeof GuidesAnimatedExplainerVideosWithClaudeRoute
@@ -375,6 +407,7 @@ export interface FileRoutesByTo {
   '/videos/organic': typeof VideosOrganicRoute
   '/videos/rays': typeof VideosRaysRoute
   '/videos/small-details': typeof VideosSmallDetailsRoute
+  '/.well-known/oauth-protected-resource/mcp': typeof Char91DotwellKnownChar93OauthProtectedResourceMcpRoute
   '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
 }
 export interface FileRoutesById {
@@ -389,12 +422,15 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/refunds': typeof RefundsRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/sections': typeof SectionsRoute
   '/signin': typeof SigninRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/templates': typeof TemplatesRoute
   '/terms': typeof TermsRoute
   '/videos': typeof VideosRoute
-  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRouteWithChildren
+  '/api/health': typeof ApiHealthRoute
   '/guides_/404-page-design-examples': typeof Guides404PageDesignExamplesRoute
   '/guides_/ai-generated-websites-less-generic': typeof GuidesAiGeneratedWebsitesLessGenericRoute
   '/guides_/animated-explainer-videos-with-claude': typeof GuidesAnimatedExplainerVideosWithClaudeRoute
@@ -421,6 +457,7 @@ export interface FileRoutesById {
   '/videos_/organic': typeof VideosOrganicRoute
   '/videos_/rays': typeof VideosRaysRoute
   '/videos_/small-details': typeof VideosSmallDetailsRoute
+  '/.well-known/oauth-protected-resource/mcp': typeof Char91DotwellKnownChar93OauthProtectedResourceMcpRoute
   '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
 }
 export interface FileRouteTypes {
@@ -436,12 +473,15 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/refunds'
     | '/reset-password'
+    | '/robots.txt'
     | '/sections'
     | '/signin'
+    | '/sitemap.xml'
     | '/templates'
     | '/terms'
     | '/videos'
     | '/.well-known/oauth-protected-resource'
+    | '/api/health'
     | '/guides/404-page-design-examples'
     | '/guides/ai-generated-websites-less-generic'
     | '/guides/animated-explainer-videos-with-claude'
@@ -468,6 +508,7 @@ export interface FileRouteTypes {
     | '/videos/organic'
     | '/videos/rays'
     | '/videos/small-details'
+    | '/.well-known/oauth-protected-resource/mcp'
     | '/api/public/stripe-webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -481,12 +522,15 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/refunds'
     | '/reset-password'
+    | '/robots.txt'
     | '/sections'
     | '/signin'
+    | '/sitemap.xml'
     | '/templates'
     | '/terms'
     | '/videos'
     | '/.well-known/oauth-protected-resource'
+    | '/api/health'
     | '/guides/404-page-design-examples'
     | '/guides/ai-generated-websites-less-generic'
     | '/guides/animated-explainer-videos-with-claude'
@@ -513,6 +557,7 @@ export interface FileRouteTypes {
     | '/videos/organic'
     | '/videos/rays'
     | '/videos/small-details'
+    | '/.well-known/oauth-protected-resource/mcp'
     | '/api/public/stripe-webhook'
   id:
     | '__root__'
@@ -526,12 +571,15 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/refunds'
     | '/reset-password'
+    | '/robots.txt'
     | '/sections'
     | '/signin'
+    | '/sitemap.xml'
     | '/templates'
     | '/terms'
     | '/videos'
     | '/.well-known/oauth-protected-resource'
+    | '/api/health'
     | '/guides_/404-page-design-examples'
     | '/guides_/ai-generated-websites-less-generic'
     | '/guides_/animated-explainer-videos-with-claude'
@@ -558,6 +606,7 @@ export interface FileRouteTypes {
     | '/videos_/organic'
     | '/videos_/rays'
     | '/videos_/small-details'
+    | '/.well-known/oauth-protected-resource/mcp'
     | '/api/public/stripe-webhook'
   fileRoutesById: FileRoutesById
 }
@@ -572,12 +621,15 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   RefundsRoute: typeof RefundsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  RobotsDottxtRoute: typeof RobotsDottxtRoute
   SectionsRoute: typeof SectionsRoute
   SigninRoute: typeof SigninRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TemplatesRoute: typeof TemplatesRoute
   TermsRoute: typeof TermsRoute
   VideosRoute: typeof VideosRoute
-  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteWithChildren
+  ApiHealthRoute: typeof ApiHealthRoute
   Guides404PageDesignExamplesRoute: typeof Guides404PageDesignExamplesRoute
   GuidesAiGeneratedWebsitesLessGenericRoute: typeof GuidesAiGeneratedWebsitesLessGenericRoute
   GuidesAnimatedExplainerVideosWithClaudeRoute: typeof GuidesAnimatedExplainerVideosWithClaudeRoute
@@ -679,6 +731,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sections': {
       id: '/sections'
       path: '/sections'
@@ -691,6 +750,13 @@ declare module '@tanstack/react-router' {
       path: '/signin'
       fullPath: '/signin'
       preLoaderRoute: typeof SigninRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/templates': {
@@ -719,6 +785,13 @@ declare module '@tanstack/react-router' {
       path: '/.well-known/oauth-protected-resource'
       fullPath: '/.well-known/oauth-protected-resource'
       preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/health': {
+      id: '/api/health'
+      path: '/api/health'
+      fullPath: '/api/health'
+      preLoaderRoute: typeof ApiHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/guides_/404-page-design-examples': {
@@ -903,6 +976,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VideosSmallDetailsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/.well-known/oauth-protected-resource/mcp': {
+      id: '/.well-known/oauth-protected-resource/mcp'
+      path: '/mcp'
+      fullPath: '/.well-known/oauth-protected-resource/mcp'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceMcpRouteImport
+      parentRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+    }
     '/api/public/stripe-webhook': {
       id: '/api/public/stripe-webhook'
       path: '/api/public/stripe-webhook'
@@ -912,6 +992,21 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface Char91DotwellKnownChar93OauthProtectedResourceRouteChildren {
+  Char91DotwellKnownChar93OauthProtectedResourceMcpRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceMcpRoute
+}
+
+const Char91DotwellKnownChar93OauthProtectedResourceRouteChildren: Char91DotwellKnownChar93OauthProtectedResourceRouteChildren =
+  {
+    Char91DotwellKnownChar93OauthProtectedResourceMcpRoute:
+      Char91DotwellKnownChar93OauthProtectedResourceMcpRoute,
+  }
+
+const Char91DotwellKnownChar93OauthProtectedResourceRouteWithChildren =
+  Char91DotwellKnownChar93OauthProtectedResourceRoute._addFileChildren(
+    Char91DotwellKnownChar93OauthProtectedResourceRouteChildren,
+  )
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -924,13 +1019,16 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   RefundsRoute: RefundsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  RobotsDottxtRoute: RobotsDottxtRoute,
   SectionsRoute: SectionsRoute,
   SigninRoute: SigninRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TemplatesRoute: TemplatesRoute,
   TermsRoute: TermsRoute,
   VideosRoute: VideosRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
-    Char91DotwellKnownChar93OauthProtectedResourceRoute,
+    Char91DotwellKnownChar93OauthProtectedResourceRouteWithChildren,
+  ApiHealthRoute: ApiHealthRoute,
   Guides404PageDesignExamplesRoute: Guides404PageDesignExamplesRoute,
   GuidesAiGeneratedWebsitesLessGenericRoute:
     GuidesAiGeneratedWebsitesLessGenericRoute,

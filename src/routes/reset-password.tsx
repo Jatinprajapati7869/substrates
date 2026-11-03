@@ -5,21 +5,23 @@ import { Button } from "@/components/ui/button";
 import { getClientAuth } from "@/integrations/firebase/client";
 import { passwordSchema } from "@/lib/account-validation";
 import capturedCSS from "../styles/pages/signin.css?raw";
+import { withPublicPageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/reset-password")({
-  validateSearch: (search: { oobCode?: unknown; mode?: unknown }): { oobCode?: string } => ({
-    oobCode: typeof search.oobCode === "string" && search.oobCode.length > 0 ? search.oobCode : undefined,
-  }),
-  head: () => ({
-    meta: [
+  validateSearch: (search: { oobCode?: unknown; mode?: unknown }): { oobCode?: string } => {
+    const oobCode =
+      typeof search.oobCode === "string" && search.oobCode.length > 0 ? search.oobCode : undefined;
+    return oobCode ? { oobCode } : {};
+  },
+  head: () =>
+    withPublicPageHead("/reset-password", [
       { title: "Reset password — Substrates" },
       { name: "description", content: "Set a new password for your Substrates account." },
       { property: "og:title", content: "Reset password — Substrates" },
       { property: "og:description", content: "Securely reset your Substrates password." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+    ]),
   component: ResetPassword,
 });
 
@@ -44,7 +46,11 @@ function ResetPassword() {
       setConfirm("");
       setDone(true);
     } catch (failure) {
-      setError(failure instanceof Error && !("issues" in failure) ? failure.message : "Use at least 8 characters.");
+      setError(
+        failure instanceof Error && !("issues" in failure)
+          ? failure.message
+          : "Use at least 8 characters.",
+      );
     } finally {
       setBusy(false);
     }
