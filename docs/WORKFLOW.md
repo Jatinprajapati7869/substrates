@@ -10,7 +10,7 @@
 
 ## Commit cadence
 
-Commit and push after every prompt (never fewer than every 2 prompts), so the GitHub graph shows steady progress and nothing is lost. Why: pack 1 finished P01 to P21 with nothing committed, leaving ~100 files only on disk. On Windows PowerShell use `npm.cmd` (the `npm.ps1` shim is blocked by execution policy).
+**Mandatory:** every task that changes even one line ends with a commit AND a push to a task branch on GitHub (`.cursor/rules/git-commit-push.mdc`). A Cursor `stop` hook (`.cursor/hooks.json`) checks the tree at the end of each turn and sends the agent back if anything is uncommitted or unpushed. Commit and push after every prompt, so the GitHub graph shows steady progress and nothing is lost. Why: pack 1 finished P01 to P21 with nothing committed, leaving ~100 files only on disk. On Windows PowerShell use `npm.cmd` (the `npm.ps1` shim is blocked by execution policy).
 
 ## Branches and history
 

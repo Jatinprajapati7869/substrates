@@ -4,7 +4,7 @@ Goal: take the Lemon Squeezy build from "tests pass" to "safe to launch an MVP".
 
 **Every prompt uses the same five skills:** `/tdd`, `surgical-patch`, `verify-and-stop`, `/code-review`, and the `security-auditor` subagent. Extra skills are added where the work needs them. If a skill name is not installed, delete it from the line.
 
-**Standard footer (already inside each prompt):** run `git status` first and stop if earlier work is uncommitted; verify with `npm.cmd run lint`, `typecheck`, `test`, `build`, `check:vendors`; run the `security-auditor` subagent on the branch and fix in-scope High findings; update `docs/PROGRESS.md`; commit and push the branch per `.cursor/rules/task-protocol.mdc`.
+**Standard footer (already inside each prompt):** run `git status` first and stop if earlier work is uncommitted; verify with `npm.cmd run lint`, `typecheck`, `test`, `build`, `check:vendors`; run the `security-auditor` subagent on the branch and fix in-scope High findings; update `docs/PROGRESS.md`; commit AND push the branch (**mandatory**, `.cursor/rules/git-commit-push.mdc`; a task that changed any line is not done until the report shows the commit hash, `Pushed: yes`, and a clean `git status -sb`).
 
 **Agentic notice:** these prompts let Cursor edit files and run shell commands in your repo. Each has a stop list.
 
@@ -64,7 +64,7 @@ Do:
 6. Add a test or script check that fails if a tracked file name matches *-out.txt.
 
 Stop and ask before: deleting anything not listed, adding a dependency.
-Done when npm.cmd run verify passes, git ls-files shows none of the junk, and no doc claims Stripe or Vercel is the production setup. Mark P24 done in docs/PROGRESS.md. Commit and push per .cursor/rules/task-protocol.mdc.
+Done when npm.cmd run verify passes, git ls-files shows none of the junk, and no doc claims Stripe or Vercel is the production setup. Mark P24 done in docs/PROGRESS.md. MANDATORY GIT (.cursor/rules/git-commit-push.mdc): you are not done until your changes are committed AND pushed to the branch on GitHub. End the report with the branch, commit hash, "Pushed: yes", and the `git status -sb` line showing a clean tree. If the push fails, start the report with NOT PUSHED and the error.
 ```
 
 ## P25: Billing hardening from the P23 review
@@ -93,7 +93,7 @@ Do:
 9. Split lemonsqueezy-provider.ts if it exceeds about 300 lines: one file for checkout, one for webhook parsing, one for event mapping. Behavior must not change.
 
 Stop and ask before: adding a dependency, changing prices or plan ids, editing Firestore rules.
-Done when each item has a named test, npm.cmd run verify passes, and the security-auditor reports no High. Mark P25 done in docs/PROGRESS.md. Commit and push per .cursor/rules/task-protocol.mdc.
+Done when each item has a named test, npm.cmd run verify passes, and the security-auditor reports no High. Mark P25 done in docs/PROGRESS.md. MANDATORY GIT (.cursor/rules/git-commit-push.mdc): you are not done until your changes are committed AND pushed to the branch on GitHub. End the report with the branch, commit hash, "Pushed: yes", and the `git status -sb` line showing a clean tree. If the push fails, start the report with NOT PUSHED and the error.
 Not Verified (human): test-mode purchase in the real Lemon Squeezy dashboard.
 ```
 
@@ -121,7 +121,7 @@ Do:
 7. Update docs/SPEC.md S22 wording, the account dashboard to show video status, and docs/specs/lemonsqueezy-setup.md with the two extra variants.
 
 Stop and ask before: changing prices, adding a dependency, editing Firestore rules (if the rules need a new field, ask and show the exact diff).
-Done when S22 is proven by named tests and npm.cmd run verify passes. Mark P26 done. Commit and push per .cursor/rules/task-protocol.mdc.
+Done when S22 is proven by named tests and npm.cmd run verify passes. Mark P26 done. MANDATORY GIT (.cursor/rules/git-commit-push.mdc): you are not done until your changes are committed AND pushed to the branch on GitHub. End the report with the branch, commit hash, "Pushed: yes", and the `git status -sb` line showing a clean tree. If the push fails, start the report with NOT PUSHED and the error.
 ```
 
 ## P27: Kit licenses and the Substrates license (DEFERRED: owner said skip for now)
@@ -150,7 +150,7 @@ Do:
 5. Add a launch gate in code: a build-time or test-time check reads a list of product slugs marked "shippable" in a small JSON file (content-gate.json) and fails if any shippable slug depends on a kit row marked no or unknown. If the catalog has no kit field, add an optional "kit" field to the gate file, not to catalog.json.
 
 Stop and ask before: adding a dependency, changing catalog.json, or marking any row yes without a quoted sentence.
-Done when licenses.md has no row left unfilled that the files could answer, /license renders, tests pass, and npm.cmd run verify passes. Mark P27 done. Commit and push per .cursor/rules/task-protocol.mdc.
+Done when licenses.md has no row left unfilled that the files could answer, /license renders, tests pass, and npm.cmd run verify passes. Mark P27 done. MANDATORY GIT (.cursor/rules/git-commit-push.mdc): you are not done until your changes are committed AND pushed to the branch on GitHub. End the report with the branch, commit hash, "Pushed: yes", and the `git status -sb` line showing a clean tree. If the push fails, start the report with NOT PUSHED and the error.
 Not Verified (human): lawyer review of the license text.
 ```
 
@@ -180,7 +180,7 @@ Do:
 7. Replace text only. Do not restructure captured markup or change captured CSS.
 
 Stop and ask before: stating any policy number the owner has not given, or adding a dependency.
-Done when the tests pass, npm.cmd run verify passes, and legal-claims.md has no false claim. Mark P28 done. Commit and push per .cursor/rules/task-protocol.mdc.
+Done when the tests pass, npm.cmd run verify passes, and legal-claims.md has no false claim. Mark P28 done. MANDATORY GIT (.cursor/rules/git-commit-push.mdc): you are not done until your changes are committed AND pushed to the branch on GitHub. End the report with the branch, commit hash, "Pushed: yes", and the `git status -sb` line showing a clean tree. If the push fails, start the report with NOT PUSHED and the error.
 State plainly in the report that this is not legal advice.
 ```
 
@@ -210,7 +210,7 @@ Do:
 9. CI: add a job step that builds with NITRO_PRESET=node-server and starts the server for a 200 check on /api/health.
 
 Stop and ask before: adding a dependency, changing the Node major version, deleting vercel.json.
-Done when the local node-server smoke test passes, the runbook exists, CI has the smoke step, and npm.cmd run verify passes. Mark P29 done. Commit and push per .cursor/rules/task-protocol.mdc.
+Done when the local node-server smoke test passes, the runbook exists, CI has the smoke step, and npm.cmd run verify passes. Mark P29 done. MANDATORY GIT (.cursor/rules/git-commit-push.mdc): you are not done until your changes are committed AND pushed to the branch on GitHub. End the report with the branch, commit hash, "Pushed: yes", and the `git status -sb` line showing a clean tree. If the push fails, start the report with NOT PUSHED and the error.
 Not Verified (human): the actual Heroku deploy, DNS, TLS, and webhook delivery.
 ```
 
@@ -237,7 +237,7 @@ Do:
 6. Update docs/QA/rules-checklist.md to point at the automated tests and mark S6 proven in docs/QA/baseline.md terms.
 
 Stop and ask before: adding any dependency other than the two named, or deploying rules.
-Done when test:rules passes locally (or you report Java missing and the human must install it), CI job exists, and npm.cmd run verify passes. Mark P30 done. Commit and push per .cursor/rules/task-protocol.mdc.
+Done when test:rules passes locally (or you report Java missing and the human must install it), CI job exists, and npm.cmd run verify passes. Mark P30 done. MANDATORY GIT (.cursor/rules/git-commit-push.mdc): you are not done until your changes are committed AND pushed to the branch on GitHub. End the report with the branch, commit hash, "Pushed: yes", and the `git status -sb` line showing a clean tree. If the push fails, start the report with NOT PUSHED and the error.
 Not Verified (human): rules deployed to the production Firebase project.
 ```
 
@@ -265,7 +265,7 @@ Do:
 7. npm scripts: content:validate, content:upload.
 
 Stop and ask before: adding a dependency, uploading anything to Firestore, or committing anything from content/.
-Done when the tests pass and npm.cmd run verify passes. Mark P31 done. Commit and push per .cursor/rules/task-protocol.mdc.
+Done when the tests pass and npm.cmd run verify passes. Mark P31 done. MANDATORY GIT (.cursor/rules/git-commit-push.mdc): you are not done until your changes are committed AND pushed to the branch on GitHub. End the report with the branch, commit hash, "Pushed: yes", and the `git status -sb` line showing a clean tree. If the push fails, start the report with NOT PUSHED and the error.
 ```
 
 ## P32: Launch catalog gating
@@ -291,7 +291,7 @@ Do:
 6. Tests for: deliverable and non-deliverable cards, server rejection with no credit spent, filter, and pages for a non-deliverable slug still render and are indexable.
 
 Do not change captured markup beyond the buttons and one status line per page. Stop and ask before editing captured CSS or adding a dependency.
-Done when the tests pass and npm.cmd run verify passes. Mark P32 done. Commit and push per .cursor/rules/task-protocol.mdc.
+Done when the tests pass and npm.cmd run verify passes. Mark P32 done. MANDATORY GIT (.cursor/rules/git-commit-push.mdc): you are not done until your changes are committed AND pushed to the branch on GitHub. End the report with the branch, commit hash, "Pushed: yes", and the `git status -sb` line showing a clean tree. If the push fails, start the report with NOT PUSHED and the error.
 ```
 
 ## P33: Marketing claims audit
@@ -319,7 +319,7 @@ Do:
 8. Write docs/QA/claims.md with the final claim table.
 
 Stop and ask before: deleting captured sections wholesale, adding a dependency, or changing plan prices.
-Done when docs/QA/claims.md has no unprovable claim left on a public page and npm.cmd run verify passes. Mark P33 done. Commit and push per .cursor/rules/task-protocol.mdc.
+Done when docs/QA/claims.md has no unprovable claim left on a public page and npm.cmd run verify passes. Mark P33 done. MANDATORY GIT (.cursor/rules/git-commit-push.mdc): you are not done until your changes are committed AND pushed to the branch on GitHub. End the report with the branch, commit hash, "Pushed: yes", and the `git status -sb` line showing a clean tree. If the push fails, start the report with NOT PUSHED and the error.
 ```
 
 ## P34: Account lifecycle
@@ -347,7 +347,7 @@ Do:
 8. Update privacy.tsx user-rights text to match what now exists.
 
 Stop and ask before: adding a dependency, changing Firestore rules (show the diff), or deleting purchase records.
-Done when S2 and the new functions are proven by named tests and npm.cmd run verify passes. Mark P34 done. Commit and push per .cursor/rules/task-protocol.mdc.
+Done when S2 and the new functions are proven by named tests and npm.cmd run verify passes. Mark P34 done. MANDATORY GIT (.cursor/rules/git-commit-push.mdc): you are not done until your changes are committed AND pushed to the branch on GitHub. End the report with the branch, commit hash, "Pushed: yes", and the `git status -sb` line showing a clean tree. If the push fails, start the report with NOT PUSHED and the error.
 ```
 
 ## P35: Assistant wrapper contract tests
@@ -373,7 +373,7 @@ Do:
 6. An unknown assistant value is rejected on the server with a 400 and no body read.
 
 Stop and ask before: adding a dependency or changing the free reference prompt format.
-Done when the contract tests pass and npm.cmd run verify passes. Mark P35 done. Commit and push per .cursor/rules/task-protocol.mdc.
+Done when the contract tests pass and npm.cmd run verify passes. Mark P35 done. MANDATORY GIT (.cursor/rules/git-commit-push.mdc): you are not done until your changes are committed AND pushed to the branch on GitHub. End the report with the branch, commit hash, "Pushed: yes", and the `git status -sb` line showing a clean tree. If the push fails, start the report with NOT PUSHED and the error.
 ```
 
 ## P36: Observability
@@ -400,7 +400,7 @@ Do:
 7. Tests: logger never outputs the raw email or uid in a fixture request; scrubber cases; request id round trip.
 
 Stop and ask before: adding a dependency or enabling Sentry performance tracing (it uses quota).
-Done when the tests pass, docs/runbooks/monitoring.md exists, and npm.cmd run verify passes. Mark P36 done. Commit and push per .cursor/rules/task-protocol.mdc.
+Done when the tests pass, docs/runbooks/monitoring.md exists, and npm.cmd run verify passes. Mark P36 done. MANDATORY GIT (.cursor/rules/git-commit-push.mdc): you are not done until your changes are committed AND pushed to the branch on GitHub. End the report with the branch, commit hash, "Pushed: yes", and the `git status -sb` line showing a clean tree. If the push fails, start the report with NOT PUSHED and the error.
 ```
 
 ## P37: Static asset caching, compression, bundle size
@@ -427,7 +427,7 @@ Do:
 7. Tests: header assertions per path class.
 
 Stop and ask before: adding an image-processing dependency (sharp is acceptable if you show why a script cannot do it) or changing captured CSS.
-Done when the before and after table exists and npm.cmd run verify passes. Mark P37 done. Commit and push per .cursor/rules/task-protocol.mdc.
+Done when the before and after table exists and npm.cmd run verify passes. Mark P37 done. MANDATORY GIT (.cursor/rules/git-commit-push.mdc): you are not done until your changes are committed AND pushed to the branch on GitHub. End the report with the branch, commit hash, "Pushed: yes", and the `git status -sb` line showing a clean tree. If the push fails, start the report with NOT PUSHED and the error.
 ```
 
 ## P38: Accessibility pass II
@@ -452,7 +452,7 @@ Do:
 5. Do not restructure captured markup; if a captured section needs changes, list it in docs/QA/a11y-flows.md.
 
 Stop and ask before: adding a dependency or editing captured CSS.
-Done when the listed flows have tests and npm.cmd run verify passes. Mark P38 done. Commit and push per .cursor/rules/task-protocol.mdc.
+Done when the listed flows have tests and npm.cmd run verify passes. Mark P38 done. MANDATORY GIT (.cursor/rules/git-commit-push.mdc): you are not done until your changes are committed AND pushed to the branch on GitHub. End the report with the branch, commit hash, "Pushed: yes", and the `git status -sb` line showing a clean tree. If the push fails, start the report with NOT PUSHED and the error.
 ```
 
 ## P39: SEO pass II
@@ -479,7 +479,7 @@ Do:
 7. Remove any leftover brand strings that are not Substrates from titles and descriptions (grep Oversight).
 
 Stop and ask before: adding a dependency.
-Done when tests pass and npm.cmd run verify passes. Mark P39 done. Commit and push per .cursor/rules/task-protocol.mdc.
+Done when tests pass and npm.cmd run verify passes. Mark P39 done. MANDATORY GIT (.cursor/rules/git-commit-push.mdc): you are not done until your changes are committed AND pushed to the branch on GitHub. End the report with the branch, commit hash, "Pushed: yes", and the `git status -sb` line showing a clean tree. If the push fails, start the report with NOT PUSHED and the error.
 Not Verified (human): Google Search Console property, sitemap submission.
 ```
 
@@ -507,7 +507,7 @@ Do:
 7. Tests: enforced header present, each limiter policy returns 429 after its quota, spoofed host ignored, oversized webhook rejected.
 
 Stop and ask before: adding a dependency (for example a Redis client) or changing sign-in popup behavior.
-Done when tests pass, endpoint-matrix.md is complete, and npm.cmd run verify passes. Mark P40 done. Commit and push per .cursor/rules/task-protocol.mdc.
+Done when tests pass, endpoint-matrix.md is complete, and npm.cmd run verify passes. Mark P40 done. MANDATORY GIT (.cursor/rules/git-commit-push.mdc): you are not done until your changes are committed AND pushed to the branch on GitHub. End the report with the branch, commit hash, "Pushed: yes", and the `git status -sb` line showing a clean tree. If the push fails, start the report with NOT PUSHED and the error.
 Not Verified (human): browser check of sign-in, checkout redirect, and Sentry under the enforced CSP on the Heroku URL.
 ```
 
@@ -535,7 +535,7 @@ Do (all as Node scripts under scripts/ using the Admin SDK and plain fetch; no n
 7. docs/runbooks/ops.md: when to use each script, with examples that use placeholder ids.
 
 Stop and ask before: adding a dependency or changing Firestore rules.
-Done when tests pass and npm.cmd run verify passes. Mark P41 done. Commit and push per .cursor/rules/task-protocol.mdc.
+Done when tests pass and npm.cmd run verify passes. Mark P41 done. MANDATORY GIT (.cursor/rules/git-commit-push.mdc): you are not done until your changes are committed AND pushed to the branch on GitHub. End the report with the branch, commit hash, "Pushed: yes", and the `git status -sb` line showing a clean tree. If the push fails, start the report with NOT PUSHED and the error.
 ```
 
 ## P42: Full review, no fixes
@@ -558,7 +558,7 @@ Review the diff from the end of pack 1 to HEAD (git diff <pack1-merge-commit>...
 - Human steps still open (Lemon Squeezy account and seller verification, Heroku app, Firebase production project, DNS, live purchase, lawyer review of license and legal text).
 
 Do not fix anything. Edit only docs/REVIEW-PACK3.md and docs/PROGRESS.md.
-Done when REVIEW-PACK3.md exists with severities and file:line. Mark P42 done. Commit and push per .cursor/rules/task-protocol.mdc.
+Done when REVIEW-PACK3.md exists with severities and file:line. Mark P42 done. MANDATORY GIT (.cursor/rules/git-commit-push.mdc): you are not done until your changes are committed AND pushed to the branch on GitHub. End the report with the branch, commit hash, "Pushed: yes", and the `git status -sb` line showing a clean tree. If the push fails, start the report with NOT PUSHED and the error.
 ```
 
 ## P43: Repair and v0.2.0
@@ -580,7 +580,7 @@ Write docs/QA/pack3-record.md: each prompt P24 to P43 as done, blocked, or skipp
 Use /ce-compound to append a short Pack 3 section to docs/LEARNINGS.md.
 
 Stop and ask before: changing plan prices, deploying rules, adding dependencies.
-Done when all checks pass and pack3-record.md exists. Mark P43 done. Commit and push per .cursor/rules/task-protocol.mdc. Print the git tag command for v0.2.0 for the human to run after the production smoke test; do not tag yourself.
+Done when all checks pass and pack3-record.md exists. Mark P43 done. MANDATORY GIT (.cursor/rules/git-commit-push.mdc): you are not done until your changes are committed AND pushed to the branch on GitHub. End the report with the branch, commit hash, "Pushed: yes", and the `git status -sb` line showing a clean tree. If the push fails, start the report with NOT PUSHED and the error. Print the git tag command for v0.2.0 for the human to run after the production smoke test; do not tag yourself.
 ```
 
 ---

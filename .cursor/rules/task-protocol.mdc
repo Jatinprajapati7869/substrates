@@ -26,6 +26,6 @@ alwaysApply: true
 ## Git
 
 - Work on a branch named `pNN-short-name` (for example `p02-lovable-purge`). Never commit to `main` directly.
-- **Commit and push after every prompt**, and at minimum after every 2 prompts. One prompt = at least one commit with a conventional message such as `feat(p22): ...`. Never leave finished work uncommitted. Check `git status` at the start of each prompt; if the tree holds uncommitted work from an earlier prompt, stop and commit it first.
+- **MANDATORY: commit AND push after every task that changes even one line.** Full procedure in `.cursor/rules/git-commit-push.mdc`. A task is not done until the final report shows the commit hash, `Pushed: yes`, and a clean `git status -sb`.
 - Push the branch and stop. The human merges after CI is green and the preview is checked. Pushing a feature branch is allowed; pushing to `main` is not.
 - Never force-push, rebase pushed commits, or amend pushed commits.

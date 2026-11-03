@@ -61,7 +61,7 @@ Stop and ask before: adding a dependency, changing plan prices, changing Firesto
 Verify: npm.cmd run lint, typecheck, test, build.
 
 Done when both spec files exist with cited URLs, the provider-neutral layer exists, and all checks pass. Mark P22 done in docs/PROGRESS.md.
-Then ask me the questions you could not answer from the docs and wait for my reply before I run P23. Commit and push the branch per .cursor/rules/task-protocol.mdc.
+Then ask me the questions you could not answer from the docs and wait for my reply before I run P23. MANDATORY GIT (.cursor/rules/git-commit-push.mdc): you are not done until your changes are committed AND pushed to the branch on GitHub. End the report with the branch, commit hash, "Pushed: yes", and the `git status -sb` line showing a clean tree. If the push fails, start the report with NOT PUSHED and the error.
 ```
 
 ---
@@ -96,7 +96,7 @@ Verify: npm.cmd run lint, typecheck, test, build, run check:vendors. Report real
 
 Done when the six scenarios are proven by named tests, no Stripe code or env remains, and all checks pass. Mark P23 done in docs/PROGRESS.md.
 Not Verified (human): a test-mode purchase through the real Lemon Squeezy checkout, webhook delivery to the Heroku URL, live-mode switch.
-Commit and push the branch per .cursor/rules/task-protocol.mdc.
+MANDATORY GIT (.cursor/rules/git-commit-push.mdc): you are not done until your changes are committed AND pushed to the branch on GitHub. End the report with the branch, commit hash, "Pushed: yes", and the `git status -sb` line showing a clean tree. If the push fails, start the report with NOT PUSHED and the error.
 ```
 
 ---
