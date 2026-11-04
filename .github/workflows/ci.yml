@@ -22,6 +22,7 @@ jobs:
 
       - run: npm run verify
         env:
+          NITRO_PRESET: node-server
           VITE_FIREBASE_API_KEY: placeholder
           VITE_FIREBASE_AUTH_DOMAIN: example.firebaseapp.com
           VITE_FIREBASE_PROJECT_ID: example

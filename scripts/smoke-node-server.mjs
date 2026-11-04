@@ -132,6 +132,10 @@ async function main() {
       under400Mb: rssKb == null ? null : rssKb / 1024 < 400,
     }),
   );
+
+  if (rssKb != null && rssKb / 1024 >= 400) {
+    process.exit(1);
+  }
 }
 
 main().catch((err) => {
