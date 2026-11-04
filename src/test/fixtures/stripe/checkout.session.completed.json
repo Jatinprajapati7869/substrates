@@ -1,0 +1,16 @@
+{
+  "id": "evt_checkout_1",
+  "type": "checkout.session.completed",
+  "data": {
+    "object": {
+      "id": "cs_test_1",
+      "payment_status": "paid",
+      "status": "complete",
+      "customer": "cus_test",
+      "metadata": {
+        "user_id": "user-1",
+        "plan": "lifetime"
+      }
+    }
+  }
+}

@@ -1,6 +1,26 @@
-import { McpServer } from "@modelcontextprotocol/server";
-import { z } from "zod";
+import { fromJsonSchema, McpServer } from "@modelcontextprotocol/server";
 import { catalogProduct, searchCatalog } from "@/lib/mcp/catalog";
+
+const searchCatalogInputSchema = fromJsonSchema({
+  type: "object",
+  properties: {
+    query: { type: "string", maxLength: 200 },
+    kind: { type: "string", enum: ["all", "template", "section"] },
+    limit: { type: "integer", minimum: 1, maximum: 50 },
+  },
+  required: ["query", "kind", "limit"],
+  additionalProperties: false,
+});
+
+const getProductInputSchema = fromJsonSchema({
+  type: "object",
+  properties: {
+    kind: { type: "string", enum: ["template", "section"] },
+    slug: { type: "string", minLength: 1, maxLength: 100, pattern: "^[a-z0-9-]+$" },
+  },
+  required: ["kind", "slug"],
+  additionalProperties: false,
+});
 
 export function createCatalogMcpServer(): McpServer {
   const server = new McpServer(
@@ -21,16 +41,19 @@ export function createCatalogMcpServer(): McpServer {
       title: "Search product catalog",
       description:
         "Search Substrates templates and sections by name, description or category; returns catalog prices and preview references only, not purchased source code.",
-      inputSchema: {
-        query: z.string().max(200).default(""),
-        kind: z.enum(["all", "template", "section"]).default("all"),
-        limit: z.number().int().min(1).max(50).default(20),
-      },
+      inputSchema: searchCatalogInputSchema,
       annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
     },
-    ({ query, kind, limit }) => ({
-      content: [{ type: "text", text: JSON.stringify(searchCatalog(query, kind, limit)) }],
-    }),
+    (args) => {
+      const { query, kind, limit } = args as {
+        query: string;
+        kind: "all" | "template" | "section";
+        limit: number;
+      };
+      return {
+        content: [{ type: "text", text: JSON.stringify(searchCatalog(query, kind, limit)) }],
+      };
+    },
   );
 
   server.registerTool(
@@ -39,13 +62,11 @@ export function createCatalogMcpServer(): McpServer {
       title: "Read product details",
       description:
         "Read a catalog product's description, price, photo reference and demo links without accessing private accounts or licensed source code.",
-      inputSchema: {
-        kind: z.enum(["template", "section"]),
-        slug: z.string().min(1).max(100).regex(/^[a-z0-9-]+$/),
-      },
+      inputSchema: getProductInputSchema,
       annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
     },
-    ({ kind, slug }) => {
+    (args) => {
+      const { kind, slug } = args as { kind: "template" | "section"; slug: string };
       const product = catalogProduct(kind, slug);
       if (!product) {
         return {

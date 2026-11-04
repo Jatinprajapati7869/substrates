@@ -4,29 +4,22 @@ import {
   oauthMetadataResponse,
   requireBearerAuth,
   type AuthMetadataOptions,
+  type OAuthTokenVerifier,
 } from "@modelcontextprotocol/server";
 import { createCatalogMcpServer } from "./factory.server";
 import { createFirebaseMcpVerifier, firebaseMcpIssuer } from "./firebase-verifier.server";
+import { consumeMcpRateLimit } from "@/lib/mcp-rate-limit.server";
+import { SITE_ORIGIN } from "@/lib/brand";
 
 const MCP_PATH = "/mcp";
 
-function requestOrigin(request: Request): URL {
-  const forwardedHost = request.headers.get("x-forwarded-host");
-  const forwardedProto = request.headers.get("x-forwarded-proto") ?? "https";
-  if (forwardedHost) {
-    return new URL(`${forwardedProto}://${forwardedHost.split(",")[0]?.trim()}`);
-  }
-  return new URL(request.url);
+function resourceServerUrl(): URL {
+  return new URL(MCP_PATH, SITE_ORIGIN);
 }
 
-function resourceServerUrl(request: Request): URL {
-  const origin = requestOrigin(request);
-  return new URL(MCP_PATH, origin);
-}
-
-function authMetadataOptions(request: Request): AuthMetadataOptions {
+function authMetadataOptions(_request: Request): AuthMetadataOptions {
   const issuer = firebaseMcpIssuer();
-  const resource = resourceServerUrl(request);
+  const resource = resourceServerUrl();
   return {
     resourceServerUrl: resource,
     resourceName: "Substrates",
@@ -35,7 +28,8 @@ function authMetadataOptions(request: Request): AuthMetadataOptions {
       issuer,
       authorization_endpoint: `${issuer}/authorize`,
       token_endpoint: `${issuer}/token`,
-      jwks_uri: "https://www.googleapis.com/service_accounts/v1/metadata/jwk/securetoken@system.gserviceaccount.com",
+      jwks_uri:
+        "https://www.googleapis.com/service_accounts/v1/metadata/jwk/securetoken@system.gserviceaccount.com",
       response_types_supported: ["token"],
       grant_types_supported: ["implicit"],
     },
@@ -44,24 +38,30 @@ function authMetadataOptions(request: Request): AuthMetadataOptions {
 
 const mcpHandler = createMcpHandler(() => createCatalogMcpServer());
 
-function bearerGate(request: Request) {
-  const metadataUrl = getOAuthProtectedResourceMetadataUrl(resourceServerUrl(request)).href;
+function bearerGate(request: Request, verifier?: OAuthTokenVerifier) {
+  const metadataUrl = getOAuthProtectedResourceMetadataUrl(resourceServerUrl());
   return requireBearerAuth({
-    verifier: createFirebaseMcpVerifier(),
+    verifier: verifier ?? createFirebaseMcpVerifier(),
     resourceMetadataUrl: metadataUrl,
   })(request);
+}
+
+export async function handleMcpProtocol(
+  request: Request,
+  options?: { verifier?: OAuthTokenVerifier },
+): Promise<Response> {
+  const auth = await bearerGate(request, options?.verifier);
+  if (auth instanceof Response) return auth;
+  if (!consumeMcpRateLimit(auth.clientId)) {
+    return new Response("Too Many Requests", { status: 429 });
+  }
+  return mcpHandler.fetch(request, { authInfo: auth });
 }
 
 export async function handleOAuthProtectedResourceMetadata(request: Request): Promise<Response> {
   const metadata = oauthMetadataResponse(request, authMetadataOptions(request));
   if (metadata) return metadata;
   return new Response("Not Found", { status: 404 });
-}
-
-export async function handleMcpProtocol(request: Request): Promise<Response> {
-  const auth = await bearerGate(request);
-  if (auth instanceof Response) return auth;
-  return mcpHandler.fetch(request, { authInfo: auth });
 }
 
 export function tanstackMcpHandler({ request }: { request: Request }) {

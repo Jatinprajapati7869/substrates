@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run lint
+
+      # Remaining errors: docs/QA/typecheck-debt.md — remove continue-on-error when that file is empty or deleted.
+      - name: Typecheck
+        run: npm run typecheck
+        continue-on-error: true
+
+      - run: npm test
+
+      - run: npm run build
+        env:
+          VITE_FIREBASE_API_KEY: placeholder
+          VITE_FIREBASE_AUTH_DOMAIN: example.firebaseapp.com
+          VITE_FIREBASE_PROJECT_ID: example
+          VITE_FIREBASE_APP_ID: 1:example:web:example
+
+      - run: npm run check:vendors
+
+      # Non-blocking until high-severity audit backlog is triaged (P05).
+      # - run: npm audit --audit-level=high
+
+      - name: Secret scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

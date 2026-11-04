@@ -8,6 +8,8 @@ execution: code
 origin: user-request
 ---
 
+> **SUPERSEDED (2026-11-03):** this plan assumed Supabase. The current stack is Firebase Auth + Firestore. See `docs/ARCHITECTURE.md` and `docs/DECISIONS.md`. Kept for history only.
+
 ## Goal Capsule
 
 **Objective:** Customers can sign in, browse the catalog, purchase memberships and templates, and use the public MCP catalog API on your own domains, with no runtime dependency on Lovable platform packages, preview hosts, or Lovable AI gateway.
@@ -163,13 +165,13 @@ flowchart LR
 
 ### Risks
 
-| Risk | Mitigation |
-|------|------------|
+| Risk                                             | Mitigation                                                                              |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------- |
 | TanStack Start + Nitro preset mismatch on Vercel | Pin versions; verify with `npm run build` locally and Vercel preview before DNS cutover |
-| MCP OAuth parity regression | Keep existing Supabase issuer config; add integration test with mocked JWT |
-| Stripe webhook URL change | Update Stripe dashboard; run test events in staging |
-| Windows dev path bugs (prior mcp-js patch) | Removed with mcp-js; validate dev on Windows in AE1 |
-| Secret rename breaks cron | Dual-read old/new env names for one release (KTD7) |
+| MCP OAuth parity regression                      | Keep existing Supabase issuer config; add integration test with mocked JWT              |
+| Stripe webhook URL change                        | Update Stripe dashboard; run test events in staging                                     |
+| Windows dev path bugs (prior mcp-js patch)       | Removed with mcp-js; validate dev on Windows in AE1                                     |
+| Secret rename breaks cron                        | Dual-read old/new env names for one release (KTD7)                                      |
 
 ## Implementation Units
 
@@ -447,18 +449,18 @@ flowchart LR
 
 ### Lovable coupling inventory (repo snapshot 2026-11-03)
 
-| Area | Location | Replacement direction |
-|------|----------|------------------------|
-| Vite/TanStack bundle | `@lovable.dev/vite-tanstack-config`, `vite.config.ts` | U2 upstream config |
-| MCP SDK + plugin | `@lovable.dev/mcp-js`, generated routes | U5 owned handlers |
-| Cloud auth | `@lovable.dev/cloud-auth-js`, `src/integrations/lovable/` | U4 Supabase OAuth |
-| AI gateway | `LOVABLE_API_KEY`, `recommend.server.ts` | U6 OpenAI |
-| Cron secrets | `LOVABLE_CRON_SECRET*` | U3 `CRON_SECRET*` |
-| DB migrations | `LOVABLE_DB_MIGRATION_URL` | U3 `DATABASE_URL` |
-| Telemetry | `lovable-error-reporting`, `webmcp-telemetry` | U7 remove/genericize |
-| Preview auth | `previewAuthStorage.ts` | U4 remove if unused |
-| OAuth consent route | `[.]lovable.oauth.consent.tsx` | U4 delete if Lovable-only |
-| Windows patch | `patches/@lovable.dev+mcp-js*` | Removed with U5 |
+| Area                 | Location                                                  | Replacement direction     |
+| -------------------- | --------------------------------------------------------- | ------------------------- |
+| Vite/TanStack bundle | `@lovable.dev/vite-tanstack-config`, `vite.config.ts`     | U2 upstream config        |
+| MCP SDK + plugin     | `@lovable.dev/mcp-js`, generated routes                   | U5 owned handlers         |
+| Cloud auth           | `@lovable.dev/cloud-auth-js`, `src/integrations/lovable/` | U4 Supabase OAuth         |
+| AI gateway           | `LOVABLE_API_KEY`, `recommend.server.ts`                  | U6 OpenAI                 |
+| Cron secrets         | `LOVABLE_CRON_SECRET*`                                    | U3 `CRON_SECRET*`         |
+| DB migrations        | `LOVABLE_DB_MIGRATION_URL`                                | U3 `DATABASE_URL`         |
+| Telemetry            | `lovable-error-reporting`, `webmcp-telemetry`             | U7 remove/genericize      |
+| Preview auth         | `previewAuthStorage.ts`                                   | U4 remove if unused       |
+| OAuth consent route  | `[.]lovable.oauth.consent.tsx`                            | U4 delete if Lovable-only |
+| Windows patch        | `patches/@lovable.dev+mcp-js*`                            | Removed with U5           |
 
 ### Confidence check
 

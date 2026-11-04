@@ -6,10 +6,17 @@ export const SITE_ORIGIN = "https://substrates.app";
 
 export const SUPPORT_EMAIL = "jatin@substrates.app";
 
-/** Legal entity shown in policies and footers (confirm with your lawyer if this changes). */
-export const LEGAL_ENTITY = "OversightStudio, LLC";
+/** Legal entity shown in policies and footers (D14 — replace placeholders after counsel). */
+export const LEGAL_ENTITY = "[LEGAL ENTITY]";
 
-export const LEGAL_ADDRESS = "1111B S Governors Ave STE 7287, Dover, DE 19904, USA";
+export const LEGAL_ADDRESS = "[LEGAL ADDRESS]";
+
+export const GOVERNING_LAW = "[GOVERNING LAW]";
+
+export const LEGAL_UPDATED = "November 3, 2026";
+
+/** Production host per D3 (Heroku). */
+export const HOSTING_PROVIDER = "Heroku";
 
 export const DEFAULT_META_DESCRIPTION =
   "Substrates — website templates and AI-ready sections for modern builds.";

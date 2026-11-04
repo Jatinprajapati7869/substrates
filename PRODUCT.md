@@ -26,7 +26,7 @@ Curated template marketplace with AI-ready sections — not a language course, n
 
 - Public name: **Substrates** — [https://substrates.app](https://substrates.app), logo at `/logo.webp`.
 - Support: **jatin@substrates.app**.
-- Operator on legal pages: **OversightStudio, LLC** until entity/DBA is updated with counsel.
+- Operator on legal pages: **`[LEGAL ENTITY]`** (D14 — fill in `src/lib/brand.ts` after counsel).
 - Imported marketing pages may lag the account/checkout surfaces during rebrand; Operate surfaces (sign-in, pricing checkout, legal) lead the name change.
 
 ## Capabilities and Constraints

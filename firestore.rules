@@ -1,12 +1,57 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /profiles/{userId} {
-      allow read, create, update: if request.auth != null && request.auth.uid == userId;
+    function isSignedIn() {
+      return request.auth != null;
     }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function billingProfileFields() {
+      return ['stripeCustomerId'];
+    }
+
+    function profileClientCreateOk() {
+      return !request.resource.data.keys().hasAny(billingProfileFields());
+    }
+
+    function profileClientUpdateOk() {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(billingProfileFields());
+    }
+
+    match /profiles/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && profileClientCreateOk();
+      allow update: if isOwner(userId) && profileClientUpdateOk();
+    }
+
     match /purchases/{purchaseId} {
-      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
       allow write: if false;
+    }
+
+    match /entitlements/{userId} {
+      allow read: if isOwner(userId);
+      allow write: if false;
+    }
+
+    match /unlocks/{unlockId} {
+      allow read: if isSignedIn() && unlockId.matches('^' + request.auth.uid + '_.*');
+      allow write: if false;
+    }
+
+    match /product_content/{slug} {
+      allow read, write: if false;
+    }
+
+    match /stripe_events/{eventId} {
+      allow read, write: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }

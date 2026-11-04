@@ -19,7 +19,18 @@ export type Product = {
 export const catalog = data as Product[];
 
 /** Sections whose interactive preview is hosted inside this site. */
-export const LOCAL_SECTION_PREVIEWS = ["condensation", "florilegium", "joiner", "portfolio-collage", "signal", "transmission", "tiered-pricing", "praise-wall", "feature-bento", "dispatch-footer"];
+export const LOCAL_SECTION_PREVIEWS = [
+  "condensation",
+  "florilegium",
+  "joiner",
+  "portfolio-collage",
+  "signal",
+  "transmission",
+  "tiered-pricing",
+  "praise-wall",
+  "feature-bento",
+  "dispatch-footer",
+];
 
 export function findProduct(kind: Product["kind"], slug: string) {
   return catalog.find((p) => p.kind === kind && p.slug === slug);
@@ -28,8 +39,14 @@ export function findProduct(kind: Product["kind"], slug: string) {
 /** Never invent a purchase price when the source catalog only specifies membership. */
 export function productPrice(product: Product): string {
   if (product.kind === "section" && product.tier === "pro") return "Included with Pro membership";
-  if (product.priceUsd === 0 || (product.kind === "section" && product.tier === "free")) return "Free";
-  if (typeof product.priceUsd === "number") return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(product.priceUsd);
+  if (product.priceUsd === 0 || (product.kind === "section" && product.tier === "free"))
+    return "Free";
+  if (typeof product.priceUsd === "number")
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      maximumFractionDigits: 0,
+    }).format(product.priceUsd);
   return "See membership plans";
 }
 
@@ -40,7 +57,10 @@ export function fallbackRelated(product: Product, count = 4) {
   return [...same, ...others.filter((p) => p.category !== product.category)].slice(0, count);
 }
 
-const photos = import.meta.glob("../assets/products/*.jpg", { eager: true, import: "default" }) as Record<string, string>;
+const photos = import.meta.glob("../assets/products/*.jpg", {
+  eager: true,
+  import: "default",
+}) as Record<string, string>;
 
 /** AI-generated on-brand product photo, when one exists. */
 export function productPhoto(slug: string): string | undefined {

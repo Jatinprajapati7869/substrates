@@ -1,0 +1,17 @@
+#!/bin/sh
+# Local pre-commit (no Husky): enable once with `git config core.hooksPath .githooks`
+set -eu
+
+STAGED=$(git diff --cached --name-only --diff-filter=ACM -- \
+  '*.ts' '*.tsx' '*.js' '*.mjs' '*.json' '*.md' '*.css' '*.yml' '*.yaml' || true)
+
+if [ -n "$STAGED" ]; then
+  # shellcheck disable=SC2086
+  npx prettier --check $STAGED
+fi
+
+if command -v gitleaks >/dev/null 2>&1; then
+  gitleaks detect --source . --redact --no-banner --log-opts=HEAD
+else
+  echo "gitleaks not on PATH; install for local secret scan (CI runs gitleaks-action)."
+fi

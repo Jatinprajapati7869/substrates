@@ -21,13 +21,18 @@ export function ProductCheckoutButton({ slug }: { slug: string }) {
   async function go() {
     setError("");
     if (!user) {
-      void router.navigate({ href: `/signin?next=${encodeURIComponent(templateResumePath(slug))}` });
+      void router.navigate({
+        href: `/signin?next=${encodeURIComponent(templateResumePath(slug))}`,
+      });
       return;
     }
     setBusy(true);
     const r = await start({ data: { slug } });
     if (r.url) window.location.assign(r.url);
-    else { setError(r.error ?? "Checkout failed."); setBusy(false); }
+    else {
+      setError(r.error ?? "Checkout failed.");
+      setBusy(false);
+    }
   }
 
   useEffect(() => {
@@ -41,8 +46,14 @@ export function ProductCheckoutButton({ slug }: { slug: string }) {
 
   return (
     <div className="flex flex-col items-end gap-1">
-      <Button className="os-btn-dark" onClick={go} disabled={busy} aria-busy={busy}>{busy ? "Opening checkout…" : "Get template"}</Button>
-      {error && <p role="alert" className="max-w-xs text-right text-[12px] text-destructive">{error}</p>}
+      <Button className="os-btn-dark" onClick={go} disabled={busy} aria-busy={busy}>
+        {busy ? "Opening checkout…" : "Get template"}
+      </Button>
+      {error && (
+        <p role="alert" className="max-w-xs text-right text-[12px] text-destructive">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

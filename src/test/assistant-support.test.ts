@@ -3,7 +3,7 @@ import { sectionPrompt } from "@/lib/assistant-copy";
 import { searchCatalog, catalogProduct } from "@/lib/mcp/catalog";
 import { safeReturnPath } from "@/lib/account-validation";
 describe("Assistant support", () => {
-  it.each(["Codex", "grokbuild"])("creates a reference prompt for %s", assistant => {
+  it.each(["Codex", "grokbuild"])("creates a reference prompt for %s", (assistant) => {
     const prompt = sectionPrompt("signal", assistant, "https://supply.example");
     expect(prompt).toContain(`In ${assistant}`);
     expect(prompt).toContain("https://supply.example/sections/signal");
@@ -16,7 +16,7 @@ describe("Assistant support", () => {
   });
   it("limits catalog search and excludes private account data", () => {
     expect(searchCatalog("", "section", 3)).toHaveLength(3);
-    expect(searchCatalog("", "section", 3).every(p => p.kind === "section")).toBe(true);
+    expect(searchCatalog("", "section", 3).every((p) => p.kind === "section")).toBe(true);
     expect(catalogProduct("template", "daylight")?.priceUsd).toBe(79);
     expect(catalogProduct("template", "missing")).toBeNull();
     expect(catalogProduct("template", "daylight")).not.toHaveProperty("email");

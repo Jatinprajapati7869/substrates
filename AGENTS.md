@@ -1,14 +1,4 @@
-<!-- LOVABLE:BEGIN -->
-> [!IMPORTANT]
-> This project is connected to [Lovable](https://lovable.dev). Avoid rewriting
-> published git history — force pushing, or rebasing/amending/squashing commits
-> that are already pushed — as it rewrites history on Lovable's side and the
-> user will likely lose their project history.
->
-> Commits you push to the connected branch sync back to Lovable and show up in
-> the editor, so keep the branch in a working state.
-<!-- LOVABLE:END -->
-
+- Never force-push or rewrite pushed history (no force-push, rebase/amend/squash on commits already on the remote).
 - Keep imported markup and interaction repairs in their TanStack route files and retain source CSS separately, so source structure and cascade remain comparable.
 - Product data lives in `src/lib/catalog.json` (extracted from the imported site); product pages and AI recommendations read from it, so keep a single catalog source.
 - Product detail routes use trailing-underscore unnesting (`templates_.$slug` and `sections_.$slug`) to preserve public URLs without mounting the captured listing pages as layouts.

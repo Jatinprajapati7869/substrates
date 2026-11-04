@@ -13,6 +13,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { AccountProvider } from "@/lib/account-context";
+import { DEFAULT_META_DESCRIPTION, PRODUCT_NAME } from "@/lib/brand";
+import { withPublicPageHead } from "@/lib/seo";
 
 function NotFoundComponent() {
   return (
@@ -39,6 +41,12 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
+
+  useEffect(() => {
+    void import("@/lib/sentry-browser").then(({ captureClientException }) =>
+      captureClientException(error),
+    );
+  }, [error]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -72,26 +80,28 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Substrates" },
-      { name: "description", content: "Substrates website templates and AI-ready sections." },
-      { name: "author", content: "Substrates" },
-      { property: "og:title", content: "Substrates" },
-      { property: "og:description", content: "Substrates website templates and AI-ready sections." },
+  head: () => {
+    const seo = withPublicPageHead("/", [
+      { title: PRODUCT_NAME },
+      { name: "description", content: DEFAULT_META_DESCRIPTION },
+      { property: "og:title", content: PRODUCT_NAME },
+      { property: "og:description", content: DEFAULT_META_DESCRIPTION },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
-    ],
-  }),
+    ]);
+    return {
+      meta: [
+        { charSet: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        ...(seo.meta ?? []),
+        { name: "author", content: PRODUCT_NAME },
+      ],
+      links: [
+        { rel: "stylesheet", href: appCss },
+        { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+        ...(seo.links ?? []),
+      ],
+    };
+  },
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
@@ -108,11 +118,15 @@ declare module "@tanstack/react-router" {
 }
 
 function RootShell({ children }: { children: ReactNode }) {
-  const importedDocument = useImportedMatches({ select: matches => matches.at(-1)?.staticData.importedDocument });
+  const importedDocument = useImportedMatches({
+    select: (matches) => matches.at(-1)?.staticData.importedDocument,
+  });
   return (
     <html lang="en" {...importedDocument?.html}>
       <head>
-        <style href="site-import-inline" precedence="imported-inline">{"@layer imported-inline;"}</style>
+        <style href="site-import-inline" precedence="imported-inline">
+          {"@layer imported-inline;"}
+        </style>
         <HeadContent />
       </head>
       <body {...importedDocument?.body}>
@@ -125,11 +139,18 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    void import("@/lib/sentry-browser").then(({ initSentryClient }) => initSentryClient(router));
+  }, [router]);
 
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <AccountProvider><Outlet /></AccountProvider>
+      <AccountProvider>
+        <Outlet />
+      </AccountProvider>
     </QueryClientProvider>
   );
 }

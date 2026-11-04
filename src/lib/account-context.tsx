@@ -4,7 +4,11 @@ import { useQueryClient } from "@tanstack/react-query";
 import { onAuthStateChanged, signOut as firebaseSignOut, type User } from "firebase/auth";
 import { getClientAuth } from "@/integrations/firebase/client";
 
-const AccountContext = createContext<{ user: User | null; loading: boolean; signOut: () => Promise<void> }>({
+const AccountContext = createContext<{
+  user: User | null;
+  loading: boolean;
+  signOut: () => Promise<void>;
+}>({
   user: null,
   loading: true,
   signOut: async () => {},
@@ -28,14 +32,16 @@ export function AccountProvider({ children }: { children: ReactNode }) {
   }, [router, queryClient]);
   useEffect(() => {
     const update = () =>
-      document.querySelectorAll<HTMLAnchorElement>('a[href="/signin"], a[data-account-link]').forEach((link) => {
-        const original = link.dataset["accountOriginal"] || link.textContent?.trim() || "Sign in";
-        link.dataset["accountOriginal"] = original;
-        if (!/^(Sign in|Log in|Account)$/i.test(original)) return;
-        link.dataset["accountLink"] = "true";
-        const text = user ? "Account" : original;
-        if (link.textContent !== text) link.textContent = text;
-      });
+      document
+        .querySelectorAll<HTMLAnchorElement>('a[href="/signin"], a[data-account-link]')
+        .forEach((link) => {
+          const original = link.dataset["accountOriginal"] || link.textContent?.trim() || "Sign in";
+          link.dataset["accountOriginal"] = original;
+          if (!/^(Sign in|Log in|Account)$/i.test(original)) return;
+          link.dataset["accountLink"] = "true";
+          const text = user ? "Account" : original;
+          if (link.textContent !== text) link.textContent = text;
+        });
     update();
     const observer = new MutationObserver(update);
     observer.observe(document.body, { childList: true, subtree: true });
@@ -48,5 +54,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     setUser(null);
     await router.navigate({ to: "/signin", replace: true });
   }
-  return <AccountContext.Provider value={{ user, loading, signOut }}>{children}</AccountContext.Provider>;
+  return (
+    <AccountContext.Provider value={{ user, loading, signOut }}>{children}</AccountContext.Provider>
+  );
 }

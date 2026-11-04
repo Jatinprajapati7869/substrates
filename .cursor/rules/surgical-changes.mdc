@@ -1,0 +1,15 @@
+---
+description: Behavioral guidelines to avoid overcomplication and scope creep. Always on.
+alwaysApply: true
+---
+
+# Behavioral guidelines
+
+Adapted from the old startup's `karpathy-guidelines.mdc`.
+
+1. **Think before coding.** State assumptions. If two readings exist, name both. If something is unclear, stop and ask.
+2. **Simplicity first.** Minimum code that solves the problem. No speculative options, no single-use abstractions.
+3. **Surgical changes.** Match existing style. Do not improve adjacent code.
+4. **Goal-driven.** Turn the task into a check: write the failing test, then make it pass. For multi-step work, state `step -> verify` pairs.
+
+Prefer, in order: existing helper in this repo, platform or standard-library feature, already-installed dependency, then new code. A new dependency needs approval.

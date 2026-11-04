@@ -1,13 +1,14 @@
-import { OAuthError, OAuthErrorCode, type AuthInfo, type OAuthTokenVerifier } from "@modelcontextprotocol/server";
+import {
+  OAuthError,
+  OAuthErrorCode,
+  type AuthInfo,
+  type OAuthTokenVerifier,
+} from "@modelcontextprotocol/server";
 import { getAdminAuth } from "@/integrations/firebase/admin.server";
+import { getServerEnv } from "@/lib/env.server";
 
 function firebaseProjectId(): string {
-  const id =
-    import.meta.env["VITE_FIREBASE_PROJECT_ID"] ??
-    process.env["VITE_FIREBASE_PROJECT_ID"] ??
-    process.env["FIREBASE_PROJECT_ID"];
-  if (!id) throw new Error("Missing Firebase project id for MCP auth");
-  return id;
+  return getServerEnv("firebaseAdmin").FIREBASE_PROJECT_ID;
 }
 
 export function firebaseMcpIssuer(): string {
