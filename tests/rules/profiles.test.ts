@@ -52,9 +52,7 @@ describe("Firestore rules — profiles", () => {
 
   it("denies create on another user's profile doc", async () => {
     const ctx = rulesTestEnvironment().authenticatedContext(USER_A);
-    await assertFails(
-      setDoc(doc(ctx.firestore(), "profiles", USER_B), { displayName: "B" }),
-    );
+    await assertFails(setDoc(doc(ctx.firestore(), "profiles", USER_B), { displayName: "B" }));
   });
 
   it("denies update on another user's profile doc", async () => {
