@@ -35,7 +35,7 @@ export type BillingEvent = {
   portalUrl?: string | null;
   amountCents?: number;
   currency?: string;
-  /** Provider checkout reference (Stripe session id today; Lemon Squeezy order id in P23). */
+  /** Provider checkout reference (Lemon Squeezy order or checkout id). */
   checkoutReference?: string;
   paid?: boolean;
   checkoutPayload?: BillingCheckoutPayload;

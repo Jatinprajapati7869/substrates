@@ -1,6 +1,6 @@
 import { SITE_ORIGIN } from "@/lib/brand";
 
-/** Origin for Stripe return URLs — trusted host only (blocks Host header injection). */
+/** Origin for checkout return URLs — trusted host only (blocks Host header injection). */
 export function trustedCheckoutOrigin(request: Request): string {
   const req = new URL(request.url);
   const canonical = new URL(SITE_ORIGIN);

@@ -55,7 +55,9 @@ CSP is **report-only** first. Promote to enforcing after reports are clean.
 | `connect-src`     | `'self'`                                                  | Same-origin server functions                              |
 | `connect-src`     | Firebase Google APIs hosts                                | Client SDK (`integrations/firebase/client.ts`)            |
 | `connect-src`     | `https://<VITE_FIREBASE_AUTH_DOMAIN>`                     | Auth domain from env at runtime                           |
-| `frame-src`       | `https://accounts.google.com`                             | Google OAuth                                              |
+| `frame-src`       | `'self'`, `https://accounts.google.com`                   | Same-origin frames + Google OAuth (`security-headers.server.ts`) |
+| `base-uri`        | `'self'`                                                  | Restricts `<base>` (`security-headers.server.ts`)               |
+| `object-src`      | `'none'`                                                  | Blocks plugins (`security-headers.server.ts`)                   |
 | `form-action`     | `'self'`                                                  | Same-origin forms and checkout redirects                  |
 | `frame-ancestors` | `'none'`                                                  | Clickjacking protection                                   |
 

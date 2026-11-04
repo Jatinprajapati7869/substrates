@@ -4,7 +4,7 @@ Reviewed November 3, 2026.
 
 ## Product
 
-**Substrates** sells website templates and copy-paste sections (Webflow/Framer style) with account-based access, Stripe plans, and assistant-ready reference prompts. Site: https://substrates.app. Support: jatin@substrates.app. Operator on legal pages: `[LEGAL ENTITY]` (see D14 in DECISIONS.md).
+**Substrates** sells website templates and copy-paste sections (Webflow/Framer style) with account-based access, Lemon Squeezy plans, and assistant-ready reference prompts. Site: https://substrates.app. Support: jatin@substrates.app. Operator: Substrates, Chennai, India (see D14 in DECISIONS.md).
 
 Users: indie builders, designers, and AI-assisted developers who want polished templates and sections without rebuilding from scratch.
 
@@ -12,7 +12,7 @@ Positioning: curated marketplace with AI-ready sections. Not a language course, 
 
 ## Stack (closed)
 
-TanStack Start (Nitro SSR), React 19, Tailwind 4, Firebase Auth (Google + email), Firestore, Stripe, OpenAI for recommendations, GitHub for source and CI. Catalog in `src/lib/catalog.json`. Host: Heroku on the GitHub Student credit (DECISIONS D3). Vercel Hobby cannot be used for a paid product.
+TanStack Start (Nitro SSR), React 19, Tailwind 4, Firebase Auth (Google + email), Firestore, Lemon Squeezy (merchant of record), OpenAI for recommendations, GitHub for source and CI. Catalog in `src/lib/catalog.json`. Host: Heroku on the GitHub Student credit (DECISIONS D3). Vercel is preview/fallback only, not production.
 
 Lovable and Supabase are dropped. No new code may depend on either. Everything is branded Substrates.
 
@@ -27,8 +27,8 @@ Plans (see DECISIONS D7): Sections $15/mo, Sections + Templates $39/mo with 3 cr
 - Public browse of templates, sections, guides, videos with working search, filters, favorites.
 - Sign-in, sign-up, profile, sign-out.
 - Free section copy after sign-in, with assistant choices (Claude Code, Cursor, Windsurf, v0, Bolt, Replit, Codex, grokbuild; Lovable stays as a copy target only).
-- Pricing plans: Sections ($15/mo), Sections + Templates ($39/mo), Lifetime ($499) through Stripe Checkout.
-- Verified purchase access: webhook records purchases, the account shows them, the Customer Portal opens.
+- Pricing plans: Sections ($15/mo), Sections + Templates ($39/mo), Lifetime ($499) through Lemon Squeezy Checkout.
+- Verified purchase access: webhook records purchases, the account shows them, the Lemon Squeezy customer portal opens when a subscription exists.
 - Credit ledger: monthly credit grant on each paid invoice, confirm-before-spend, permanent unlocks.
 - Delivery of the per-tool rebuild prompt to entitled customers (P10, P11).
 - Video skills checkout (optional prompt P21).
@@ -41,7 +41,7 @@ Plans (see DECISIONS D7): Sections $15/mo, Sections + Templates $39/mo with 3 cr
 
 - Remaining 122 AI product photos (paused; see LATER).
 - Paid MCP or API tier (decision document only, in P16).
-- Mobile apps, teams/seats, affiliate program, multi-currency, tax automation beyond what Stripe provides by default.
+- Mobile apps, teams/seats, affiliate program, multi-currency, tax automation beyond what Lemon Squeezy provides by default.
 - Postgres or any second database. Firestore is the only datastore.
 
 ## Success criteria

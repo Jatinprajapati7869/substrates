@@ -69,7 +69,8 @@ Every prompt reads this first and updates its own row. Mark done only when the p
 ## Human steps (cannot be done by an agent)
 
 - [ ] Cursor: confirm the `stop` hook in `.cursor/hooks.json` is loaded (Cursor Settings, Hooks). Test: edit a file, let the agent finish, check that it is sent back to commit and push. There is a reported Windows bug where `followup_message` is ignored; if so, the rule file still applies and you can add `git status` to your habit
-- [ ] Merge order: PR #1, then `p22-billing-spec`, then `p23-lemonsqueezy`; start P24 from updated `main`
+- [x] Merge order: PR #2 (`p22-billing-spec`) and PR #3 (`p23-lemonsqueezy`) merged to `main` (2026-11-04); open PR for `p24-hygiene` when ready
+- [ ] Close or merge PR #1 if superseded by main history
 - [ ] `gh auth login -h github.com -s repo,workflow` (the earlier refresh timed out)
 - [ ] Lemon Squeezy: account, store, identity verification, payout method for India, three plan variants (+2 video variants if wanted), API key, webhook secret, test mode first (`docs/specs/lemonsqueezy-setup.md`)
 

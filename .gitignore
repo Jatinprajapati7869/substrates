@@ -44,3 +44,4 @@ prompt-master-main/
 .tsc-out.txt
 lint-out.txt
 *-out.txt
+.cursor-runner*.txt

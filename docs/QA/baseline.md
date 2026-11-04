@@ -29,7 +29,7 @@ Updated **2026-11-03** after P20 (110 Vitest tests). Historical P01 counts below
 | S2  | manual | `src/routes/signin.tsx` profile writes; no Vitest for OAuth create |
 | S3  | proven | `src/test/account-validation.test.ts`                              |
 | S4  | proven | `src/test/checkout.functions.test.ts`, `checkout-plans.test.ts`    |
-| S5  | proven | `src/test/stripe-webhook.test.ts`                                  |
+| S5  | proven | `src/test/lemonsqueezy-webhook.test.ts`                              |
 | S6  | manual | `firestore.rules`; `docs/QA/rules-checklist.md` emulator steps     |
 | S7  | proven | `src/test/billing-portal.test.ts`                                  |
 | S8  | proven | `deliver-product-prompt.test.ts`, `build-output-leak.test.ts`      |
@@ -44,13 +44,15 @@ Updated **2026-11-03** after P20 (110 Vitest tests). Historical P01 counts below
 | S17 | proven | `npm run check:vendors`                                            |
 | S18 | manual | `docs/QA/legal-claims.md`; D14 placeholders in `brand.ts`          |
 | S19 | proven | `spend-credit.test.ts`                                             |
-| S20 | proven | `entitlements.test.ts`, `stripe-webhook.test.ts`                   |
-| S21 | proven | `stripe-webhook.test.ts` refund/cancel paths                       |
+| S20 | proven | `entitlements.test.ts`, `lemonsqueezy-webhook.test.ts`             |
+| S21 | proven | `lemonsqueezy-webhook.test.ts` refund/cancel paths                 |
 | S22 | proven | `src/test/video-skills.test.ts`; `VIDEO_PLANS` in `plans.ts`       |
 
 **Counts:** proven **20**. manual **3** (S2, S6, S18). open **0**.
 
 ## Historical P01 snapshot (2026-11-03 morning)
+
+> **Historical:** Stripe webhook paths below were removed in P23; billing is Lemon Squeezy.
 
 The table below is the original audit before Pack 1 tests landed. Keep for archaeology only.
 
@@ -98,7 +100,7 @@ Listed in ARCHITECTURE: `src/routes/`, `src/lib/`, `src/integrations/firebase/`,
 ## Surprises
 
 1. **`npm ci` failed** and left devDependencies unreachable in this session — baseline command table is fail/blocked, not green.
-2. **`docs/DECISIONS.md` D3** says production on **Heroku**; **`vercel.json`**, Vercel deploy, and runbooks still describe **Vercel** as primary SSR host — docs and ops disagree.
+2. **Resolved (P24):** D3 Heroku production; `docs/runbooks/connectors-github-vercel-heroku.md` is Heroku-first with Vercel as fallback only.
 3. **`drizzle-orm` / `drizzle-kit`** remain in `package.json` while ARCHITECTURE marks them as P03 leftovers.
 4. **`.github/workflows/ci.yml`** exists locally; earlier notes said workflow lived only under `docs/ci-workflow.yml.example` — verify what is pushed to GitHub.
 5. **Dual lockfiles** (`package-lock.json` + `bun.lock`) without a single documented package-manager policy.
