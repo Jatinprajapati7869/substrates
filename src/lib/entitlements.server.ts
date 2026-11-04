@@ -2,6 +2,7 @@ import type { Firestore } from "firebase-admin/firestore";
 import { getAdminFirestore } from "@/integrations/firebase/admin.server";
 import type { EntitlementDoc, EntitlementStatus } from "./entitlements.types";
 import { planFromMetadata, PLANS, videoPlanFromMetadata, type PlanId } from "./plans";
+import { unlockDocId } from "./spend-credit.server";
 
 export function entitlementFromPlan(
   planId: PlanId,
@@ -102,6 +103,14 @@ export async function applyLifetimeEntitlementFromCheckout(
       creditsPeriodEnd: null,
     }),
   );
+}
+
+export async function applyTemplateUnlockFromPurchase(userId: string, slug: string): Promise<void> {
+  const db = await getAdminFirestore();
+  await db
+    .collection("unlocks")
+    .doc(unlockDocId(userId, slug))
+    .set({ userId, slug, source: "purchase", createdAt: new Date() }, { merge: true });
 }
 
 export async function applyInvoicePaidEntitlement(

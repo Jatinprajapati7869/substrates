@@ -72,7 +72,10 @@ export async function processBillingWebhook(
   const claimed = await deps.claimEvent(parsed.idempotencyKey);
   if (!claimed) return { status: 200, body: "ok" };
 
-  if (parsed.events.length === 0) return { status: 200, body: "ok" };
+  if (parsed.events.length === 0) {
+    if (parsed.releaseClaimOnEmpty) await deps.releaseEvent(parsed.idempotencyKey);
+    return { status: 200, body: "ok" };
+  }
 
   try {
     const events = await enrichBillingEvents(parsed.events, deps);

@@ -35,10 +35,14 @@ export async function upsertPurchaseFromCheckout(payload: BillingCheckoutPayload
 }
 
 export async function recordCheckoutPurchase(payload: BillingCheckoutPayload): Promise<boolean> {
-  const { applyLifetimeEntitlementFromCheckout } = await import("@/lib/entitlements.server");
+  const { applyLifetimeEntitlementFromCheckout, applyTemplateUnlockFromPurchase } =
+    await import("@/lib/entitlements.server");
   try {
     const ok = await upsertPurchaseFromCheckout(payload);
-    if (ok && isPlanId(payload.plan) && payload.plan === "lifetime") {
+    if (ok && payload.plan.startsWith("template:")) {
+      const slug = payload.plan.slice("template:".length);
+      await applyTemplateUnlockFromPurchase(payload.userId, slug);
+    } else if (ok && isPlanId(payload.plan) && payload.plan === "lifetime") {
       await applyLifetimeEntitlementFromCheckout(
         payload.userId,
         payload.customerId,

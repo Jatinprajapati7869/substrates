@@ -32,39 +32,39 @@ Every prompt reads this first and updates its own row. Mark done only when the p
 | P18 | Legal copy accuracy                         | done   | S18 rebrand; `docs/QA/legal-claims.md`; D14 placeholders in `brand.ts`                                                                             |
 | P19 | Full review (no fixes)                      | done   | `docs/REVIEW-PACK1.md`; scope 375df138…main + working tree                                                                                         |
 | P20 | Repair and v0.1.0                           | done   | P20 security/spec fixes; typecheck green; `docs/QA/pack1-record.md`, `docs/LEARNINGS.md`                                                           |
-| P21 | Video skills checkout (optional)            | done   | S22; [PR #1](https://github.com/Jatinprajapati7869/substrates/pull/1) on `p01-p21-pack1` |
+| P21 | Video skills checkout (optional)            | done   | S22; [PR #1](https://github.com/Jatinprajapati7869/substrates/pull/1) on `p01-p21-pack1`                                                           |
 
 ## Pack 2: Lemon Squeezy migration
 
-| Id  | Title                                       | Status | Notes                                                                                                                                              |
-| --- | ------------------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| P22 | Billing spec + provider-neutral core        | done   | `docs/specs/billing-lemonsqueezy.md`, `lemonsqueezy-setup.md`; `src/lib/billing/*`; branch `p22-billing-spec`                                      |
-| P23 | Lemon Squeezy checkout + remove Stripe      | done   | `lemonsqueezy-provider`, `/api/public/lemonsqueezy-webhook`; branch `p23-lemonsqueezy`                                                            |
+| Id  | Title                                  | Status | Notes                                                                                                         |
+| --- | -------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------- |
+| P22 | Billing spec + provider-neutral core   | done   | `docs/specs/billing-lemonsqueezy.md`, `lemonsqueezy-setup.md`; `src/lib/billing/*`; branch `p22-billing-spec` |
+| P23 | Lemon Squeezy checkout + remove Stripe | done   | `lemonsqueezy-provider`, `/api/public/lemonsqueezy-webhook`; branch `p23-lemonsqueezy`                        |
 
 ## Pack 3: launch readiness (`docs/prompts/PACK-3.md`)
 
-| Id  | Title                                          | Status | Notes |
-| --- | ---------------------------------------------- | ------ | ----- |
-| P24 | Repo hygiene and doc reconciliation            | done   | branch `p24-hygiene`; `npm run verify`; Lemon Squeezy/Heroku doc reconcile |
-| P25 | Billing hardening from the P23 review          | todo   |       |
-| P26 | Video skills checkout on Lemon Squeezy (S22)   | todo   |       |
-| P27 | Kit licenses and the Substrates license        | skipped | deferred by owner (D22) |
-| P28 | Legal pages for Substrates                     | todo   |       |
-| P29 | Heroku-ready build and runbook                 | todo   |       |
-| P30 | Firestore rules tests and deploy checklist     | todo   |       |
-| P31 | Product-content tooling                        | todo   |       |
-| P32 | Launch catalog gating                          | todo   |       |
-| P33 | Marketing claims audit                         | todo   |       |
-| P34 | Account lifecycle                              | todo   |       |
-| P35 | Assistant wrapper contract tests               | todo   |       |
-| P36 | Observability                                  | todo   |       |
-| P37 | Static asset caching, compression, bundle size | todo   |       |
-| P38 | Accessibility pass II                          | todo   |       |
-| P39 | SEO pass II                                    | todo   |       |
-| P40 | Abuse limits and CSP enforcement               | todo   |       |
-| P41 | Billing reconcile, backup, and admin CLI       | todo   |       |
-| P42 | Full review, no fixes                          | todo   |       |
-| P43 | Repair and v0.2.0                              | todo   |       |
+| Id  | Title                                          | Status  | Notes                                                                      |
+| --- | ---------------------------------------------- | ------- | -------------------------------------------------------------------------- |
+| P24 | Repo hygiene and doc reconciliation            | done    | branch `p24-hygiene`; `npm run verify`; Lemon Squeezy/Heroku doc reconcile |
+| P25 | Billing hardening from the P23 review          | done    | test-mode guard, plan/variant cross-check, P25 tests                       |
+| P26 | Video skills checkout on Lemon Squeezy (S22)   | todo    |                                                                            |
+| P27 | Kit licenses and the Substrates license        | skipped | deferred by owner (D22)                                                    |
+| P28 | Legal pages for Substrates                     | todo    |                                                                            |
+| P29 | Heroku-ready build and runbook                 | todo    |                                                                            |
+| P30 | Firestore rules tests and deploy checklist     | todo    |                                                                            |
+| P31 | Product-content tooling                        | todo    |                                                                            |
+| P32 | Launch catalog gating                          | todo    |                                                                            |
+| P33 | Marketing claims audit                         | todo    |                                                                            |
+| P34 | Account lifecycle                              | todo    |                                                                            |
+| P35 | Assistant wrapper contract tests               | todo    |                                                                            |
+| P36 | Observability                                  | todo    |                                                                            |
+| P37 | Static asset caching, compression, bundle size | todo    |                                                                            |
+| P38 | Accessibility pass II                          | todo    |                                                                            |
+| P39 | SEO pass II                                    | todo    |                                                                            |
+| P40 | Abuse limits and CSP enforcement               | todo    |                                                                            |
+| P41 | Billing reconcile, backup, and admin CLI       | todo    |                                                                            |
+| P42 | Full review, no fixes                          | todo    |                                                                            |
+| P43 | Repair and v0.2.0                              | todo    |                                                                            |
 
 ## Human steps (cannot be done by an agent)
 

@@ -93,8 +93,18 @@ export function CheckoutCancelledNote() {
   );
   if (!show) return null;
   return (
-    <p role="status" style={{ textAlign: "center", padding: "12px", fontSize: 14 }}>
-      Checkout cancelled — you weren't charged.
+    <p
+      role="status"
+      style={{
+        textAlign: "center",
+        padding: "12px 16px",
+        fontSize: 14,
+        color: "#4b5563",
+        background: "#f3f4f6",
+        margin: 0,
+      }}
+    >
+      Checkout cancelled — you were not charged. Pick a plan below when you are ready.
     </p>
   );
 }

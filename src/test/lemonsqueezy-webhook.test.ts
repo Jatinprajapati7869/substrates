@@ -106,7 +106,7 @@ describe("S5 Lemon Squeezy webhook", () => {
 
   it("records lifetime order_created once for a new event", async () => {
     const deps = mockDeps();
-    const events = mapLemonSqueezyWebhookToEvents(orderLifetime as never, testVariantEnv);
+    const events = mapLemonSqueezyWebhookToEvents(orderLifetime as never, testVariantEnv).events;
     await enrichBillingEvents(events, deps).then((e) =>
       import("@/lib/billing/dispatch.server").then(({ dispatchBillingEvents }) =>
         dispatchBillingEvents(e, deps),
@@ -166,8 +166,38 @@ describe("S5 Lemon Squeezy webhook", () => {
         attributes: { status: "paid", customer_id: 1, first_order_item: { variant_id: 9003 } },
       },
     };
-    const events = mapLemonSqueezyWebhookToEvents(payload as never, testVariantEnv);
+    const events = mapLemonSqueezyWebhookToEvents(payload as never, testVariantEnv).events;
     expect(events).toHaveLength(0);
+  });
+
+  it("P25 releases claim when order_created lacks user_id after verify", async () => {
+    const deps = mockDeps();
+    const payload = {
+      meta: { event_name: "order_created", custom_data: { plan: "lifetime" } },
+      data: {
+        type: "orders",
+        id: "9",
+        attributes: {
+          status: "paid",
+          customer_id: 1,
+          total_usd: 49900,
+          first_order_item: { variant_id: 9003 },
+        },
+      },
+    };
+    const secret = "whsec_test";
+    const body = JSON.stringify(payload);
+    const header = await signBody(body, secret);
+    const result = await processBillingWebhook(
+      lemonSqueezyBillingProvider,
+      body,
+      header,
+      secret,
+      deps,
+    );
+    expect(result.status).toBe(200);
+    expect(deps.releaseEvent).toHaveBeenCalled();
+    expect(deps.recordCheckout).not.toHaveBeenCalled();
   });
 
   it("ignores unknown variant when plan missing from custom_data", async () => {
@@ -183,14 +213,17 @@ describe("S5 Lemon Squeezy webhook", () => {
         },
       },
     };
-    expect(mapLemonSqueezyWebhookToEvents(payload as never, testVariantEnv)).toHaveLength(0);
+    expect(mapLemonSqueezyWebhookToEvents(payload as never, testVariantEnv).events).toHaveLength(0);
   });
 });
 
 describe("S20 subscription_cycle_paid", () => {
   it("S20 subscription_created grants credits via applyInvoicePaid", async () => {
     const deps = mockDeps();
-    const events = mapLemonSqueezyWebhookToEvents(subscriptionCreated as never, testVariantEnv);
+    const events = mapLemonSqueezyWebhookToEvents(
+      subscriptionCreated as never,
+      testVariantEnv,
+    ).events;
     await import("@/lib/billing/dispatch.server").then(({ dispatchBillingEvents }) =>
       dispatchBillingEvents(events, deps),
     );
@@ -217,7 +250,7 @@ describe("S20 subscription_cycle_paid", () => {
         },
       },
     };
-    const events = mapLemonSqueezyWebhookToEvents(paymentFixture as never, testVariantEnv);
+    const events = mapLemonSqueezyWebhookToEvents(paymentFixture as never, testVariantEnv).events;
     await import("@/lib/billing/dispatch.server").then(({ dispatchBillingEvents }) =>
       dispatchBillingEvents(events, deps),
     );
@@ -228,7 +261,10 @@ describe("S20 subscription_cycle_paid", () => {
 describe("S21 cancel and refund", () => {
   it("S21 cancel keeps unlocks path calls setStatus canceled", async () => {
     const deps = mockDeps();
-    const events = mapLemonSqueezyWebhookToEvents(subscriptionCancelled as never, testVariantEnv);
+    const events = mapLemonSqueezyWebhookToEvents(
+      subscriptionCancelled as never,
+      testVariantEnv,
+    ).events;
     await import("@/lib/billing/dispatch.server").then(({ dispatchBillingEvents }) =>
       dispatchBillingEvents(events, deps),
     );
@@ -237,7 +273,7 @@ describe("S21 cancel and refund", () => {
 
   it("S21 refund revokes via applyRefund", async () => {
     const deps = mockDeps();
-    const events = mapLemonSqueezyWebhookToEvents(orderRefunded as never, testVariantEnv);
+    const events = mapLemonSqueezyWebhookToEvents(orderRefunded as never, testVariantEnv).events;
     await import("@/lib/billing/dispatch.server").then(({ dispatchBillingEvents }) =>
       dispatchBillingEvents(events, deps),
     );
@@ -248,7 +284,10 @@ describe("S21 cancel and refund", () => {
 describe("S7 portal URL stored", () => {
   it("stores portal URL from subscription_created", async () => {
     const deps = mockDeps();
-    const events = mapLemonSqueezyWebhookToEvents(subscriptionCreated as never, testVariantEnv);
+    const events = mapLemonSqueezyWebhookToEvents(
+      subscriptionCreated as never,
+      testVariantEnv,
+    ).events;
     await import("@/lib/billing/dispatch.server").then(({ dispatchBillingEvents }) =>
       dispatchBillingEvents(events, deps),
     );
@@ -273,7 +312,7 @@ describe("subscription_expired", () => {
       },
       data: { type: "subscriptions", id: "1", attributes: { customer_id: 1 } },
     };
-    const events = mapLemonSqueezyWebhookToEvents(payload as never, testVariantEnv);
+    const events = mapLemonSqueezyWebhookToEvents(payload as never, testVariantEnv).events;
     expect(events[0]?.type).toBe("subscription_canceled");
   });
 });

@@ -52,7 +52,13 @@ export type CreateCheckoutInput = {
 
 export type BillingWebhookVerifyResult =
   | { ok: false; status: number; body: string }
-  | { ok: true; idempotencyKey: string; events: BillingEvent[] };
+  | {
+      ok: true;
+      idempotencyKey: string;
+      events: BillingEvent[];
+      /** When true and events is empty, release the idempotency claim after a 200 response. */
+      releaseClaimOnEmpty?: boolean;
+    };
 
 export interface BillingProvider {
   createCheckout(input: CreateCheckoutInput): Promise<string>;

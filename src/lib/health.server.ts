@@ -3,6 +3,7 @@ import {
   isOpenAiEnvConfigured,
   isServerEnvGroupConfigured,
 } from "./env.server";
+import { lemonSqueezyHealthWarnings } from "./billing/lemonsqueezy-provider";
 
 export type HealthConfigured = {
   firebaseClient: boolean;
@@ -15,6 +16,7 @@ export type HealthPayload = {
   ok: boolean;
   commit: string | null;
   configured: HealthConfigured;
+  warnings?: string[];
 };
 
 function deploymentCommitSha(): string | null {
@@ -22,6 +24,7 @@ function deploymentCommitSha(): string | null {
 }
 
 export function buildHealthPayload(): HealthPayload {
+  const warnings = lemonSqueezyHealthWarnings();
   return {
     ok: true,
     commit: deploymentCommitSha(),
@@ -31,5 +34,6 @@ export function buildHealthPayload(): HealthPayload {
       lemonsqueezy: isServerEnvGroupConfigured("lemonsqueezy"),
       openai: isOpenAiEnvConfigured(),
     },
+    ...(warnings.length ? { warnings } : {}),
   };
 }
