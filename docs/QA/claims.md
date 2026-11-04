@@ -10,6 +10,9 @@ Owner grill decisions (2026-11-04): keep refund line, keep “AI-ready”, keep 
 | --- | --- | --- | --- |
 | `{N} templates` in hero, browse links, templates H1, pricing chip/headlines | home, pricing, templates | **true** | `countCatalogTemplates()` → `catalog.json` (`kind: "template"`). Was falsely **192**; catalog has **200** (fixed P33). |
 | `{N} sections free to copy` | home | **true** | `countCatalogFreeSections()` → 42 non-pro sections in `catalog.json`. Was falsely **38** (fixed P33). |
+| `{N} sections · {F} free to copy` (hero chip) | sections | **true** | `SectionsHeroCatalogChip` → `formatSectionCatalogCount()` / `formatFreeSectionCatalogCount()`. Was **58 / 38** (fixed P33). |
+| `Browse {F} free sections` | sections | **true** | `SectionsBrowseFreeSectionsLabel` → `formatFreeSectionCatalogCount()`. Was **38** (fixed P33). |
+| `{N} sections` (library filter line) | sections | **true** | `SectionsLibraryCountLine` → `formatSectionCatalogCount()`. Was **58** (fixed P33). |
 | `{N} Pro sections + {credits} template(s) a month` | pricing illustration | **true** | Pro count: `countCatalogProSections()` = 20. Credits: `PLANS.sections.monthlyCredits` = 1. |
 | `{N} templates, unlock 3 per month` | pricing illustration | **true** | N from catalog; 3 from `PLANS["sections-templates"].monthlyCredits`. |
 | `{N} of {M} templates with rebuild prompts available now` | pricing plan cards, checkout (lifetime) | **true** | `countDeliverableTemplates()` / `countCatalogTemplates()` from manifest + catalog (P32). |
