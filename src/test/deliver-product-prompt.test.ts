@@ -1,6 +1,6 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi, afterEach, beforeEach } from "vitest";
 import type { Firestore } from "firebase-admin/firestore";
 import type { EntitlementDoc } from "@/lib/entitlements.types";
 import { FIXTURE_LEAK_MARKER, FIXTURE_PRODUCT_BODY } from "@/lib/delivery-fixtures.server";
@@ -9,6 +9,7 @@ import {
   type DeliverDeps,
   productDeliveryMetaWithDeps,
 } from "@/lib/deliver-product-prompt.server";
+import * as contentManifest from "@/lib/content-manifest";
 import { unlockDocId } from "@/lib/spend-credit.server";
 import { rebrandDeliveredBody } from "@/lib/delivery-content.server";
 import { clearRateLimitStoreForTests } from "@/lib/rate-limit.server";
@@ -73,6 +74,14 @@ function depsFromStore(store: DocStore): DeliverDeps {
 }
 
 describe("S8 deliverProductPrompt", () => {
+  beforeEach(() => {
+    vi.spyOn(contentManifest, "isDeliverable").mockReturnValue(true);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("delivers entitled pro section with rebrand", async () => {
     const store: DocStore = new Map([
       [
@@ -289,6 +298,7 @@ describe("S8 deliverProductPrompt", () => {
   });
 
   it("meta reflects unlock and credits for templates", async () => {
+    vi.spyOn(contentManifest, "isDeliverable").mockReturnValue(true);
     const store: DocStore = new Map([
       [
         "entitlements/user-1",
@@ -309,6 +319,53 @@ describe("S8 deliverProductPrompt", () => {
     expect(meta?.canSpendCredit).toBe(true);
     expect(meta?.templateUnlocked).toBe(false);
     expect(meta?.creditsRemaining).toBe(2);
+    vi.restoreAllMocks();
+  });
+
+  it("meta disables credit spend when template body is not published", async () => {
+    vi.restoreAllMocks();
+    const store: DocStore = new Map([
+      [
+        "entitlements/user-1",
+        {
+          plan: "sections-templates",
+          status: "active",
+          templateAccess: "credits",
+          creditsRemaining: 2,
+        },
+      ],
+    ]);
+    const meta = await productDeliveryMetaWithDeps(
+      "user-1",
+      "template",
+      "daylight",
+      depsFromStore(store),
+    );
+    expect(meta?.canSpendCredit).toBe(false);
+  });
+
+  it("returns not_available_yet before entitlement when slug is gated", async () => {
+    vi.restoreAllMocks();
+    const store: DocStore = new Map([
+      [
+        "entitlements/user-1",
+        {
+          plan: "lifetime",
+          status: "active",
+          templateAccess: "all",
+          unlimitedTemplates: true,
+        },
+      ],
+      ["product_content/daylight", { body: FIXTURE_PRODUCT_BODY }],
+    ]);
+    const result = await deliverProductPromptWithDeps(
+      "user-1",
+      "template",
+      "daylight",
+      "Cursor",
+      depsFromStore(store),
+    );
+    expect(result).toEqual({ ok: false, code: "not_available_yet" });
   });
 });
 

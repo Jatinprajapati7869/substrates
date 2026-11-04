@@ -10,6 +10,8 @@ import { useWebMCP } from "use-webmcp-tool";
 import { runWebMCPTool } from "@/lib/webmcp-telemetry";
 import { assistantSchema, copySectionPrompt } from "@/lib/assistant-copy";
 import { ProductDeliveryActions } from "@/components/ProductDeliveryActions";
+import { COMING_SOON_STATUS } from "@/components/ProductComingSoonActions";
+import { isDeliverable } from "@/lib/content-manifest";
 import { useAccount } from "@/lib/account-context";
 
 function productLink(p: Product) {
@@ -72,6 +74,7 @@ export function ProductPage({
   });
   const photo = productPhoto(product.slug);
   const live = product.kind === "section" && LOCAL_SECTION_PREVIEWS.includes(product.slug);
+  const gatedProduct = (product.kind === "template" || proSection) && !isDeliverable(product.slug);
   const description =
     product.description ||
     (product.kind === "section"
@@ -125,6 +128,14 @@ export function ProductPage({
           )}
         </div>
       </header>
+      {gatedProduct ? (
+        <p
+          className="mt-3 max-w-2xl text-[13px] text-muted-foreground"
+          data-testid="coming-soon-status"
+        >
+          {COMING_SOON_STATUS}
+        </p>
+      ) : null}
       <p
         className="mt-4 max-w-2xl text-[15px] leading-relaxed text-muted-foreground"
         data-product-description

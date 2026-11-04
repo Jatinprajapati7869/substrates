@@ -7,6 +7,7 @@ import {
   templateCheckoutPriceCents,
   lifetimeMinimumCents,
 } from "@/lib/billing/lemonsqueezy-checkout.server";
+import * as contentManifest from "@/lib/content-manifest";
 import {
   mapLemonSqueezyWebhookToEvents,
   resolveOrderPlan,
@@ -201,12 +202,14 @@ describe("P25 checkout cancel redirect and catalog custom_price", () => {
   });
 
   it("P25 template custom_price matches catalog.json server-side", () => {
+    vi.spyOn(contentManifest, "isDeliverable").mockReturnValue(true);
     const body = buildLemonSqueezyCheckoutBody(
       { plan: "template:daylight", userId: "u1", origin: "https://x" },
       { ...testVariantEnv, LEMONSQUEEZY_TEST_MODE: "false" },
       "https://x",
     );
     expect(body.data.attributes["custom_price"]).toBe(templateCheckoutPriceCents("daylight"));
+    vi.restoreAllMocks();
   });
 });
 

@@ -8,7 +8,12 @@ import { getDefaultBillingProvider } from "@/lib/billing/lemonsqueezy-provider";
 import { isVideoSkillsCheckoutConfigured } from "@/lib/env.server";
 import { listPurchasesForUser } from "@/lib/purchases.server";
 import { getEntitlement, hasVideoSkillsAccess } from "./entitlements.server";
+import { isDeliverable } from "./content-manifest";
 import { isPlanId, isVideoPlanId, type VideoPlanId } from "./plans";
+
+export function templateCheckoutGate(slug: string): "not_available_yet" | null {
+  return isDeliverable(slug) ? null : "not_available_yet";
+}
 
 export const getVideoCheckoutAvailability = createServerFn({ method: "GET" }).handler(async () => ({
   available: isVideoSkillsCheckoutConfigured(),
@@ -62,6 +67,14 @@ export const startTemplateCheckout = createServerFn({ method: "POST" })
   .middleware([requireFirebaseAuth])
   .inputValidator((d) => z.object({ slug: z.string().min(1).max(120) }).parse(d))
   .handler(async ({ data, context }) => {
+    const blocked = templateCheckoutGate(data.slug);
+    if (blocked) {
+      return {
+        url: null as string | null,
+        error: "This template is not available yet.",
+        errorCode: blocked,
+      };
+    }
     const origin = trustedCheckoutOrigin(getRequest());
     const email = context.email ?? undefined;
     try {
@@ -71,7 +84,7 @@ export const startTemplateCheckout = createServerFn({ method: "POST" })
         ...(email ? { email } : {}),
         origin,
       });
-      return { url, error: null as string | null };
+      return { url, error: null as string | null, errorCode: null as string | null };
     } catch (e) {
       const msg = e instanceof Error ? e.message : "";
       return {
@@ -80,6 +93,7 @@ export const startTemplateCheckout = createServerFn({ method: "POST" })
           msg === "Payments are not set up yet."
             ? "Checkout isn't available yet — payments are still being set up."
             : msg || "Checkout failed.",
+        errorCode: null as string | null,
       };
     }
   });

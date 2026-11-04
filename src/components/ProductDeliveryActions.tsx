@@ -16,8 +16,13 @@ import {
 import { useAccount } from "@/lib/account-context";
 import { getProductDeliveryMeta } from "@/lib/deliver.functions";
 import { spendCredit } from "@/lib/credits.functions";
+import { isDeliverable, templateAvailabilitySummaryLine } from "@/lib/content-manifest";
 import { ProductCheckoutButton } from "@/components/ProductCheckoutButton";
 import { FullPromptAssistantMenu } from "@/components/FullPromptAssistantMenu";
+import {
+  COMING_SOON_STATUS,
+  ProductComingSoonActions,
+} from "@/components/ProductComingSoonActions";
 
 function templateSignInPath(slug: string) {
   return `/signin?next=${encodeURIComponent(`/templates/${encodeURIComponent(slug)}?copy=1`)}`;
@@ -53,6 +58,7 @@ export function ProductDeliveryActions({
   const [resumeDismissed, setResumeDismissed] = useState(false);
 
   const meta = metaQuery.data?.ok ? metaQuery.data : null;
+  const deliverable = isDeliverable(product.slug);
 
   useEffect(() => {
     if (resumeDismissed || !resumeCopy || !user) return;
@@ -89,6 +95,10 @@ export function ProductDeliveryActions({
 
   if (product.kind === "section" && product.tier !== "pro") {
     return null;
+  }
+
+  if (!deliverable) {
+    return <ProductComingSoonActions />;
   }
 
   if (proSection) {
@@ -163,8 +173,8 @@ export function ProductDeliveryActions({
             <AlertDialogHeader>
               <AlertDialogTitle>Unlock {product.name}?</AlertDialogTitle>
               <AlertDialogDescription>
-                This uses 1 credit; you have {meta?.creditsRemaining ?? 0} left this period. Unlocks
-                are permanent.
+                This uses 1 credit; you have {meta?.creditsRemaining ?? 0} left this period.{" "}
+                {templateAvailabilitySummaryLine()}. Unlocks are permanent.
               </AlertDialogDescription>
             </AlertDialogHeader>
             {unlockError && <p className="text-sm text-destructive">{unlockError}</p>}

@@ -3,6 +3,10 @@ import { createContext, useContext, useState, type ReactNode } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { startCheckout } from "@/lib/checkout.functions";
 import { checkoutSummaryForPlan } from "@/lib/checkout-summary";
+import {
+  planCheckoutShowsTemplateAvailability,
+  templateAvailabilitySummaryLine,
+} from "@/lib/content-manifest";
 import type { PlanId } from "@/lib/plans";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -78,6 +82,14 @@ export function CheckoutSummaryProvider({ children }: { children: ReactNode }) {
                 </li>
               ))}
             </ul>
+            {plan && planCheckoutShowsTemplateAvailability(plan) ? (
+              <p
+                className="mt-3 text-[13px] text-muted-foreground"
+                data-testid="checkout-template-availability"
+              >
+                {templateAvailabilitySummaryLine()}
+              </p>
+            ) : null}
             <div className="mt-5 grid grid-cols-3 gap-2">
               {summary.previews.map((item) => (
                 <figure

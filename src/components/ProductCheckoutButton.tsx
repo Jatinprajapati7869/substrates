@@ -3,8 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useRouter } from "@tanstack/react-router";
 import { startTemplateCheckout } from "@/lib/checkout.functions";
+import { isDeliverable } from "@/lib/content-manifest";
 import { useAccount } from "@/lib/account-context";
 import { Button } from "@/components/ui/button";
+import { ProductComingSoonActions } from "@/components/ProductComingSoonActions";
 
 /** Path a visitor returns to after signing in so the template purchase resumes. */
 export function templateResumePath(slug: string) {
@@ -18,6 +20,7 @@ export function ProductCheckoutButton({ slug }: { slug: string }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const resumed = useRef(false);
+  const deliverable = isDeliverable(slug);
 
   async function go() {
     setError("");
@@ -37,13 +40,17 @@ export function ProductCheckoutButton({ slug }: { slug: string }) {
   }
 
   useEffect(() => {
-    if (loading || !user || resumed.current) return;
+    if (!deliverable || loading || !user || resumed.current) return;
     if (new URLSearchParams(window.location.search).get("buy") === "1") {
       resumed.current = true;
       void go();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, user, slug]);
+  }, [deliverable, loading, user, slug]);
+
+  if (!deliverable) {
+    return <ProductComingSoonActions />;
+  }
 
   return (
     <div className="flex flex-col items-end gap-1">

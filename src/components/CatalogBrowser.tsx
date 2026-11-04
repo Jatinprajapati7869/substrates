@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components -- filter helper exported for tests */
 import { useEffect, useMemo, useState } from "react";
 import { catalog, productPhoto, productPrice, type Product } from "@/lib/catalog";
+import { isDeliverable } from "@/lib/content-manifest";
 
 const FAV_KEY = "supply-favorites";
 
@@ -12,6 +13,7 @@ export function filterProducts(
     category: string;
     platform: string;
     savedOnly: boolean;
+    availableOnly: boolean;
     favorites: string[];
   },
 ) {
@@ -20,6 +22,7 @@ export function filterProducts(
     if (opts.category && p.category !== opts.category) return false;
     if (opts.platform && (p.platform ?? "") !== opts.platform) return false;
     if (opts.savedOnly && !opts.favorites.includes(p.name)) return false;
+    if (opts.availableOnly && !isDeliverable(p.slug)) return false;
     if (!q) return true;
     return [p.name, p.category, p.subcategory, p.description, p.platform ?? ""]
       .join(" ")
@@ -42,6 +45,7 @@ export function CatalogBrowser({ kind }: { kind: Product["kind"] }) {
   const [category, setCategory] = useState("");
   const [platform, setPlatform] = useState("");
   const [savedOnly, setSavedOnly] = useState(false);
+  const [availableOnly, setAvailableOnly] = useState(false);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [limit, setLimit] = useState(24);
@@ -57,9 +61,16 @@ export function CatalogBrowser({ kind }: { kind: Product["kind"] }) {
   useEffect(() => {
     if (loaded) localStorage.setItem(FAV_KEY, JSON.stringify(favorites));
   }, [favorites, loaded]);
-  useEffect(() => setLimit(24), [query, category, platform, savedOnly]);
+  useEffect(() => setLimit(24), [query, category, platform, savedOnly, availableOnly]);
 
-  const results = filterProducts(items, { query, category, platform, savedOnly, favorites });
+  const results = filterProducts(items, {
+    query,
+    category,
+    platform,
+    savedOnly,
+    availableOnly,
+    favorites,
+  });
   const toggle = (name: string) =>
     setFavorites((f) => (f.includes(name) ? f.filter((n) => n !== name) : [...f, name]));
   const base = kind === "template" ? "/templates" : "/sections";
@@ -115,6 +126,15 @@ export function CatalogBrowser({ kind }: { kind: Product["kind"] }) {
           className={`${field} ${savedOnly ? "border-black bg-black text-white" : ""}`}
         >
           ♥ Saved ({favorites.filter((n) => items.some((p) => p.name === n)).length})
+        </button>
+        <button
+          type="button"
+          aria-pressed={availableOnly}
+          onClick={() => setAvailableOnly((s) => !s)}
+          className={`${field} ${availableOnly ? "border-black bg-black text-white" : ""}`}
+          data-testid="filter-available-now"
+        >
+          Available now
         </button>
       </div>
       <p className="mt-3 text-[12px] text-[var(--text-tertiary)]" aria-live="polite">

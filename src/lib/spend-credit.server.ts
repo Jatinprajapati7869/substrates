@@ -1,10 +1,14 @@
 import type { Firestore } from "firebase-admin/firestore";
 import { findProduct } from "./catalog";
+import { isDeliverable } from "./content-manifest";
 import type { EntitlementDoc } from "./entitlements.types";
 
 export type SpendCreditResult =
   | { ok: true; alreadyUnlocked: boolean; creditsRemaining: number | null }
-  | { ok: false; error: "unknown_product" | "no_entitlement" | "no_credits" };
+  | {
+      ok: false;
+      error: "unknown_product" | "no_entitlement" | "no_credits" | "not_available_yet";
+    };
 
 export function unlockDocId(userId: string, slug: string): string {
   return `${userId}_${slug}`;
@@ -16,6 +20,7 @@ export async function spendCreditForTemplateWithLookup(
 ): Promise<SpendCreditResult> {
   const product = findProduct("template", slug);
   if (!product) return { ok: false, error: "unknown_product" };
+  if (!isDeliverable(slug)) return { ok: false, error: "not_available_yet" };
   const db = await import("@/integrations/firebase/admin.server").then((m) =>
     m.getAdminFirestore(),
   );
@@ -27,6 +32,7 @@ export async function spendCreditTransaction(
   userId: string,
   slug: string,
 ): Promise<SpendCreditResult> {
+  if (!isDeliverable(slug)) return { ok: false, error: "not_available_yet" };
   const unlockId = unlockDocId(userId, slug);
   return db.runTransaction(async (tx) => {
     const unlockRef = db.collection("unlocks").doc(unlockId);

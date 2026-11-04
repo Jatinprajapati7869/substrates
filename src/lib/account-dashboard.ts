@@ -1,4 +1,9 @@
 import { findProduct } from "./catalog";
+import {
+  countCatalogTemplates,
+  countDeliverableTemplates,
+  templateAvailabilitySummaryLine,
+} from "./content-manifest";
 import type { EntitlementDoc, EntitlementStatus } from "./entitlements.types";
 import { hasVideoSkillsAccess } from "./video-skills-access";
 import { PLANS, VIDEO_PLANS, isPlanId, isVideoPlanId, type PlanId } from "./plans";
@@ -39,6 +44,11 @@ export type AccountDashboardView = {
   };
   unlocks: Array<{ slug: string; name: string; image: string }>;
   purchases: Array<{ planLabel: string; dateLabel: string }>;
+  catalogAvailability: {
+    deliverableTemplates: number;
+    totalTemplates: number;
+    summaryLine: string;
+  };
 };
 
 export function planDisplayName(plan: string): string {
@@ -167,5 +177,10 @@ export function buildAccountDashboardView(input: AccountDashboardInput): Account
       planLabel: planDisplayName(p.plan),
       dateLabel: formatMembershipDate(p.created_at),
     })),
+    catalogAvailability: {
+      deliverableTemplates: countDeliverableTemplates(),
+      totalTemplates: countCatalogTemplates(),
+      summaryLine: templateAvailabilitySummaryLine(),
+    },
   };
 }

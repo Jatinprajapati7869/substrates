@@ -1,4 +1,5 @@
 import { findProduct } from "@/lib/catalog";
+import { isDeliverable } from "@/lib/content-manifest";
 import {
   getServerEnv,
   isVideoSkillsCheckoutConfigured,
@@ -33,6 +34,7 @@ export function buildLemonSqueezyCheckoutBody(
     cancelUrl = videoPricingCheckoutCancelledUrl(origin);
   } else if (typeof plan === "string" && plan.startsWith("template:")) {
     const slug = plan.slice("template:".length);
+    if (!isDeliverable(slug)) throw new Error("This template is not available yet.");
     const product = findProduct("template", slug);
     if (!product || typeof product.priceUsd !== "number" || product.priceUsd <= 0)
       throw new Error("This template can't be bought individually.");

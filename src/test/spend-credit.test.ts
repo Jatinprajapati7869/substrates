@@ -1,7 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import type { Firestore } from "firebase-admin/firestore";
 import type { EntitlementDoc } from "@/lib/entitlements.types";
 import { spendCreditTransaction, unlockDocId } from "@/lib/spend-credit.server";
+import * as contentManifest from "@/lib/content-manifest";
 
 type DocStore = Map<string, Record<string, unknown>>;
 
@@ -47,6 +48,35 @@ function mockDb(initial: DocStore): Firestore {
 }
 
 describe("S19 spendCredit transaction", () => {
+  it("P32 rejects non-deliverable templates without spending credits", async () => {
+    const deliverableSpy = vi.spyOn(contentManifest, "isDeliverable").mockReturnValue(false);
+    const store: DocStore = new Map([
+      [
+        "entitlements/user-1",
+        {
+          plan: "sections-templates",
+          creditsRemaining: 2,
+          templateAccess: "credits",
+          unlimitedTemplates: false,
+          status: "active",
+        },
+      ],
+    ]);
+    const result = await spendCreditTransaction(mockDb(store), "user-1", "daylight");
+    deliverableSpy.mockRestore();
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error).toBe("not_available_yet");
+    expect(store.get("entitlements/user-1")?.["creditsRemaining"]).toBe(2);
+  });
+
+  beforeEach(() => {
+    vi.spyOn(contentManifest, "isDeliverable").mockReturnValue(true);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("S19 rejects zero credits", async () => {
     const store: DocStore = new Map([
       [

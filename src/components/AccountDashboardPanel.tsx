@@ -84,7 +84,7 @@ export function AccountDashboardPanel({
   billingBusy: boolean;
   onManageBilling: () => void;
 }) {
-  const { membership, video, billing, unlocks, purchases } = view;
+  const { membership, video, billing, unlocks, purchases, catalogAvailability } = view;
 
   return (
     <div className="mt-4 space-y-6 text-sm text-text" data-testid="account-dashboard">
@@ -167,6 +167,12 @@ export function AccountDashboardPanel({
         <h2 id="account-library-heading" className="text-[13px] font-semibold text-text">
           Unlocked templates
         </h2>
+        <p
+          className="mt-1 text-[12px] text-muted-foreground"
+          data-testid="account-catalog-availability"
+        >
+          {catalogAvailability.summaryLine}
+        </p>
         {unlocks.length ? (
           <ul className="mt-2 space-y-2" data-testid="account-unlocks-list">
             {unlocks.map((row) => (

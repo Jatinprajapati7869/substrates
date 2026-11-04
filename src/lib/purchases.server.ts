@@ -1,5 +1,6 @@
 import { getAdminFirestore } from "@/integrations/firebase/admin.server";
 import type { BillingCheckoutPayload } from "@/lib/billing/types";
+import { isDeliverable } from "@/lib/content-manifest";
 import { isPlanId } from "@/lib/plans";
 
 export async function upsertPurchaseFromCheckout(payload: BillingCheckoutPayload) {
@@ -41,7 +42,11 @@ export async function recordCheckoutPurchase(payload: BillingCheckoutPayload): P
     const ok = await upsertPurchaseFromCheckout(payload);
     if (ok && payload.plan.startsWith("template:")) {
       const slug = payload.plan.slice("template:".length);
-      await applyTemplateUnlockFromPurchase(payload.userId, slug);
+      if (isDeliverable(slug)) {
+        await applyTemplateUnlockFromPurchase(payload.userId, slug);
+      } else {
+        console.warn("template purchase ignored: not deliverable", slug);
+      }
     } else if (ok && isPlanId(payload.plan) && payload.plan === "lifetime") {
       await applyLifetimeEntitlementFromCheckout(
         payload.userId,

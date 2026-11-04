@@ -1,4 +1,5 @@
 import { findProduct, type Product } from "./catalog";
+import { isDeliverable } from "./content-manifest";
 import { assistantSchema } from "./assistant-copy";
 import { canDeliverFullPrompt } from "./delivery-entitlement.server";
 import {
@@ -12,6 +13,7 @@ export type DeliverErrorCode =
   | "unknown_product"
   | "unknown_assistant"
   | "not_entitled"
+  | "not_available_yet"
   | "content_missing"
   | "rate_limited"
   | "reference_only";
@@ -52,6 +54,7 @@ export async function deliverProductPromptWithDeps(
 
   const product = findProduct(kind, slug);
   if (!product) return { ok: false, code: "unknown_product" };
+  if (!isDeliverable(slug)) return { ok: false, code: "not_available_yet" };
 
   const gate = canDeliverFullPrompt(
     product,
@@ -114,7 +117,9 @@ export async function productDeliveryMetaWithDeps(
       entitlement.plan === "lifetime");
 
   const creditsRemaining = entitlement?.creditsRemaining ?? null;
+  const deliverable = isDeliverable(slug);
   const canSpendCredit =
+    deliverable &&
     !!entitlement &&
     entitlement.status === "active" &&
     entitlement.templateAccess === "credits" &&
@@ -122,8 +127,8 @@ export async function productDeliveryMetaWithDeps(
     (creditsRemaining ?? 0) > 0;
 
   return {
-    proSectionAccess,
-    templateUnlocked: unlocked || unlimitedTemplates,
+    proSectionAccess: proSectionAccess && deliverable,
+    templateUnlocked: (unlocked || unlimitedTemplates) && deliverable,
     canSpendCredit,
     creditsRemaining,
     unlimitedTemplates,

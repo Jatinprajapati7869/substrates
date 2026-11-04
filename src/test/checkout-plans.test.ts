@@ -1,5 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi, afterEach, beforeEach } from "vitest";
 import { PLANS, checkoutResumePath } from "@/lib/plans";
+import * as contentManifest from "@/lib/content-manifest";
 import {
   buildLemonSqueezyCheckoutBody,
   lemonSqueezyTestModeFromEnv,
@@ -80,6 +81,14 @@ describe("pricing plans (S4 Lemon Squeezy checkout body)", () => {
 });
 
 describe("single template checkout", () => {
+  beforeEach(() => {
+    vi.spyOn(contentManifest, "isDeliverable").mockReturnValue(true);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("uses custom_price from catalog on lifetime variant slot", () => {
     const body = buildLemonSqueezyCheckoutBody(
       { plan: "template:daylight", userId: "u1", origin: "https://x" },
@@ -89,5 +98,16 @@ describe("single template checkout", () => {
     expect(body.data.attributes["custom_price"]).toBeGreaterThan(0);
     const custom = body.data.attributes["checkout_data"] as { custom: Record<string, string> };
     expect(custom.custom["plan"]).toBe("template:daylight");
+  });
+
+  it("rejects checkout body for non-deliverable template", () => {
+    vi.spyOn(contentManifest, "isDeliverable").mockReturnValue(false);
+    expect(() =>
+      buildLemonSqueezyCheckoutBody(
+        { plan: "template:daylight", userId: "u1", origin: "https://x" },
+        env,
+        "https://x",
+      ),
+    ).toThrow(/not available yet/i);
   });
 });

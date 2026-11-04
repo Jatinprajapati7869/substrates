@@ -16,10 +16,24 @@ export const spendCredit = createServerFn({ method: "POST" })
         return {
           ok: false as const,
           error: "Choose a plan to unlock templates.",
+          errorCode: result.error,
           creditsRemaining: 0,
         };
       }
-      return { ok: false as const, error: "No credits left this period.", creditsRemaining: 0 };
+      if (result.error === "not_available_yet") {
+        return {
+          ok: false as const,
+          error: "This template is not available yet.",
+          errorCode: "not_available_yet" as const,
+          creditsRemaining: null,
+        };
+      }
+      return {
+        ok: false as const,
+        error: "No credits left this period.",
+        errorCode: result.error,
+        creditsRemaining: 0,
+      };
     }
     return {
       ok: true as const,
