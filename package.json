@@ -9,7 +9,9 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "heroku-postbuild": "npm run build",
+    "build:node-server": "vite build",
+    "heroku-postbuild": "NITRO_PRESET=node-server npm run build",
+    "smoke:node-server": "node scripts/smoke-node-server.mjs",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",

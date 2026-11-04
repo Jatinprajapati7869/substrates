@@ -1,0 +1,118 @@
+{
+  "name": "Substrates",
+  "description": "Template and section marketplace (TanStack Start + Nitro SSR on Heroku).",
+  "repository": "https://github.com/Jatinprajapati7869/substrates",
+  "website": "https://substrates.app",
+  "stack": "heroku-24",
+  "buildpacks": [{ "url": "heroku/nodejs" }],
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  },
+  "env": {
+    "NPM_CONFIG_PRODUCTION": {
+      "description": "Install devDependencies (Vite, Nitro, TypeScript) during Heroku build.",
+      "value": "false",
+      "required": true
+    },
+    "NITRO_PRESET": {
+      "description": "Nitro deploy preset; must be node-server on Heroku.",
+      "value": "node-server",
+      "required": true
+    },
+    "VITE_FIREBASE_API_KEY": {
+      "description": "Firebase web API key (public; baked at build and used at SSR).",
+      "required": true
+    },
+    "VITE_FIREBASE_AUTH_DOMAIN": {
+      "description": "Firebase auth domain (e.g. project.firebaseapp.com).",
+      "required": true
+    },
+    "VITE_FIREBASE_PROJECT_ID": {
+      "description": "Firebase project id.",
+      "required": true
+    },
+    "VITE_FIREBASE_APP_ID": {
+      "description": "Firebase web app id.",
+      "required": true
+    },
+    "FIREBASE_PROJECT_ID": {
+      "description": "Firebase Admin project id (server).",
+      "required": true
+    },
+    "FIREBASE_CLIENT_EMAIL": {
+      "description": "Firebase Admin service account email.",
+      "required": true
+    },
+    "FIREBASE_PRIVATE_KEY": {
+      "description": "Firebase Admin private key PEM (use \\n in one line on Heroku).",
+      "required": true
+    },
+    "CRON_SECRET": {
+      "description": "Bearer secret for cron HTTP routes (Scheduler).",
+      "required": false
+    },
+    "CRON_SECRET_PREVIOUS": {
+      "description": "Optional previous cron secret during rotation.",
+      "required": false
+    },
+    "LEMONSQUEEZY_API_KEY": {
+      "description": "Lemon Squeezy API key for checkout and portal.",
+      "required": true
+    },
+    "LEMONSQUEEZY_STORE_ID": {
+      "description": "Lemon Squeezy store id.",
+      "required": true
+    },
+    "LEMONSQUEEZY_WEBHOOK_SECRET": {
+      "description": "Lemon Squeezy webhook signing secret.",
+      "required": true
+    },
+    "LEMONSQUEEZY_TEST_MODE": {
+      "description": "Set when store is in test mode.",
+      "required": false
+    },
+    "LEMONSQUEEZY_ALLOW_TEST_IN_PROD": {
+      "description": "Allow test webhooks in production (dangerous; default off).",
+      "required": false
+    },
+    "LEMONSQUEEZY_VARIANT_ID_SECTIONS": {
+      "description": "Variant id for Sections subscription.",
+      "required": true
+    },
+    "LEMONSQUEEZY_VARIANT_ID_SECTIONS_TEMPLATES": {
+      "description": "Variant id for Sections + Templates subscription.",
+      "required": true
+    },
+    "LEMONSQUEEZY_VARIANT_ID_LIFETIME": {
+      "description": "Variant id for Lifetime one-time purchase.",
+      "required": true
+    },
+    "LEMONSQUEEZY_VARIANT_ID_VIDEO_MONTHLY": {
+      "description": "Variant id for Video Skills monthly plan.",
+      "required": false
+    },
+    "LEMONSQUEEZY_VARIANT_ID_VIDEO_YEARLY": {
+      "description": "Variant id for Video Skills yearly plan.",
+      "required": false
+    },
+    "OPENAI_API_KEY": {
+      "description": "OpenAI key for related-item suggestions (optional).",
+      "required": false
+    },
+    "OPENAI_MODEL": {
+      "description": "OpenAI model name (default gpt-4o-mini).",
+      "required": false
+    },
+    "SENTRY_DSN": {
+      "description": "Sentry DSN for server error reporting (optional).",
+      "required": false
+    },
+    "VITE_SENTRY_DSN": {
+      "description": "Sentry DSN for browser bundle (optional, build-time).",
+      "required": false
+    }
+  }
+}

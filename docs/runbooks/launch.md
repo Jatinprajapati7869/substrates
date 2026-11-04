@@ -1,6 +1,6 @@
 # Production launch checklist
 
-Production host: **Heroku** (`NITRO_PRESET=node-server`, `Procfile` → `node .output/server/index.mjs`). See `docs/runbooks/connectors-github-vercel-heroku.md`.
+Production host: **Heroku** (`NITRO_PRESET=node-server`, `Procfile` → `HOST=0.0.0.0 node .output/server/index.mjs`). See **`docs/runbooks/heroku.md`** (canonical deploy commands).
 
 ## DNS and hosting
 

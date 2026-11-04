@@ -50,7 +50,7 @@ Every prompt reads this first and updates its own row. Mark done only when the p
 | P26 | Video skills checkout on Lemon Squeezy (S22)   | done    | video variants env, Coming soon gate, `video-skills.test.ts`             |
 | P27 | Kit licenses and the Substrates license        | skipped | deferred by owner (D22)                                                    |
 | P28 | Legal pages for Substrates                     | done    | S18; brand.ts, privacy/terms/refunds, legal-claims.md                      |
-| P29 | Heroku-ready build and runbook                 | todo    |                                                                            |
+| P29 | Heroku-ready build and runbook                 | done    | `app.json`, `docs/runbooks/heroku.md`, CI node-server smoke, Procfile `HOST=0.0.0.0` |
 | P30 | Firestore rules tests and deploy checklist     | todo    |                                                                            |
 | P31 | Product-content tooling                        | todo    |                                                                            |
 | P32 | Launch catalog gating                          | todo    |                                                                            |

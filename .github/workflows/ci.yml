@@ -27,6 +27,16 @@ jobs:
           VITE_FIREBASE_PROJECT_ID: example
           VITE_FIREBASE_APP_ID: 1:example:web:example
 
+      - name: Heroku node-server smoke (/api/health)
+        env:
+          NITRO_PRESET: node-server
+          PORT: "5055"
+          VITE_FIREBASE_API_KEY: placeholder
+          VITE_FIREBASE_AUTH_DOMAIN: example.firebaseapp.com
+          VITE_FIREBASE_PROJECT_ID: example
+          VITE_FIREBASE_APP_ID: 1:example:web:example
+        run: node scripts/smoke-node-server.mjs --skip-build
+
       # Non-blocking until high-severity audit backlog is triaged (P05).
       # - run: npm audit --audit-level=high
 

@@ -4,7 +4,7 @@ Canonical repo: [github.com/Jatinprajapati7869/substrates](https://github.com/Ja
 Production domain: [https://substrates.app](https://substrates.app)  
 Support: jatin@substrates.app
 
-**Production host:** Heroku (see `docs/DECISIONS.md` D3). The app is TanStack Start + Nitro SSR with preset **`node-server`**. Vercel remains a supported fallback (short section at the end).
+**Production host:** Heroku (see `docs/DECISIONS.md` D3). **Step-by-step commands:** [heroku.md](./heroku.md). The app is TanStack Start + Nitro SSR with preset **`node-server`**. Vercel remains a supported fallback (short section at the end).
 
 ---
 
@@ -33,14 +33,14 @@ Never commit `.env` or service-account JSON. Copy variable **names** from `.env.
 3. **Settings** → **Buildpacks:** `heroku/nodejs` (default).
 4. **Settings** → **Config Vars** — set at minimum:
 
-| Variable                                                               | Notes                                                                         |
-| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| `NITRO_PRESET`                                                         | **`node-server`** (required on Heroku)                                        |
-| `VITE_FIREBASE_*`                                                      | Web app config (also baked at build; set on Heroku for SSR health + rebuilds) |
-| `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY` | Admin SDK (server only)                                                       |
-| `LEMONSQUEEZY_API_KEY`, `LEMONSQUEEZY_STORE_ID`, `LEMONSQUEEZY_WEBHOOK_SECRET` | Lemon Squeezy checkout + webhook                                      |
-| `OPENAI_API_KEY`                                                       | Optional AI recommendations                                                   |
-| `CRON_SECRET`                                                          | If you call cron routes from Scheduler                                        |
+| Variable                                                                       | Notes                                                                         |
+| ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
+| `NITRO_PRESET`                                                                 | **`node-server`** (required on Heroku)                                        |
+| `VITE_FIREBASE_*`                                                              | Web app config (also baked at build; set on Heroku for SSR health + rebuilds) |
+| `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`         | Admin SDK (server only)                                                       |
+| `LEMONSQUEEZY_API_KEY`, `LEMONSQUEEZY_STORE_ID`, `LEMONSQUEEZY_WEBHOOK_SECRET` | Lemon Squeezy checkout + webhook                                              |
+| `OPENAI_API_KEY`                                                               | Optional AI recommendations                                                   |
+| `CRON_SECRET`                                                                  | If you call cron routes from Scheduler                                        |
 
 Heroku sets `PORT` and `SOURCE_VERSION` (commit slug) automatically.
 
