@@ -9,6 +9,11 @@ import { AssistantCopyOptions } from "@/components/AssistantCopyOptions";
 import { copySectionPrompt } from "@/lib/assistant-copy";
 import { SectionAssistantMenu } from "@/components/SectionAssistantMenu";
 import {
+  SectionsBrowseFreeSectionsLabel,
+  SectionsHeroCatalogChip,
+  SectionsLibraryCountLine,
+} from "@/components/marketing/SectionsPublicCopy";
+import {
   SidebarSectionCount,
   SidebarTemplateCount,
 } from "@/components/marketing/TemplatesPublicCopy";
@@ -272,7 +277,7 @@ function Index() {
                   }
                   aria-live="polite"
                 >
-                  58 sections
+                  <SectionsLibraryCountLine />
                 </p>
                 <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   <ImportedArticleJewelcase />
@@ -8042,8 +8047,7 @@ function ImportedSectionOneSectionCanCarrythe() {
       <p className={"os-chip mx-auto text-[12px] \x74ext-[\x76ar(\x2d-text-secondary)]"}>
         <span className="os-dot" />
         <span>
-          <strong className={"font-semibold \x74ext-[\x76ar(\x2d-text)] tabular-nums"}>58</strong>{" "}
-          sections · <span className="tabular-nums">38</span> free to copy
+          <SectionsHeroCatalogChip />
         </span>
       </p>
       <h1
@@ -8149,7 +8153,7 @@ function ImportedSectionOneSectionCanCarrythe() {
           >
             Free
           </span>
-          Browse 38 free sections
+          <SectionsBrowseFreeSectionsLabel />
           <svg
             className={"transition-transform \x67roup-hover:\x74ranslate-x-0.\x35"}
             width="12"

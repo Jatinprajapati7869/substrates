@@ -9,6 +9,7 @@ import {
   countDeliverableTemplates,
   countCatalogSections,
   formatSectionCatalogCount,
+  formatFreeSectionCatalogCount,
   formatTemplateCatalogCount,
   pricingMembershipChipLine,
   templateAvailabilityOnPricingLine,
@@ -17,6 +18,10 @@ import {
   PricingMembershipChip,
   PricingTemplateAvailabilityLine,
 } from "@/components/marketing/PricingPublicCopy";
+import {
+  SectionsBrowseFreeSectionsLabel,
+  SectionsHeroCatalogChip,
+} from "@/components/marketing/SectionsPublicCopy";
 import { TemplatesPageTitleCount } from "@/components/marketing/TemplatesPublicCopy";
 
 const ROOT = join(process.cwd());
@@ -72,5 +77,28 @@ describe("P33 templates page count", () => {
     expect(screen.getByTestId("templates-page-count").textContent).toBe(
       formatTemplateCatalogCount(),
     );
+  });
+});
+
+describe("P33 sections public copy", () => {
+  it("hero chip uses catalog section counts", () => {
+    render(<SectionsHeroCatalogChip />);
+    const chip = screen.getByTestId("sections-hero-catalog-chip");
+    expect(chip.textContent).toContain(formatSectionCatalogCount());
+    expect(chip.textContent).toContain(formatFreeSectionCatalogCount());
+  });
+
+  it("browse free label uses catalog free section count", () => {
+    render(<SectionsBrowseFreeSectionsLabel />);
+    expect(screen.getByTestId("sections-browse-free-label").textContent).toBe(
+      `Browse ${formatFreeSectionCatalogCount()} free sections`,
+    );
+  });
+
+  it("sections route has no stale hard-coded section counts", () => {
+    const src = readFileSync(join(ROOT, "src/routes/sections.tsx"), "utf8");
+    expect(src).not.toMatch(/58 sections/);
+    expect(src).not.toMatch(/Browse 38 free sections/);
+    expect(src).toMatch(/SectionsPublicCopy/);
   });
 });
