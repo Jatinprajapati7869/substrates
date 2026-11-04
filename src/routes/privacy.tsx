@@ -664,8 +664,9 @@ function ImportedArticlePrivacyPolicy() {
             merchant of record for paid purchases: it handles checkout, tax collection, receipts,
             subscription billing, refunds, and the customer billing portal, and sends webhooks our
             server uses to update your account. Heroku hosts the production application. When
-            configured, OpenAI powers optional on-page product recommendations (your account
-            identifier and catalog context may be sent for that request). When configured, Sentry
+            configured, OpenAI powers optional on-page product recommendations (catalog product
+            names and descriptions may be sent for that request; your account id is not sent to
+            OpenAI). When configured, Sentry
             may receive error reports with sensitive fields scrubbed before transmission. Google
             sign-in is available as an authentication option. These providers process data under
             their own terms and privacy notices. We do not sell personal information.
