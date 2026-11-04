@@ -33,7 +33,7 @@ function Success() {
 
   useEffect(() => {
     if (loading) return;
-    const id = new URLSearchParams(window.location.search).get("session_id");
+    const id = new URLSearchParams(window.location.search).get("plan");
     if (!user || !id) {
       setPhase("fail");
       return;
@@ -42,7 +42,7 @@ function Success() {
     setPhase("payment");
     void (async () => {
       const outcome = await confirmMembershipAfterPayment(
-        () => confirm({ data: { sessionId: id } }),
+        () => confirm({ data: { plan: id } }),
         async () => {
           setPhase("confirming");
           const ent = await fetchEntitlement();

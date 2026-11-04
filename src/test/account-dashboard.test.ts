@@ -25,7 +25,7 @@ describe("account dashboard view", () => {
       entitlement: null,
       unlockSlugs: [],
       purchases: [],
-      stripeCustomerId: null,
+      providerCustomerPortalUrl: null,
     });
     expect(view.membership.hasPlan).toBe(false);
     expect(view.membership.planName).toBeNull();
@@ -34,7 +34,7 @@ describe("account dashboard view", () => {
     expect(view.unlocks).toHaveLength(0);
     expect(view.purchases).toHaveLength(0);
     expect(view.billing.canManageBilling).toBe(false);
-    expect(view.billing.unavailableReason).toMatch(/first checkout/i);
+    expect(view.billing.unavailableReason).toMatch(/subscription/i);
   });
 
   it("active with credits: plan, status, credits, reset date", () => {
@@ -48,7 +48,7 @@ describe("account dashboard view", () => {
       }),
       unlockSlugs: [],
       purchases: [{ plan: "sections-templates", created_at: "2026-01-15T12:00:00.000Z" }],
-      stripeCustomerId: "cus_123",
+      providerCustomerPortalUrl: "cus_123",
     });
     expect(view.membership.hasPlan).toBe(true);
     expect(view.membership.planName).toBe(PLANS["sections-templates"].name);
@@ -70,7 +70,7 @@ describe("account dashboard view", () => {
       }),
       unlockSlugs: [],
       purchases: [],
-      stripeCustomerId: "cus_abc",
+      providerCustomerPortalUrl: "cus_abc",
     });
     expect(view.membership.creditsRemaining).toBe(0);
     expect(view.membership.showCredits).toBe(true);
@@ -86,7 +86,7 @@ describe("account dashboard view", () => {
       }),
       unlockSlugs: [],
       purchases: [],
-      stripeCustomerId: "cus_x",
+      providerCustomerPortalUrl: "cus_x",
     });
     expect(view.membership.statusLabel).toBe("Past due");
     expect(view.membership.membershipSummary).toMatch(/past due/i);
@@ -102,7 +102,7 @@ describe("account dashboard view", () => {
       }),
       unlockSlugs: ["aerials"],
       purchases: [],
-      stripeCustomerId: "cus_old",
+      providerCustomerPortalUrl: "cus_old",
     });
     expect(view.membership.statusLabel).toBe("Canceled");
     expect(view.membership.membershipSummary).toMatch(/stay in your library/i);
@@ -120,7 +120,7 @@ describe("account dashboard view", () => {
       }),
       unlockSlugs: [],
       purchases: [{ plan: "lifetime", created_at: "2025-06-01T00:00:00.000Z" }],
-      stripeCustomerId: "cus_life",
+      providerCustomerPortalUrl: "cus_life",
     });
     expect(view.membership.planName).toBe(PLANS.lifetime.name);
     expect(view.membership.showCredits).toBe(false);

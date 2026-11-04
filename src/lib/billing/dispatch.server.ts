@@ -1,23 +1,26 @@
-import type { StripeCheckoutSessionRecord } from "@/lib/purchases.server";
+import type { BillingCheckoutPayload } from "./types";
 import {
   applyInvoicePaidEntitlement,
   applyRefundedEntitlement,
   applyVideoInvoicePaidEntitlement,
-  resolveUserIdByStripeCustomer,
+  refreshProviderPortalUrl,
+  resolveUserIdByBillingCustomer,
   setEntitlementStatus,
   setVideoSkillsStatus,
 } from "@/lib/entitlements.server";
+import { recordCheckoutPurchase } from "@/lib/purchases.server";
 import { isPlanId, isVideoPlanId } from "@/lib/plans";
 import type { BillingEvent } from "./types";
 
 export type BillingDispatchDeps = {
-  recordCheckoutSession: (session: StripeCheckoutSessionRecord) => Promise<boolean>;
+  recordCheckout: (payload: BillingCheckoutPayload) => Promise<boolean>;
   applyInvoicePaid: typeof applyInvoicePaidEntitlement;
   applyVideoInvoicePaid: typeof applyVideoInvoicePaidEntitlement;
   setStatus: typeof setEntitlementStatus;
   setVideoStatus: typeof setVideoSkillsStatus;
   applyRefund: typeof applyRefundedEntitlement;
-  resolveUserId: typeof resolveUserIdByStripeCustomer;
+  resolveUserId: typeof resolveUserIdByBillingCustomer;
+  refreshPortalUrl: typeof refreshProviderPortalUrl;
 };
 
 export async function dispatchBillingEvent(
@@ -26,8 +29,9 @@ export async function dispatchBillingEvent(
 ): Promise<void> {
   switch (event.type) {
     case "checkout_completed": {
-      if (event.checkoutPayload && typeof event.checkoutPayload === "object") {
-        await deps.recordCheckoutSession(event.checkoutPayload as StripeCheckoutSessionRecord);
+      if (event.checkoutPayload) {
+        const ok = await deps.recordCheckout(event.checkoutPayload);
+        if (!ok) throw new Error("checkout record failed");
       }
       break;
     }
@@ -53,8 +57,14 @@ export async function dispatchBillingEvent(
           periodEnd,
           event.customerId ?? null,
           event.subscriptionId ?? null,
+          event.portalUrl ?? null,
         );
       }
+      break;
+    }
+    case "portal_url_updated": {
+      const uid = event.userId;
+      if (uid && event.portalUrl) await deps.refreshPortalUrl(uid, event.portalUrl);
       break;
     }
     case "subscription_canceled": {
@@ -73,10 +83,10 @@ export async function dispatchBillingEvent(
     }
     case "refunded": {
       const uid = event.userId;
-      if (uid) await deps.applyRefund(uid, undefined);
+      if (uid) await deps.applyRefund(uid, event.plan);
       else if (event.customerId) {
         const resolved = await deps.resolveUserId(event.customerId);
-        if (resolved) await deps.applyRefund(resolved, undefined);
+        if (resolved) await deps.applyRefund(resolved, event.plan);
       }
       break;
     }

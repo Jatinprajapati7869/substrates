@@ -20,7 +20,7 @@ export function buildSentryInitOptions(dsn: string, runtime: "server" | "client"
     sendDefaultPii: false,
     dataCollection: {
       httpHeaders: {
-        deny: ["authorization", "cookie", "set-cookie", "stripe-signature", "x-forwarded-for"],
+        deny: ["authorization", "cookie", "set-cookie", "x-signature", "x-forwarded-for"],
       },
       cookies: { deny: ["session", "auth", "token", "email"] as string[] },
       urlQueryParams: { deny: ["token", "email", "code", "oobCode"] as string[] },

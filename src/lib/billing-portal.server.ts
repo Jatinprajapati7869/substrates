@@ -1,14 +1,14 @@
-import { resolveStripeCustomerId } from "@/lib/purchases.server";
-import { createBillingPortalSession } from "@/lib/stripe.server";
+import { getEntitlement } from "@/lib/entitlements.server";
 
-export async function createBillingPortalUrl(userId: string, returnOrigin: string) {
-  const customerId = await resolveStripeCustomerId(userId);
-  if (!customerId) {
+export async function createBillingPortalUrl(userId: string) {
+  const ent = await getEntitlement(userId);
+  const url = ent?.providerCustomerPortalUrl;
+  if (!url) {
     return {
       url: null as string | null,
-      error: "No billing account yet. Complete a checkout first.",
+      error:
+        "No billing portal yet. Subscribe to Sections or Sections + Templates to manage billing, or use your Lemon Squeezy receipt email.",
     };
   }
-  const url = await createBillingPortalSession(customerId, `${returnOrigin}/signin`);
   return { url, error: null as string | null };
 }

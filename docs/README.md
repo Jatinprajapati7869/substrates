@@ -15,6 +15,8 @@ Single source of truth for building and shipping Substrates. Agents read `docs/P
 | [PROGRESS.md](PROGRESS.md)                              | Prompt tracker. Updated by every prompt                                |
 | [OLD-STARTUP-REUSE.md](OLD-STARTUP-REUSE.md)            | What was taken from the earlier startup and what was not               |
 | [prompts/PACK-1.md](prompts/PACK-1.md)                  | Cursor prompts P01 to P21, each with skills to invoke                  |
+| [prompts/PACK-2.md](prompts/PACK-2.md)                  | Cursor prompts P22 and P23: Lemon Squeezy billing                      |
+| [prompts/PACK-3.md](prompts/PACK-3.md)                  | Cursor prompts P24 to P43: hardening, legal, deploy, launch readiness  |
 | [example_customer_recivere/](example_customer_recivere) | Examples of what a customer receives (Collage template, per assistant) |
 | [runbooks/](runbooks)                                   | Operator steps for GitHub, Vercel, Heroku, launch                      |
 | [plans/](plans)                                         | Historical plans. The Supabase-era launch plan is superseded           |

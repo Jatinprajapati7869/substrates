@@ -24,7 +24,7 @@ describe("AccountDashboardPanel", () => {
       entitlement: null,
       unlockSlugs: [],
       purchases: [],
-      stripeCustomerId: null,
+      providerCustomerPortalUrl: null,
     });
     render(<AccountDashboardPanel view={view} billingBusy={false} onManageBilling={vi.fn()} />);
     expect(screen.getByTestId("account-billing-unavailable")).toBeTruthy();
@@ -37,7 +37,7 @@ describe("AccountDashboardPanel", () => {
       entitlement: entitlement({ plan: "sections", status: "active", creditsRemaining: 1 }),
       unlockSlugs: [],
       purchases: [],
-      stripeCustomerId: "cus_test",
+      providerCustomerPortalUrl: "cus_test",
     });
     render(<AccountDashboardPanel view={view} billingBusy={false} onManageBilling={vi.fn()} />);
     expect(screen.getByTestId("account-billing")).toBeTruthy();
@@ -48,7 +48,7 @@ describe("AccountDashboardPanel", () => {
       entitlement: entitlement({ plan: "sections-templates", status: "canceled" }),
       unlockSlugs: ["aerials"],
       purchases: [],
-      stripeCustomerId: "cus_x",
+      providerCustomerPortalUrl: "cus_x",
     });
     render(<AccountDashboardPanel view={view} billingBusy={false} onManageBilling={vi.fn()} />);
     expect(screen.getByTestId("unlock-aerials")).toBeTruthy();

@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "event_name": "subscription_cancelled",
+    "custom_data": {
+      "user_id": "user-sub",
+      "plan": "sections-templates"
+    }
+  },
+  "data": {
+    "type": "subscriptions",
+    "id": "200",
+    "attributes": {
+      "customer_id": 77,
+      "status": "cancelled"
+    }
+  }
+}

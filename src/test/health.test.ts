@@ -19,14 +19,14 @@ afterEach(() => {
 describe("buildHealthPayload", () => {
   it("reports configured flags without secret values in JSON", () => {
     delete process.env["FIREBASE_PROJECT_ID"];
-    delete process.env["STRIPE_SECRET_KEY"];
+    delete process.env["LEMONSQUEEZY_API_KEY"];
     delete process.env["OPENAI_API_KEY"];
     process.env["VITE_FIREBASE_API_KEY"] = "pk";
     process.env["VITE_FIREBASE_AUTH_DOMAIN"] = "x.firebaseapp.com";
     process.env["VITE_FIREBASE_PROJECT_ID"] = "proj";
     process.env["VITE_FIREBASE_APP_ID"] = "app";
-    process.env["STRIPE_SECRET_KEY"] = "sk_live_never_leak";
-    delete process.env["STRIPE_WEBHOOK_SECRET"];
+    process.env["LEMONSQUEEZY_API_KEY"] = "lsk_live_never_leak";
+    delete process.env["LEMONSQUEEZY_STORE_ID"];
 
     const body = buildHealthPayload();
     const serialized = JSON.stringify(body);
@@ -34,9 +34,9 @@ describe("buildHealthPayload", () => {
     expect(body.ok).toBe(true);
     expect(body.configured.firebaseClient).toBe(true);
     expect(body.configured.firebaseAdmin).toBe(false);
-    expect(body.configured.stripe).toBe(false);
+    expect(body.configured.lemonsqueezy).toBe(false);
     expect(body.configured.openai).toBe(false);
-    expect(serialized).not.toContain("sk_live_never_leak");
+    expect(serialized).not.toContain("lsk_live_never_leak");
     expect(serialized).not.toContain("pk");
   });
 

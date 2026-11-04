@@ -1,43 +1,31 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { createBillingPortalUrl } from "@/lib/billing-portal.server";
 
-vi.mock("@/lib/purchases.server", () => ({
-  resolveStripeCustomerId: vi.fn(),
+vi.mock("@/lib/entitlements.server", () => ({
+  getEntitlement: vi.fn(),
 }));
 
-vi.mock("@/lib/stripe.server", () => ({
-  createBillingPortalSession: vi.fn(),
-}));
-
-import { resolveStripeCustomerId } from "@/lib/purchases.server";
-import { createBillingPortalSession } from "@/lib/stripe.server";
+import { getEntitlement } from "@/lib/entitlements.server";
 
 describe("S7 billing portal", () => {
   beforeEach(() => {
-    vi.mocked(resolveStripeCustomerId).mockReset();
-    vi.mocked(createBillingPortalSession).mockReset();
+    vi.mocked(getEntitlement).mockReset();
   });
 
-  it("returns a portal URL when the user has a Stripe customer", async () => {
-    vi.mocked(resolveStripeCustomerId).mockResolvedValue("cus_test");
-    vi.mocked(createBillingPortalSession).mockResolvedValue(
-      "https://billing.stripe.com/session/test",
-    );
+  it("returns stored Lemon Squeezy portal URL for the signed-in owner", async () => {
+    vi.mocked(getEntitlement).mockResolvedValue({
+      providerCustomerPortalUrl: "https://store.lemonsqueezy.com/billing?sig=abc",
+    } as never);
 
-    const result = await createBillingPortalUrl("user-1", "https://substrates.app");
+    const result = await createBillingPortalUrl("user-1");
     expect(result.error).toBeNull();
-    expect(result.url).toBe("https://billing.stripe.com/session/test");
-    expect(createBillingPortalSession).toHaveBeenCalledWith(
-      "cus_test",
-      "https://substrates.app/signin",
-    );
+    expect(result.url).toBe("https://store.lemonsqueezy.com/billing?sig=abc");
   });
 
-  it("returns a clear error when no customer exists", async () => {
-    vi.mocked(resolveStripeCustomerId).mockResolvedValue(null);
-    const result = await createBillingPortalUrl("user-1", "https://substrates.app");
+  it("returns a clear error when no portal URL exists (e.g. lifetime-only)", async () => {
+    vi.mocked(getEntitlement).mockResolvedValue(null);
+    const result = await createBillingPortalUrl("user-1");
     expect(result.url).toBeNull();
-    expect(result.error).toContain("No billing account");
-    expect(createBillingPortalSession).not.toHaveBeenCalled();
+    expect(result.error).toContain("No billing portal");
   });
 });

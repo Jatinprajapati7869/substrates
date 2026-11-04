@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-TanStack Start, Firebase Auth, Firestore, Stripe, Vercel (this repo). Catalog in `src/lib/catalog.json`.
+TanStack Start, Firebase Auth, Firestore, Lemon Squeezy (merchant of record), Heroku (D3). Catalog in `src/lib/catalog.json`.
 
 ## Users
 
@@ -16,7 +16,7 @@ TanStack Start, Firebase Auth, Firestore, Stripe, Vercel (this repo). Catalog in
 
 ## Product Purpose
 
-**Substrates** sells and delivers website templates and copy-paste sections with account-based access, Stripe plans, and assistant-friendly reference prompts. The former Japanese-learning app is **archived**; this codebase is the live product.
+**Substrates** sells and delivers website templates and copy-paste sections with account-based access, Lemon Squeezy billing, and assistant-friendly reference prompts. The former Japanese-learning app is **archived**; this codebase is the live product.
 
 ## Positioning
 
@@ -31,7 +31,7 @@ Curated template marketplace with AI-ready sections — not a language course, n
 
 ## Capabilities and Constraints
 
-- Auth: Firebase (Google + email). Purchases in Firestore. Stripe checkout + Customer Portal + webhooks.
+- Auth: Firebase (Google + email). Purchases in Firestore. Lemon Squeezy checkout + webhooks; customer portal URL stored on entitlements.
 - Catalog MCP at `/mcp` (Firebase ID token). No learner app or Postgres API in this repo.
 
 ## Product Principles

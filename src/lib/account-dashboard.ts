@@ -8,7 +8,7 @@ export type AccountDashboardInput = {
   entitlement: EntitlementDoc | null;
   unlockSlugs: string[];
   purchases: AccountPurchaseRow[];
-  stripeCustomerId: string | null;
+  providerCustomerPortalUrl: string | null;
 };
 
 export type AccountDashboardView = {
@@ -115,10 +115,10 @@ export function buildAccountDashboardView(input: AccountDashboardInput): Account
       membershipSummary: membershipSummary(ent),
     },
     billing: {
-      canManageBilling: Boolean(input.stripeCustomerId),
-      unavailableReason: input.stripeCustomerId
+      canManageBilling: Boolean(input.providerCustomerPortalUrl),
+      unavailableReason: input.providerCustomerPortalUrl
         ? ""
-        : "Manage billing appears after your first checkout creates a Stripe customer.",
+        : "Manage billing appears after an active subscription (Lemon Squeezy customer portal).",
     },
     unlocks,
     purchases: input.purchases.map((p) => ({

@@ -82,13 +82,13 @@ Authentication → Settings → **Authorized domains** → add `substrates.app`,
 
 Deploy Firestore rules from this repo (`firestore.rules`).
 
-### Stripe
+### Lemon Squeezy
 
 Webhook URL:
 
-`https://substrates.app/api/public/stripe-webhook`
+`https://substrates.app/api/public/lemonsqueezy-webhook`
 
-Use the matching signing secret in `STRIPE_WEBHOOK_SECRET`. Enable **Customer portal** in Stripe Dashboard.
+Use the signing secret in `LEMONSQUEEZY_WEBHOOK_SECRET`. See `docs/specs/lemonsqueezy-setup.md` for products, test mode, and payout setup.
 
 ### Logs and ops
 
@@ -111,8 +111,8 @@ POST to cron routes with `Authorization: Bearer $CRON_SECRET` (see `scripts/cron
 - [ ] `git push` to `main` → Heroku build green
 - [ ] `GET /api/health` → `configured` reflects env (no secrets in body)
 - [ ] `https://substrates.app/signin` loads; Google / email auth works
-- [ ] Stripe test checkout → webhook 2xx → Firestore purchase
-- [ ] Customer portal from `/signin`
+- [ ] Lemon Squeezy test checkout → webhook 2xx → Firestore purchase / entitlement
+- [ ] Customer portal from `/signin` (subscription with stored portal URL)
 
 ---
 

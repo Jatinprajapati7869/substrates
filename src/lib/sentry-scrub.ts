@@ -8,7 +8,7 @@ const SENSITIVE_KEY_PARTS = [
   "secret",
   "token",
   "email",
-  "stripe-signature",
+  "x-signature",
   "private_key",
   "api_key",
 ] as const;

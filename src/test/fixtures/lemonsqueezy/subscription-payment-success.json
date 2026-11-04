@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "event_name": "subscription_payment_success",
+    "custom_data": {
+      "user_id": "user-sub",
+      "plan": "sections-templates"
+    }
+  },
+  "data": {
+    "type": "subscription-invoices",
+    "id": "301",
+    "attributes": {
+      "customer_id": 77,
+      "subscription_id": 200,
+      "status": "paid",
+      "created_at": "2026-02-01T00:00:00.000000Z",
+      "updated_at": "2026-02-01T00:00:00.000000Z",
+      "total_usd": 3900
+    }
+  }
+}

@@ -1,68 +1,68 @@
 import { getAdminFirestore } from "@/integrations/firebase/admin.server";
+import type { BillingCheckoutPayload } from "@/lib/billing/types";
+import { isPlanId } from "@/lib/plans";
 
-export type StripeCheckoutSessionRecord = {
-  id: string;
-  metadata?: { user_id?: string; plan?: string };
-  payment_status?: string;
-  status?: string;
-  customer?: string | { id?: string } | null;
-  subscription?: string | { id?: string } | null;
-  amount_total?: number | null;
-  currency?: string | null;
-};
-
-/** Stripe Checkout is recorded only after payment succeeds (not merely session complete). */
-export function isCheckoutSessionPaid(session: { payment_status?: string }): boolean {
-  return session.payment_status === "paid";
-}
-
-export async function upsertPurchaseFromStripeSession(session: StripeCheckoutSessionRecord) {
-  const userId = session.metadata?.user_id;
-  const plan = session.metadata?.plan;
-  if (!userId || !plan) return false;
-  if (!isCheckoutSessionPaid(session)) return false;
+export async function upsertPurchaseFromCheckout(payload: BillingCheckoutPayload) {
+  const { userId, plan, checkoutId, customerId, subscriptionId, amountCents, currency } = payload;
+  if (!userId || !plan || !payload.paid) return false;
 
   const db = await getAdminFirestore();
   await db
     .collection("purchases")
-    .doc(session.id)
+    .doc(checkoutId)
     .set(
       {
         userId,
         plan,
         status: "paid",
-        stripeSessionId: session.id,
-        stripeCustomerId: typeof session.customer === "string" ? session.customer : null,
-        stripeSubscriptionId:
-          typeof session.subscription === "string" ? session.subscription : null,
-        amountTotal: session.amount_total ?? null,
-        currency: session.currency ?? null,
+        billingCheckoutId: checkoutId,
+        billingCustomerId: customerId,
+        billingSubscriptionId: subscriptionId ?? null,
+        amountTotal: amountCents ?? null,
+        currency: currency ?? null,
         createdAt: new Date(),
       },
       { merge: true },
     );
 
-  const customerId = typeof session.customer === "string" ? session.customer : null;
   if (customerId) {
     await db
       .collection("profiles")
       .doc(userId)
-      .set({ stripeCustomerId: customerId }, { merge: true });
+      .set({ billingCustomerId: customerId }, { merge: true });
   }
   return true;
 }
 
-export async function resolveStripeCustomerId(userId: string): Promise<string | null> {
+export async function recordCheckoutPurchase(payload: BillingCheckoutPayload): Promise<boolean> {
+  const { applyLifetimeEntitlementFromCheckout } = await import("@/lib/entitlements.server");
+  try {
+    const ok = await upsertPurchaseFromCheckout(payload);
+    if (ok && isPlanId(payload.plan) && payload.plan === "lifetime") {
+      await applyLifetimeEntitlementFromCheckout(
+        payload.userId,
+        payload.customerId,
+        payload.subscriptionId ?? null,
+      );
+    }
+    return ok;
+  } catch (e) {
+    console.error("purchase record failed", e instanceof Error ? e.message : e);
+    return false;
+  }
+}
+
+export async function resolveBillingCustomerId(userId: string): Promise<string | null> {
   const db = await getAdminFirestore();
   const profile = await db.collection("profiles").doc(userId).get();
-  const fromProfile = profile.data()?.["stripeCustomerId"];
+  const fromProfile = profile.data()?.["billingCustomerId"];
   if (typeof fromProfile === "string" && fromProfile) return fromProfile;
 
   const snap = await db.collection("purchases").where("userId", "==", userId).get();
   for (const doc of snap.docs) {
-    const id = doc.data()["stripeCustomerId"];
+    const id = doc.data()["billingCustomerId"];
     if (typeof id === "string" && id) {
-      await db.collection("profiles").doc(userId).set({ stripeCustomerId: id }, { merge: true });
+      await db.collection("profiles").doc(userId).set({ billingCustomerId: id }, { merge: true });
       return id;
     }
   }

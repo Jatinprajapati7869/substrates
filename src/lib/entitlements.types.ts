@@ -12,12 +12,13 @@ export type EntitlementDoc = {
   unlimitedTemplates?: boolean;
   sectionAccess: SectionAccess;
   templateAccess: TemplateAccess;
-  stripeCustomerId?: string | null;
-  stripeSubscriptionId?: string | null;
+  billingCustomerId?: string | null;
+  billingSubscriptionId?: string | null;
+  providerCustomerPortalUrl?: string | null;
   /** Video skills product — independent of template plan (D16). */
   videoSkillsStatus?: EntitlementStatus;
   videoSkillsPlan?: string | null;
-  videoStripeSubscriptionId?: string | null;
+  videoBillingSubscriptionId?: string | null;
   updatedAt: Date;
 };
 

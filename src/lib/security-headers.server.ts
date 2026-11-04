@@ -24,13 +24,13 @@ export function buildContentSecurityPolicyReportOnly(): string {
     "base-uri 'self'",
     "object-src 'none'",
     "frame-ancestors 'none'",
-    `script-src 'self' 'unsafe-inline' https://apis.google.com https://www.gstatic.com https://js.stripe.com`,
+    `script-src 'self' 'unsafe-inline' https://apis.google.com https://www.gstatic.com`,
     `style-src 'self' 'unsafe-inline'`,
     `font-src 'self' data:`,
     `img-src 'self' data: blob: https://cdn.prod.website-files.com https://*.webflow.io https://y4pdgnepgswqffpt.public.blob.vercel-storage.com https://supply.madebyoversight.com`,
     `connect-src ${connectSrc.join(" ")}`,
-    `frame-src 'self' https://accounts.google.com https://checkout.stripe.com https://js.stripe.com`,
-    `form-action 'self' https://checkout.stripe.com`,
+    `frame-src 'self' https://accounts.google.com`,
+    `form-action 'self'`,
   ];
   return directives.join("; ");
 }

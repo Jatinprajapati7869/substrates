@@ -7,7 +7,7 @@ import {
 export type HealthConfigured = {
   firebaseClient: boolean;
   firebaseAdmin: boolean;
-  stripe: boolean;
+  lemonsqueezy: boolean;
   openai: boolean;
 };
 
@@ -28,7 +28,7 @@ export function buildHealthPayload(): HealthPayload {
     configured: {
       firebaseClient: isFirebaseClientEnvConfigured(),
       firebaseAdmin: isServerEnvGroupConfigured("firebaseAdmin"),
-      stripe: isServerEnvGroupConfigured("stripe"),
+      lemonsqueezy: isServerEnvGroupConfigured("lemonsqueezy"),
       openai: isOpenAiEnvConfigured(),
     },
   };

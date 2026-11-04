@@ -55,7 +55,7 @@ import { Route as VideosOrganicRouteImport } from './routes/videos_.organic'
 import { Route as VideosRaysRouteImport } from './routes/videos_.rays'
 import { Route as VideosSmallDetailsRouteImport } from './routes/videos_.small-details'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceMcpRouteImport } from './routes/[.well-known]/oauth-protected-resource/mcp'
-import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api/public/stripe-webhook'
+import { Route as ApiPublicLemonsqueezyWebhookRouteImport } from './routes/api/public/lemonsqueezy-webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -306,11 +306,12 @@ const Char91DotwellKnownChar93OauthProtectedResourceMcpRoute =
     path: '/mcp',
     getParentRoute: () => Char91DotwellKnownChar93OauthProtectedResourceRoute,
   } as any)
-const ApiPublicStripeWebhookRoute = ApiPublicStripeWebhookRouteImport.update({
-  id: '/api/public/stripe-webhook',
-  path: '/api/public/stripe-webhook',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const ApiPublicLemonsqueezyWebhookRoute =
+  ApiPublicLemonsqueezyWebhookRouteImport.update({
+    id: '/api/public/lemonsqueezy-webhook',
+    path: '/api/public/lemonsqueezy-webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -359,7 +360,7 @@ export interface FileRoutesByFullPath {
   '/videos/rays': typeof VideosRaysRoute
   '/videos/small-details': typeof VideosSmallDetailsRoute
   '/.well-known/oauth-protected-resource/mcp': typeof Char91DotwellKnownChar93OauthProtectedResourceMcpRoute
-  '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
+  '/api/public/lemonsqueezy-webhook': typeof ApiPublicLemonsqueezyWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -408,7 +409,7 @@ export interface FileRoutesByTo {
   '/videos/rays': typeof VideosRaysRoute
   '/videos/small-details': typeof VideosSmallDetailsRoute
   '/.well-known/oauth-protected-resource/mcp': typeof Char91DotwellKnownChar93OauthProtectedResourceMcpRoute
-  '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
+  '/api/public/lemonsqueezy-webhook': typeof ApiPublicLemonsqueezyWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -458,7 +459,7 @@ export interface FileRoutesById {
   '/videos_/rays': typeof VideosRaysRoute
   '/videos_/small-details': typeof VideosSmallDetailsRoute
   '/.well-known/oauth-protected-resource/mcp': typeof Char91DotwellKnownChar93OauthProtectedResourceMcpRoute
-  '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
+  '/api/public/lemonsqueezy-webhook': typeof ApiPublicLemonsqueezyWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -509,7 +510,7 @@ export interface FileRouteTypes {
     | '/videos/rays'
     | '/videos/small-details'
     | '/.well-known/oauth-protected-resource/mcp'
-    | '/api/public/stripe-webhook'
+    | '/api/public/lemonsqueezy-webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -558,7 +559,7 @@ export interface FileRouteTypes {
     | '/videos/rays'
     | '/videos/small-details'
     | '/.well-known/oauth-protected-resource/mcp'
-    | '/api/public/stripe-webhook'
+    | '/api/public/lemonsqueezy-webhook'
   id:
     | '__root__'
     | '/'
@@ -607,7 +608,7 @@ export interface FileRouteTypes {
     | '/videos_/rays'
     | '/videos_/small-details'
     | '/.well-known/oauth-protected-resource/mcp'
-    | '/api/public/stripe-webhook'
+    | '/api/public/lemonsqueezy-webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -656,7 +657,7 @@ export interface RootRouteChildren {
   VideosOrganicRoute: typeof VideosOrganicRoute
   VideosRaysRoute: typeof VideosRaysRoute
   VideosSmallDetailsRoute: typeof VideosSmallDetailsRoute
-  ApiPublicStripeWebhookRoute: typeof ApiPublicStripeWebhookRoute
+  ApiPublicLemonsqueezyWebhookRoute: typeof ApiPublicLemonsqueezyWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -983,11 +984,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceMcpRouteImport
       parentRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
     }
-    '/api/public/stripe-webhook': {
-      id: '/api/public/stripe-webhook'
-      path: '/api/public/stripe-webhook'
-      fullPath: '/api/public/stripe-webhook'
-      preLoaderRoute: typeof ApiPublicStripeWebhookRouteImport
+    '/api/public/lemonsqueezy-webhook': {
+      id: '/api/public/lemonsqueezy-webhook'
+      path: '/api/public/lemonsqueezy-webhook'
+      fullPath: '/api/public/lemonsqueezy-webhook'
+      preLoaderRoute: typeof ApiPublicLemonsqueezyWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -1060,7 +1061,7 @@ const rootRouteChildren: RootRouteChildren = {
   VideosOrganicRoute: VideosOrganicRoute,
   VideosRaysRoute: VideosRaysRoute,
   VideosSmallDetailsRoute: VideosSmallDetailsRoute,
-  ApiPublicStripeWebhookRoute: ApiPublicStripeWebhookRoute,
+  ApiPublicLemonsqueezyWebhookRoute: ApiPublicLemonsqueezyWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

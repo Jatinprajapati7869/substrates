@@ -1,0 +1,42 @@
+---
+description: MANDATORY. Commit and push every change to GitHub before finishing any task. Always on.
+alwaysApply: true
+---
+
+# MANDATORY: commit and push after every task
+
+This rule overrides any instruction to "stop" or "just report". It applies to every change, including one line, a doc edit, a config tweak, or a deleted file. It applies to prompts from `docs/prompts/` and to ordinary chat requests alike.
+
+**You are NOT finished until your changes are committed AND pushed to GitHub.** Never end a turn with uncommitted changes or unpushed commits.
+
+## At the start of every task
+
+1. Run `git remote -v` and `git status -sb`. GitHub is connected through `origin`.
+   - No `origin`: stop and tell the user. Do not continue.
+   - Uncommitted or unpushed work from an earlier task: commit and push it first (separate commit, message `chore: save earlier work`), then begin.
+2. Make sure you are on a branch named for the task (`pNN-short-name`, or `fix/short-name` for chat requests). Never work on `main` or `master`. If you are on one, create the branch before editing.
+
+## At the end of every task (before the final report)
+
+1. Run `git status`. Stage only the files this task changed, by name or by folder. Never stage `.env*`, keys, `*.log`, `*-out.txt`, `backups/`, `content/`, `node_modules/`, `.output/`.
+2. Commit with a conventional message that names the task: `feat(p25): ...`, `fix(p25): ...`, `docs(p24): ...`. One logical change per commit. Several commits are fine; zero commits is not.
+3. Push: `git push -u origin <branch>`.
+   - If the push fails, show the exact error, try once more, then put **NOT PUSHED** as the first line of your report with the reason. Do not mark the task done in `docs/PROGRESS.md` as complete without a push.
+4. Verify: run `git status -sb` and `git log -1 --stat`. The output must show a clean tree and no `ahead` count.
+5. The last lines of the final report must contain: branch name, commit hash(es), and the words `Pushed: yes` followed by the `git status -sb` line. If you cannot show these, the task is not done.
+
+## Never
+
+- Never commit or push to `main`/`master`.
+- Never force-push, amend a pushed commit, rebase pushed commits, or rewrite history.
+- Never skip hooks (`--no-verify`).
+- Never commit secrets. If you find one staged, unstage it, and tell the user to rotate it.
+- Never say "done" while `git status` shows changes.
+
+## If asked to only read or explain
+
+If you changed no file, say "no changes, nothing to commit" and show a clean `git status -sb`.
+
+## Enforcement
+
+A Cursor `stop` hook (`.cursor/hooks.json`, `scripts/hooks/require-commit-push.mjs`) checks the tree at the end of each turn and sends you back to commit and push if anything is left. Do not try to bypass it.

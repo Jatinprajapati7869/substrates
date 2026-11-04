@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export type ServerEnvGroup = "firebaseAdmin" | "stripe" | "openai" | "cron";
+export type ServerEnvGroup = "firebaseAdmin" | "lemonsqueezy" | "openai" | "cron";
 
 const FIREBASE_CLIENT_KEYS = [
   "VITE_FIREBASE_API_KEY",
@@ -15,7 +15,14 @@ const FIREBASE_ADMIN_KEYS = [
   "FIREBASE_PRIVATE_KEY",
 ] as const;
 
-const STRIPE_KEYS = ["STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET"] as const;
+const LEMONSQUEEZY_KEYS = [
+  "LEMONSQUEEZY_API_KEY",
+  "LEMONSQUEEZY_STORE_ID",
+  "LEMONSQUEEZY_WEBHOOK_SECRET",
+  "LEMONSQUEEZY_VARIANT_ID_SECTIONS",
+  "LEMONSQUEEZY_VARIANT_ID_SECTIONS_TEMPLATES",
+  "LEMONSQUEEZY_VARIANT_ID_LIFETIME",
+] as const;
 
 const cache = new Map<ServerEnvGroup, unknown>();
 
@@ -42,9 +49,14 @@ const firebaseAdminShape = z.object({
     .transform((value) => value.replace(/\\n/g, "\n")),
 });
 
-const stripeShape = z.object({
-  STRIPE_SECRET_KEY: z.string().min(1),
-  STRIPE_WEBHOOK_SECRET: z.string().min(1),
+const lemonsqueezyShape = z.object({
+  LEMONSQUEEZY_API_KEY: z.string().min(1),
+  LEMONSQUEEZY_STORE_ID: z.string().min(1),
+  LEMONSQUEEZY_WEBHOOK_SECRET: z.string().min(1),
+  LEMONSQUEEZY_VARIANT_ID_SECTIONS: z.string().min(1),
+  LEMONSQUEEZY_VARIANT_ID_SECTIONS_TEMPLATES: z.string().min(1),
+  LEMONSQUEEZY_VARIANT_ID_LIFETIME: z.string().min(1),
+  LEMONSQUEEZY_TEST_MODE: z.string().optional(),
 });
 
 const cronShape = z.object({
@@ -53,7 +65,7 @@ const cronShape = z.object({
 });
 
 export type FirebaseAdminEnv = z.infer<typeof firebaseAdminShape>;
-export type StripeEnv = z.infer<typeof stripeShape>;
+export type LemonSqueezyEnv = z.infer<typeof lemonsqueezyShape>;
 export type OpenAiEnv = { OPENAI_API_KEY: string | undefined; OPENAI_MODEL: string };
 export type CronEnv = z.infer<typeof cronShape>;
 
@@ -74,15 +86,31 @@ function parseFirebaseAdmin(): FirebaseAdminEnv {
   return parsed.data;
 }
 
-function parseStripe(): StripeEnv {
-  const keys = ["STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET"] as const;
-  const missing = keys.filter((key) => !envValue(key));
-  if (missing.length) throw missingError("stripe", [...missing]);
-  const parsed = stripeShape.safeParse({
-    STRIPE_SECRET_KEY: envValue("STRIPE_SECRET_KEY"),
-    STRIPE_WEBHOOK_SECRET: envValue("STRIPE_WEBHOOK_SECRET"),
+function parseLemonSqueezy(): LemonSqueezyEnv {
+  const required = [
+    "LEMONSQUEEZY_API_KEY",
+    "LEMONSQUEEZY_STORE_ID",
+    "LEMONSQUEEZY_WEBHOOK_SECRET",
+    "LEMONSQUEEZY_VARIANT_ID_SECTIONS",
+    "LEMONSQUEEZY_VARIANT_ID_SECTIONS_TEMPLATES",
+    "LEMONSQUEEZY_VARIANT_ID_LIFETIME",
+  ] as const;
+  const missing = required.filter((key) => !envValue(key));
+  if (missing.length) throw missingError("lemonsqueezy", [...missing]);
+  const parsed = lemonsqueezyShape.safeParse({
+    LEMONSQUEEZY_API_KEY: envValue("LEMONSQUEEZY_API_KEY"),
+    LEMONSQUEEZY_STORE_ID: envValue("LEMONSQUEEZY_STORE_ID"),
+    LEMONSQUEEZY_WEBHOOK_SECRET: envValue("LEMONSQUEEZY_WEBHOOK_SECRET"),
+    LEMONSQUEEZY_VARIANT_ID_SECTIONS: envValue("LEMONSQUEEZY_VARIANT_ID_SECTIONS"),
+    LEMONSQUEEZY_VARIANT_ID_SECTIONS_TEMPLATES: envValue(
+      "LEMONSQUEEZY_VARIANT_ID_SECTIONS_TEMPLATES",
+    ),
+    LEMONSQUEEZY_VARIANT_ID_LIFETIME: envValue("LEMONSQUEEZY_VARIANT_ID_LIFETIME"),
+    ...(envValue("LEMONSQUEEZY_TEST_MODE")
+      ? { LEMONSQUEEZY_TEST_MODE: envValue("LEMONSQUEEZY_TEST_MODE") }
+      : {}),
   });
-  if (!parsed.success) throw missingError("stripe", [...missing]);
+  if (!parsed.success) throw missingError("lemonsqueezy", [...missing]);
   return parsed.data;
 }
 
@@ -106,22 +134,22 @@ function parseCron(): CronEnv {
 }
 
 export function getServerEnv(group: "firebaseAdmin"): FirebaseAdminEnv;
-export function getServerEnv(group: "stripe"): StripeEnv;
+export function getServerEnv(group: "lemonsqueezy"): LemonSqueezyEnv;
 export function getServerEnv(group: "openai"): OpenAiEnv;
 export function getServerEnv(group: "cron"): CronEnv;
 export function getServerEnv(
   group: ServerEnvGroup,
-): FirebaseAdminEnv | StripeEnv | OpenAiEnv | CronEnv {
+): FirebaseAdminEnv | LemonSqueezyEnv | OpenAiEnv | CronEnv {
   const hit = cache.get(group);
-  if (hit !== undefined) return hit as FirebaseAdminEnv | StripeEnv | OpenAiEnv | CronEnv;
+  if (hit !== undefined) return hit as FirebaseAdminEnv | LemonSqueezyEnv | OpenAiEnv | CronEnv;
 
-  let value: FirebaseAdminEnv | StripeEnv | OpenAiEnv | CronEnv;
+  let value: FirebaseAdminEnv | LemonSqueezyEnv | OpenAiEnv | CronEnv;
   switch (group) {
     case "firebaseAdmin":
       value = parseFirebaseAdmin();
       break;
-    case "stripe":
-      value = parseStripe();
+    case "lemonsqueezy":
+      value = parseLemonSqueezy();
       break;
     case "openai":
       value = parseOpenAi();
@@ -152,8 +180,8 @@ export function isServerEnvGroupConfigured(
   switch (group) {
     case "firebaseAdmin":
       return groupKeysPresent(FIREBASE_ADMIN_KEYS);
-    case "stripe":
-      return groupKeysPresent(STRIPE_KEYS);
+    case "lemonsqueezy":
+      return groupKeysPresent(LEMONSQUEEZY_KEYS);
     default: {
       const never: never = group;
       throw new Error(String(never));
