@@ -3,6 +3,19 @@ import { useSupplyShell } from "@/lib/use-supply-shell";
 import type { CSSProperties } from "react";
 import { CheckoutButton, CheckoutCancelledNote } from "@/components/CheckoutButton";
 import { CheckoutSummaryProvider } from "@/components/CheckoutSummaryProvider";
+import {
+  PricingLifetimePlanHeadline,
+  PricingMembershipChip,
+  PricingProSectionAvailabilityLine,
+  PricingSectionsPlanHeadline,
+  PricingTemplateAvailabilityLine,
+  PricingTemplatesPlanHeadline,
+} from "@/components/marketing/PricingPublicCopy";
+import { HomeBrowseTemplatesLinkLabel } from "@/components/marketing/HomePublicCopy";
+import {
+  SidebarSectionCount,
+  SidebarTemplateCount,
+} from "@/components/marketing/TemplatesPublicCopy";
 import { createFileRoute } from "@tanstack/react-router";
 import capturedCSS from "../styles/pages/pricing.css?raw";
 
@@ -111,7 +124,7 @@ function Index() {
                 <header className="mx-auto mb-10 max-w-2xl px-4 text-center sm:px-6">
                   <div className="os-chip text-[10.5px] uppercase tracking-[0.06em]">
                     <span className="os-dot" />
-                    192 templates, one membership
+                    <PricingMembershipChip />
                   </div>
                   <h1
                     className={
@@ -240,11 +253,11 @@ function Index() {
                       </g>
                     </svg>
                     <div className="text-center leading-tight">
-                      <p className={"text-[13px] font-medium \x74ext-[\x76ar(\x2d-text)]"}>
-                        Trusted by developers
+                      <p className={"text-[13px] font-medium text-[var(--text)]"}>
+                        Copy into Claude, Cursor, v0
                       </p>
-                      <p className={"text-[13px] font-medium \x74ext-[\x76ar(\x2d-text)]"}>
-                        and designers
+                      <p className={"text-[13px] font-medium text-[var(--text-secondary)]"}>
+                        and Webflow or Framer
                       </p>
                     </div>
                     <svg
@@ -410,7 +423,7 @@ function Index() {
                         }
                         href="/?collection=all"
                       >
-                        Browse 192 templates
+                        <HomeBrowseTemplatesLinkLabel />
                       </a>
                       <a
                         className={
@@ -583,11 +596,7 @@ function ImportedAside() {
                 </svg>
               </span>
               <span className="min-w-0 flex-1 truncate">All Templates</span>
-              <span
-                className={"shrink-0 text-[11px] tabular-nums \x74ext-[\x76ar(\x2d-text-tertiary)]"}
-              >
-                192
-              </span>
+              <SidebarTemplateCount />
             </a>
             <a
               className={
@@ -636,11 +645,7 @@ function ImportedAside() {
                 </svg>
               </span>
               <span className="min-w-0 flex-1 truncate">Sections</span>
-              <span
-                className={"shrink-0 text-[11px] tabular-nums \x74ext-[\x76ar(\x2d-text-tertiary)]"}
-              >
-                58
-              </span>
+              <SidebarSectionCount />
             </a>
             <a
               className={
@@ -723,11 +728,7 @@ function ImportedAside() {
                 </svg>
               </span>
               <span className="min-w-0 flex-1 truncate">All Platforms</span>
-              <span
-                className={"shrink-0 text-[11px] tabular-nums \x74ext-[\x76ar(\x2d-text-tertiary)]"}
-              >
-                192
-              </span>
+              <SidebarTemplateCount />
             </a>
             <a
               className={
@@ -1064,6 +1065,8 @@ function ImportedSectionSections() {
       <p className={"mt-2 text-[13px] \x74ext-[\x76ar(\x2d-text-secondary)]"}>
         Every Pro section and one template a month. The easy way in.
       </p>
+      <PricingProSectionAvailabilityLine />
+      <PricingTemplateAvailabilityLine />
       <div className="mt-5">
         <p
           className={
@@ -1894,7 +1897,7 @@ function ImportedSectionSections() {
           </span>
         </div>
         <p className={"mt-6 text-center text-[14px] font-medium \x74ext-[\x76ar(\x2d-text)]"}>
-          20 Pro sections + 1 template a month
+          <PricingSectionsPlanHeadline />
         </p>
       </div>
     </section>
@@ -1924,6 +1927,8 @@ function ImportedSectionSectionsTemplates() {
       <p className={"mt-2 text-[13px] \x74ext-[\x76ar(\x2d-text-secondary)]"}>
         Three credits a month. Good if you ship a few projects a year.
       </p>
+      <PricingProSectionAvailabilityLine />
+      <PricingTemplateAvailabilityLine />
       <div className="mt-5">
         <p
           className={
@@ -2292,7 +2297,7 @@ function ImportedSectionSectionsTemplates() {
           </div>
         </div>
         <p className={"mt-6 text-center text-[14px] font-medium \x74ext-[\x76ar(\x2d-text)]"}>
-          192 templates, unlock 3 per month
+          <PricingTemplatesPlanHeadline />
         </p>
       </div>
     </section>
@@ -2322,6 +2327,7 @@ function ImportedSectionLifetime() {
       <p className={"mt-2 text-[13px] \x74ext-white/\x360"}>
         Everything, forever. Pays for itself against roughly six single templates.
       </p>
+      <PricingTemplateAvailabilityLine />
       <div className="mt-5">
         <p className={"text-[10.5px] font-medium uppercase tracking-[0.08em] \x74ext-white/\x340"}>
           Works with
@@ -2627,8 +2633,7 @@ function ImportedSectionLifetime() {
             </svg>
           </span>
           <span className={"text-[13px] leading-relaxed \x74ext-white/\x380"}>
-            Request a Figma file for any template
-            <span className={"\x74ext-white/\x340"}> (coming soon)</span>
+            Request a Figma file (coming soon)
           </span>
         </li>
         <li className="flex items-start gap-2.5">
@@ -3666,7 +3671,7 @@ function ImportedSectionLifetime() {
           </span>
         </div>
         <p className="mt-6 text-center text-[14px] font-medium text-white">
-          192 templates, all yours
+          <PricingLifetimePlanHeadline />
         </p>
       </div>
     </section>

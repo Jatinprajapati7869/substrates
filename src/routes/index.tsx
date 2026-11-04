@@ -6,6 +6,15 @@ import capturedCSS from "../styles/site.css?raw";
 import { AssistantCopyOptions } from "@/components/AssistantCopyOptions";
 import { copySectionPrompt } from "@/lib/assistant-copy";
 import { SectionAssistantMenu } from "@/components/SectionAssistantMenu";
+import {
+  HomeBrowseTemplatesLinkLabel,
+  HomeHeroCatalogParagraph,
+} from "@/components/marketing/HomePublicCopy";
+import { HomeFreeSectionsChip } from "@/components/marketing/HomeFreeSectionsChip";
+import {
+  SidebarSectionCount,
+  SidebarTemplateCount,
+} from "@/components/marketing/TemplatesPublicCopy";
 
 export const Route = createFileRoute("/")({
   head: () =>
@@ -2218,7 +2227,7 @@ function Index() {
                       }}
                       href="/?collection=all"
                     >
-                      Browse 192 templates
+                      <HomeBrowseTemplatesLinkLabel />
                     </a>
                   </div>
                 </div>
@@ -2594,11 +2603,7 @@ function ImportedAside({ navigationOpen }: { navigationOpen: boolean }) {
                 </svg>
               </span>
               <span className="min-w-0 flex-1 truncate">All Templates</span>
-              <span
-                className={"shrink-0 text-[11px] tabular-nums \x74ext-[\x76ar(\x2d-text-tertiary)]"}
-              >
-                192
-              </span>
+              <SidebarTemplateCount />
             </a>
             <a
               className={
@@ -2647,11 +2652,7 @@ function ImportedAside({ navigationOpen }: { navigationOpen: boolean }) {
                 </svg>
               </span>
               <span className="min-w-0 flex-1 truncate">Sections</span>
-              <span
-                className={"shrink-0 text-[11px] tabular-nums \x74ext-[\x76ar(\x2d-text-tertiary)]"}
-              >
-                58
-              </span>
+              <SidebarSectionCount />
             </a>
             <a
               className={
@@ -2734,11 +2735,7 @@ function ImportedAside({ navigationOpen }: { navigationOpen: boolean }) {
                 </svg>
               </span>
               <span className="min-w-0 flex-1 truncate">All Platforms</span>
-              <span
-                className={"shrink-0 text-[11px] tabular-nums \x74ext-[\x76ar(\x2d-text-tertiary)]"}
-              >
-                192
-              </span>
+              <SidebarTemplateCount />
             </a>
             <a
               className={
@@ -2972,18 +2969,7 @@ function ImportedSectionPremiumWebsiteTemplatesReady() {
             </span>{" "}
             <span className={"\x74ext-[\x76ar(\x2d-text)]"}>ready for Claude.</span>
           </h1>
-          <p
-            className={
-              "mt-4 max-w-md text-[14px] leading-relaxed \x74ext-[\x76ar(\x2d-text-secondary)] \x73m:\x74ext-[\x315px]"
-            }
-          >
-            Copy Substrates templates and sections straight into Claude Code, Cursor, v0 and more,
-            or open them in Webflow and Framer. 192 templates to preview, and{" "}
-            <strong className={"font-medium \x74ext-[\x76ar(\x2d-text)]"}>
-              38 sections free to copy
-            </strong>{" "}
-            with an account.
-          </p>
+          <HomeHeroCatalogParagraph />
           <div
             className={
               "mt-7 flex flex-col gap-3 \x73m:\x66lex-row \x73m:\x66lex-wrap \x73m:\x69tems-center"
@@ -3124,7 +3110,7 @@ function ImportedSectionFreeAndAIReady() {
           <span className={"rounded-full \x62g-[#\x657f5e1] px-2 py-0.5"}>Free</span>
         </span>
         <span className={"mt-3 text-[16px] font-medium \x74ext-[\x76ar(\x2d-text)]"}>
-          38 sections, free to copy
+          <HomeFreeSectionsChip />
         </span>
         <span className={"mt-1 text-[13px] leading-relaxed \x74ext-[\x76ar(\x2d-text-secondary)]"}>
           Paste them into Claude Code, Cursor or v0. Sign in, no card, no plan.

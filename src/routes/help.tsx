@@ -4,6 +4,10 @@ import { useSupplyShell } from "@/lib/use-supply-shell";
 import type { CSSProperties } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import capturedCSS from "../styles/pages/help.css?raw";
+import {
+  SidebarSectionCount,
+  SidebarTemplateCount,
+} from "@/components/marketing/TemplatesPublicCopy";
 
 export const Route = createFileRoute("/help")({
   head: () =>
@@ -399,11 +403,7 @@ function ImportedAside() {
                 </svg>
               </span>
               <span className="min-w-0 flex-1 truncate">All Templates</span>
-              <span
-                className={"shrink-0 text-[11px] tabular-nums \x74ext-[\x76ar(\x2d-text-tertiary)]"}
-              >
-                192
-              </span>
+              <SidebarTemplateCount />
             </a>
             <a
               className={
@@ -452,11 +452,7 @@ function ImportedAside() {
                 </svg>
               </span>
               <span className="min-w-0 flex-1 truncate">Sections</span>
-              <span
-                className={"shrink-0 text-[11px] tabular-nums \x74ext-[\x76ar(\x2d-text-tertiary)]"}
-              >
-                58
-              </span>
+              <SidebarSectionCount />
             </a>
             <a
               className={
@@ -539,11 +535,7 @@ function ImportedAside() {
                 </svg>
               </span>
               <span className="min-w-0 flex-1 truncate">All Platforms</span>
-              <span
-                className={"shrink-0 text-[11px] tabular-nums \x74ext-[\x76ar(\x2d-text-tertiary)]"}
-              >
-                192
-              </span>
+              <SidebarTemplateCount />
             </a>
             <a
               className={

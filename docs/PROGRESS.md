@@ -54,7 +54,7 @@ Every prompt reads this first and updates its own row. Mark done only when the p
 | P30 | Firestore rules tests and deploy checklist     | done    | `tests/rules/`, `npm run test:rules`, CI `firestore-rules`, `docs/runbooks/firebase.md` |
 | P31 | Product-content tooling                        | done    | validate/upload/status, content-example, launch-products.md                |
 | P32 | Launch catalog gating                          | done    | `isDeliverable`, server `not_available_yet`, Coming soon UI, Available now filter |
-| P33 | Marketing claims audit                         | todo    |                                                                            |
+| P33 | Marketing claims audit                         | done    | `public-claims.ts`, `docs/QA/claims.md`, dynamic pricing/home/templates counts |
 | P34 | Account lifecycle                              | todo    |                                                                            |
 | P35 | Assistant wrapper contract tests               | todo    |                                                                            |
 | P36 | Observability                                  | todo    |                                                                            |

@@ -1,5 +1,10 @@
 import { withPublicPageHead } from "@/lib/seo";
 import { CatalogBrowser } from "@/components/CatalogBrowser";
+import {
+  TemplatesPageTitleCount,
+  SidebarSectionCount,
+  SidebarTemplateCount,
+} from "@/components/marketing/TemplatesPublicCopy";
 import { useSupplyShell } from "@/lib/use-supply-shell";
 import type { CSSProperties } from "react";
 import { createFileRoute } from "@tanstack/react-router";
@@ -120,7 +125,7 @@ function Index() {
                     "\x66ont-[\x66amily-name:\x76ar(\x2d-font-heading)] text-[32px] font-medium leading-[1.05] tracking-tight \x73m:\x74ext-[\x344px]"
                   }
                 >
-                  <span className={"\x74ext-[\x76ar(\x2d-text-tertiary)]"}>192</span>{" "}
+                  <TemplatesPageTitleCount />{" "}
                   <span className={"\x74ext-[\x76ar(\x2d-text)]"}>
                     Webflow &amp; Framer templates
                   </span>
@@ -577,11 +582,7 @@ function ImportedAside() {
                 </svg>
               </span>
               <span className="min-w-0 flex-1 truncate">All Templates</span>
-              <span
-                className={"shrink-0 text-[11px] tabular-nums \x74ext-[\x76ar(\x2d-text-tertiary)]"}
-              >
-                192
-              </span>
+              <SidebarTemplateCount />
             </a>
             <a
               className={
@@ -630,11 +631,7 @@ function ImportedAside() {
                 </svg>
               </span>
               <span className="min-w-0 flex-1 truncate">Sections</span>
-              <span
-                className={"shrink-0 text-[11px] tabular-nums \x74ext-[\x76ar(\x2d-text-tertiary)]"}
-              >
-                58
-              </span>
+              <SidebarSectionCount />
             </a>
             <a
               className={
@@ -717,11 +714,7 @@ function ImportedAside() {
                 </svg>
               </span>
               <span className="min-w-0 flex-1 truncate">All Platforms</span>
-              <span
-                className={"shrink-0 text-[11px] tabular-nums \x74ext-[\x76ar(\x2d-text-tertiary)]"}
-              >
-                192
-              </span>
+              <SidebarTemplateCount />
             </a>
             <a
               className={
