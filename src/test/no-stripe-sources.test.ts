@@ -1,27 +1,49 @@
 import { describe, expect, it } from "vitest";
-import { readdirSync, readFileSync } from "node:fs";
+import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 
-function walk(dir: string): string[] {
+const ROOT = process.cwd();
+
+function walk(dir: string, filter: (rel: string) => boolean): string[] {
   const out: string[] = [];
   for (const name of readdirSync(dir, { withFileTypes: true })) {
     const p = join(dir, name.name);
-    if (name.isDirectory()) out.push(...walk(p));
-    else if (/\.(ts|tsx)$/.test(name.name) && !name.name.includes("no-stripe-sources")) out.push(p);
+    const rel = p.replace(ROOT, "").replace(/^[/\\]/, "");
+    if (name.isDirectory()) {
+      if (name.name === "node_modules" || name.name === ".output") continue;
+      out.push(...walk(p, filter));
+    } else if (filter(rel)) out.push(p);
   }
   return out;
 }
 
-describe("P23 no Stripe in src", () => {
-  it("has no STRIPE_ or stripe.server references under src/", () => {
-    const root = join(process.cwd(), "src");
-    const hits: string[] = [];
-    for (const file of walk(root)) {
-      const text = readFileSync(file, "utf8");
-      if (text.includes("STRIPE_") || text.includes("stripe.server")) {
-        hits.push(file.replace(process.cwd(), ""));
-      }
-    }
+function scanPaths(): string[] {
+  const paths: string[] = [];
+  const srcRoot = join(ROOT, "src");
+  paths.push(
+    ...walk(srcRoot, (rel) => /\.(ts|tsx)$/.test(rel) && !rel.includes("no-stripe-sources")),
+  );
+  const scriptsRoot = join(ROOT, "scripts");
+  if (statSync(scriptsRoot).isDirectory()) {
+    paths.push(...walk(scriptsRoot, (rel) => /\.(ts|tsx|mjs|js)$/.test(rel)));
+  }
+  for (const name of readdirSync(ROOT)) {
+    if (/\.(json|js|mjs|ts)$/.test(name)) paths.push(join(ROOT, name));
+  }
+  paths.push(join(ROOT, ".env.example"));
+  return paths;
+}
+
+function stripeHits(file: string): boolean {
+  const text = readFileSync(file, "utf8");
+  return text.includes("STRIPE_") || text.includes("stripe.server");
+}
+
+describe("P23 no Stripe in product source", () => {
+  it("has no STRIPE_ or stripe.server in src, scripts, root configs, or .env.example", () => {
+    const hits = scanPaths()
+      .filter(stripeHits)
+      .map((p) => p.replace(ROOT, ""));
     expect(hits).toEqual([]);
   });
 });

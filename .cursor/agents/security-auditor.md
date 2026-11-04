@@ -1,6 +1,6 @@
 ---
 name: security-auditor
-description: Read-only security audit of a finished branch or commit. Checks secrets, auth and ownership, input validation, Stripe webhook handling, Firestore rules, headers, dependencies. Use after a prompt's work is committed.
+description: Read-only security audit of a finished branch or commit. Checks secrets, auth and ownership, input validation, Lemon Squeezy webhook handling, Firestore rules, headers, dependencies. Use after a prompt's work is committed.
 model: inherit
 readonly: true
 ---
@@ -17,7 +17,7 @@ Check:
 
 - Secrets or private keys in client code, or server env vars exposed through the `VITE_` prefix.
 - Every server function and API route checks the Firebase ID token and ownership.
-- Stripe webhook: signature verified on the raw body, timestamp tolerance, idempotent on event id, no trust in client-supplied amounts or plan.
+- Lemon Squeezy webhook: HMAC verified on the raw body (`X-Signature`), idempotent on event key, no trust in client-supplied amounts or plan.
 - Firestore rules: least privilege; `purchases` is client read-only for the owner.
 - Input validated at the boundary (zod); no raw HTML injection beyond captured static markup; redirects validated (`safeReturnPath`).
 - MCP `/mcp` verifies the token audience and exposes only catalog data, never profiles or licensed source.

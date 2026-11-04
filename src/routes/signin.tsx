@@ -91,6 +91,7 @@ function Index() {
     return () => {
       active = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- profile load keyed on Firebase uid
   }, [user?.uid]);
   function switchMode(next: typeof mode) {
     setMode(next);

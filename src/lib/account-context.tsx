@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- AccountProvider + useAccount hook */
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { useRouter } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";

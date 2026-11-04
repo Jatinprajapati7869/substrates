@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- context hook + provider */
 import { createContext, useContext, useState, type ReactNode } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { startCheckout } from "@/lib/checkout.functions";

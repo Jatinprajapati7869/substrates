@@ -4,7 +4,7 @@ Goal: take the Lemon Squeezy build from "tests pass" to "safe to launch an MVP".
 
 **Every prompt uses the same five skills:** `/tdd`, `surgical-patch`, `verify-and-stop`, `/code-review`, and the `security-auditor` subagent. Extra skills are added where the work needs them. If a skill name is not installed, delete it from the line.
 
-**Standard footer (already inside each prompt):** run `git status` first and stop if earlier work is uncommitted; verify with `npm.cmd run lint`, `typecheck`, `test`, `build`, `check:vendors`; run the `security-auditor` subagent on the branch and fix in-scope High findings; update `docs/PROGRESS.md`; commit AND push the branch (**mandatory**, `.cursor/rules/git-commit-push.mdc`; a task that changed any line is not done until the report shows the commit hash, `Pushed: yes`, and a clean `git status -sb`).
+**Standard footer (already inside each prompt):** run `git status` first and stop if earlier work is uncommitted; verify with `npm.cmd run verify` (lint → typecheck → test → build → check:vendors); run the `security-auditor` subagent on the branch and fix in-scope High findings; update `docs/PROGRESS.md`; commit AND push the branch (**mandatory**, `.cursor/rules/git-commit-push.mdc`; a task that changed any line is not done until the report shows the commit hash, `Pushed: yes`, and a clean `git status -sb`).
 
 **Agentic notice:** these prompts let Cursor edit files and run shell commands in your repo. Each has a stop list.
 

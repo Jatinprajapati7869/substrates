@@ -38,7 +38,7 @@ Never commit `.env` or service-account JSON. Copy variable **names** from `.env.
 | `NITRO_PRESET`                                                         | **`node-server`** (required on Heroku)                                        |
 | `VITE_FIREBASE_*`                                                      | Web app config (also baked at build; set on Heroku for SSR health + rebuilds) |
 | `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY` | Admin SDK (server only)                                                       |
-| `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`                           | Live or test per environment                                                  |
+| `LEMONSQUEEZY_API_KEY`, `LEMONSQUEEZY_STORE_ID`, `LEMONSQUEEZY_WEBHOOK_SECRET` | Lemon Squeezy checkout + webhook                                      |
 | `OPENAI_API_KEY`                                                       | Optional AI recommendations                                                   |
 | `CRON_SECRET`                                                          | If you call cron routes from Scheduler                                        |
 
@@ -112,7 +112,7 @@ POST to cron routes with `Authorization: Bearer $CRON_SECRET` (see `scripts/cron
 - [ ] `GET /api/health` → `configured` reflects env (no secrets in body)
 - [ ] `https://substrates.app/signin` loads; Google / email auth works
 - [ ] Lemon Squeezy test checkout → webhook 2xx → Firestore purchase / entitlement
-- [ ] Customer portal from `/signin` (subscription with stored portal URL)
+- [ ] Customer portal from `/signin` (Lemon Squeezy subscription portal URL stored on entitlement)
 
 ---
 
@@ -134,7 +134,7 @@ Do not rely on Vercel Hobby for commercial production (see D3).
 Paste values only in Heroku/Vercel config or local `.env`:
 
 - Firebase web (`VITE_*`) + admin (`FIREBASE_*`)
-- Stripe secret + webhook signing secret
-- Whether production Stripe is test or live
+- Lemon Squeezy API key, store id, webhook signing secret, and variant ids (see `.env.example`)
+- Whether Lemon Squeezy is test or live mode
 
 For debugging, share **variable names** in chat; use `/api/health` to see which groups are unset.

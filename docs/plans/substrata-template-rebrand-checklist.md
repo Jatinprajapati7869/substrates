@@ -1,5 +1,7 @@
 # Path A: Substrata = template business (Japanese app archived)
 
+> **Historical:** early rebrand checklist; current product name is Substrates. Kept for history only.
+
 ## Decision (locked)
 
 - **Live product:** This repo (templates/sections SaaS).

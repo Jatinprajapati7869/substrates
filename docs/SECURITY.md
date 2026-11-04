@@ -45,7 +45,6 @@ CSP is **report-only** first. Promote to enforcing after reports are clean.
 | `default-src`     | `'self'`                                                  | App scripts and documents                                 |
 | `script-src`      | `'self'`, `'unsafe-inline'`                               | Vite/TanStack inline hydration                            |
 | `script-src`      | `https://apis.google.com`, `https://www.gstatic.com`      | Google sign-in popup (`signin.tsx`)                       |
-| `script-src`      | `https://js.stripe.com`                                   | Stripe checkout scripts (removed when P23 drops Stripe)   |
 | `style-src`       | `'self'`, `'unsafe-inline'`                               | Captured CSS + Tailwind                                   |
 | `font-src`        | `'self'`, `data:`                                         | Inter woff2 under `/site-assets/` (`src/styles/site.css`) |
 | `img-src`         | `'self'`, `data:`, `blob:`                                | Local assets                                              |
@@ -57,8 +56,7 @@ CSP is **report-only** first. Promote to enforcing after reports are clean.
 | `connect-src`     | Firebase Google APIs hosts                                | Client SDK (`integrations/firebase/client.ts`)            |
 | `connect-src`     | `https://<VITE_FIREBASE_AUTH_DOMAIN>`                     | Auth domain from env at runtime                           |
 | `frame-src`       | `https://accounts.google.com`                             | Google OAuth                                              |
-| `frame-src`       | `https://checkout.stripe.com`, `https://js.stripe.com`    | Stripe Checkout                                           |
-| `form-action`     | `'self'`, `https://checkout.stripe.com`                   | Checkout redirect                                         |
+| `form-action`     | `'self'`                                                  | Same-origin forms and checkout redirects                  |
 | `frame-ancestors` | `'none'`                                                  | Clickjacking protection                                   |
 
 Browser CSP does not restrict server-side payment-provider or OpenAI fetches.

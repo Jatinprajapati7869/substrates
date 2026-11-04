@@ -8,6 +8,8 @@ execution: code
 origin: user-request
 ---
 
+> **Historical:** superseded planning doc; kept for history only.
+
 > **SUPERSEDED (2026-11-03):** this plan assumed Supabase. The current stack is Firebase Auth + Firestore. See `docs/ARCHITECTURE.md` and `docs/DECISIONS.md`. Kept for history only.
 
 ## Goal Capsule

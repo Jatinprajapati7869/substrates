@@ -6,7 +6,11 @@ import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 
 function git(args) {
-  return execFileSync("git", args, { encoding: "utf8", timeout: 15000, stdio: ["ignore", "pipe", "pipe"] }).trim();
+  return execFileSync("git", args, {
+    encoding: "utf8",
+    timeout: 15000,
+    stdio: ["ignore", "pipe", "pipe"],
+  }).trim();
 }
 
 function readStdin() {
@@ -47,7 +51,10 @@ function main() {
   }
 
   if (branch === "main" || branch === "master") {
-    if (dirty) problems.push(`you are on ${branch}; create a task branch (pNN-short-name) and commit there, never on ${branch}`);
+    if (dirty)
+      problems.push(
+        `you are on ${branch}; create a task branch (pNN-short-name) and commit there, never on ${branch}`,
+      );
   } else {
     let upstream = "";
     try {
@@ -62,7 +69,8 @@ function main() {
       } catch {
         hasCommitsNotOnMain = true;
       }
-      if (hasCommitsNotOnMain || dirty) problems.push(`branch ${branch} has not been pushed (no upstream)`);
+      if (hasCommitsNotOnMain || dirty)
+        problems.push(`branch ${branch} has not been pushed (no upstream)`);
     } else {
       try {
         const ahead = Number(git(["rev-list", "--count", `${upstream}..HEAD`]));

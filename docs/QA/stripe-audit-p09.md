@@ -1,5 +1,7 @@
 # P09 Stripe audit (pre-implementation)
 
+> **Historical:** Pack 1 Stripe audit; production billing moved to Lemon Squeezy in P23.
+
 Findings from `src/lib/stripe.server.ts`, webhook route, purchases, plans, pricing.
 
 ## Signature and raw body

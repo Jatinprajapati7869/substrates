@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- filter helper exported for tests */
 import { useEffect, useMemo, useState } from "react";
 import { catalog, productPhoto, productPrice, type Product } from "@/lib/catalog";
 

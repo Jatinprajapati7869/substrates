@@ -45,7 +45,7 @@ Every prompt reads this first and updates its own row. Mark done only when the p
 
 | Id  | Title                                          | Status | Notes |
 | --- | ---------------------------------------------- | ------ | ----- |
-| P24 | Repo hygiene and doc reconciliation            | todo   |       |
+| P24 | Repo hygiene and doc reconciliation            | done   | branch `p24-hygiene`; `npm run verify`; Lemon Squeezy/Heroku doc reconcile |
 | P25 | Billing hardening from the P23 review          | todo   |       |
 | P26 | Video skills checkout on Lemon Squeezy (S22)   | todo   |       |
 | P27 | Kit licenses and the Substrates license        | skipped | deferred by owner (D22) |
@@ -73,7 +73,7 @@ Every prompt reads this first and updates its own row. Mark done only when the p
 - [ ] `gh auth login -h github.com -s repo,workflow` (the earlier refresh timed out)
 - [ ] Lemon Squeezy: account, store, identity verification, payout method for India, three plan variants (+2 video variants if wanted), API key, webhook secret, test mode first (`docs/specs/lemonsqueezy-setup.md`)
 
-- [x] Open Pack 1 PR — [#1](https://github.com/Jatinprajapati7869/substrates/pull/1) on `p01-p21-pack1`; **CI verify** and **Vercel preview** green (2026-11-03). Merge when ready.
+- [x] Open Pack 1 PR — [#1](https://github.com/Jatinprajapati7869/substrates/pull/1) on `p01-p21-pack1`; **CI verify** green (2026-11-03). Merge when ready.
 - [ ] Disconnect the Lovable project from this GitHub repo (Lovable project settings)
 - [ ] Create the Heroku app, activate the student credit, connect GitHub deploys from `main`, set config vars from `.env.example`, add `substrates.app` domain and TLS
 - [ ] Update Firebase authorized domains and set the Lemon Squeezy webhook URL (`/api/public/lemonsqueezy-webhook`) to the Heroku/production domain

@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- resume path helper for sign-in flow */
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useRouter } from "@tanstack/react-router";

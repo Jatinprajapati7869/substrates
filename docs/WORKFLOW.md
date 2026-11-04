@@ -5,7 +5,7 @@
 1. Open a new Cursor Agent chat on this repo root. One prompt per chat.
 2. Paste the prompt from `docs/prompts/PACK-1.md`.
 3. The agent reads `docs/PROGRESS.md`, creates branch `pNN-short-name`, does the work, runs checks, updates `PROGRESS.md`, commits, pushes the branch.
-4. You open the PR, wait for CI, open the Vercel preview, run the manual steps the report lists, then merge.
+4. You open the PR, wait for CI (`npm run verify`), open an optional Vercel preview if connected, run the manual steps the report lists, then merge.
 5. Next prompt only after the previous one is merged (so the next branch starts from current `main`).
 
 ## Commit cadence
@@ -14,7 +14,7 @@
 
 ## Branches and history
 
-- `main` is production. Vercel deploys it.
+- `main` is production. **Heroku** deploys it (see `docs/DECISIONS.md` D3). Vercel may mirror the repo for previews only.
 - Never force-push or rewrite pushed history. Revert with a new commit.
 - Squash-merge PRs. Title format: `P07: firestore rules tests`.
 - After Lovable is disconnected (human step in P02), the Lovable sync warning in `AGENTS.md` goes away, but the no-rewrite rule stays.
@@ -30,13 +30,14 @@
 
 | Command                 | When                   |
 | ----------------------- | ---------------------- |
+| `npm run verify`        | full gate (lint → typecheck → test → build → check:vendors) |
 | `npm run lint`          | every prompt           |
 | `npm run typecheck`     | every prompt after P05 |
 | `npm test`              | every prompt           |
 | `npm run build`         | every prompt           |
 | `npm run check:vendors` | after P03              |
 
-CI runs the same set on every PR and on push to `main`.
+CI runs `npm run verify` on every PR and on push to `main` (build step uses placeholder `VITE_FIREBASE_*` like local smoke).
 
 ## Local pre-commit (optional)
 
@@ -55,4 +56,4 @@ git config core.hooksPath .githooks
 
 ## Secrets
 
-Names go in chat and docs; values go only in Vercel, Firebase, Stripe, Heroku dashboards or local `.env`. If a value leaks into a commit, rotate it. Do not rely on deleting the commit.
+Names go in chat and docs; values go only in Heroku, Firebase, Lemon Squeezy dashboards, or local `.env`. If a value leaks into a commit, rotate it. Do not rely on deleting the commit.
