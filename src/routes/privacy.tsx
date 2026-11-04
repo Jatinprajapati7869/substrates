@@ -666,10 +666,10 @@ function ImportedArticlePrivacyPolicy() {
             server uses to update your account. Heroku hosts the production application. When
             configured, OpenAI powers optional on-page product recommendations (catalog product
             names and descriptions may be sent for that request; your account id is not sent to
-            OpenAI). When configured, Sentry
-            may receive error reports with sensitive fields scrubbed before transmission. Google
-            sign-in is available as an authentication option. These providers process data under
-            their own terms and privacy notices. We do not sell personal information.
+            OpenAI). When configured, Sentry may receive error reports with sensitive fields
+            scrubbed before transmission. Google sign-in is available as an authentication option.
+            These providers process data under their own terms and privacy notices. We do not sell
+            personal information.
           </p>
         </section>
         <section className={"\x73croll-mt-24"}>
