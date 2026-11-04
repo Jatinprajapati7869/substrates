@@ -1,4 +1,5 @@
 import { withPublicPageHead } from "@/lib/seo";
+import { LEGAL_ENTITY } from "@/lib/brand";
 import { useSupplyShell } from "@/lib/use-supply-shell";
 import type { CSSProperties } from "react";
 import { createFileRoute } from "@tanstack/react-router";
@@ -251,7 +252,7 @@ function Index() {
               "mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 \x62order-t \x62order-[\x76ar(\x2d-line)] px-4 py-5 text-[11px] \x74ext-[\x76ar(\x2d-text-tertiary)] sm:px-6"
             }
           >
-            <span>© 2026 [LEGAL ENTITY]</span>
+            <span>© 2026 {LEGAL_ENTITY}</span>
             <a className={"\x68over:\x74ext-[\x76ar(\x2d-text)]"} href="/terms">
               Terms
             </a>

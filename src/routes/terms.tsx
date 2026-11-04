@@ -95,7 +95,7 @@ function Index() {
               "mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 \x62order-t \x62order-[\x76ar(\x2d-line)] px-4 py-5 text-[11px] \x74ext-[\x76ar(\x2d-text-tertiary)] sm:px-6"
             }
           >
-            <span>© 2026 [LEGAL ENTITY]</span>
+            <span>© 2026 {LEGAL_ENTITY}</span>
             <a className={"\x68over:\x74ext-[\x76ar(\x2d-text)]"} href="#">
               Terms
             </a>
@@ -615,7 +615,9 @@ function ImportedArticleTermsOfService() {
         Terms of Service
       </h1>
       <p className={"mt-3 text-[14px] leading-relaxed \x74ext-[\x76ar(\x2d-text-secondary)]"}>
-        These terms govern your use of {PRODUCT_NAME}, operated by {LEGAL_ENTITY}.
+        These terms govern your use of {PRODUCT_NAME}, operated by {LEGAL_ENTITY} from{" "}
+        {LEGAL_ADDRESS}. Paid purchases are sold by Lemon Squeezy as merchant of record; Lemon
+        Squeezy&apos;s terms apply to payment processing.
       </p>
       <div
         className={
@@ -643,8 +645,13 @@ function ImportedArticleTermsOfService() {
             template credit each paid month. <strong>Sections + Templates</strong> is $39 per month
             and includes every Pro section plus three template credits each paid month.{" "}
             <strong>Lifetime</strong> is a one-time $499 payment with every template unlocked and no
-            recurring renewal. Taxes and the final total are shown in Stripe Checkout before you
-            pay. Promotional prices, if offered, appear at checkout.
+            recurring renewal. <strong>Video skills</strong> (separate product) is $9.99 per month
+            or $79.99 per year on{" "}
+            <a className={"underline \x75nderline-offset-4"} href="/pricing/videos">
+              /pricing/videos
+            </a>
+            . Taxes and the final total are shown in Lemon Squeezy checkout before you pay.
+            Promotional prices, if offered, appear at checkout.
           </p>
         </section>
         <section className={"\x73croll-mt-24"}>
@@ -689,13 +696,35 @@ function ImportedArticleTermsOfService() {
             Cancellation and refunds
           </h2>
           <p>
-            Subscriptions can be canceled through the Stripe Customer Portal from your account
-            billing controls; cancellation stops future renewals at the end of the current paid
-            period. Unlocked templates remain available unless a charge is refunded under our{" "}
+            Subscriptions can be canceled through the Lemon Squeezy customer portal linked from your
+            account billing controls; cancellation stops future renewals at the end of the current
+            paid period. Refunds are described in our{" "}
             <a className={"underline \x75nderline-offset-4"} href="/refunds">
               Refund Policy
             </a>
             . Nothing here limits mandatory consumer rights.
+          </p>
+        </section>
+        <section className={"\x73croll-mt-24"}>
+          <h2 className={"mb-2 text-[15px] font-medium \x74ext-[\x76ar(\x2d-text)]"}>
+            Availability
+          </h2>
+          <p>
+            We aim to keep {PRODUCT_NAME} available but do not guarantee uninterrupted access.
+            Maintenance, provider outages, or changes to the catalog may affect the service. We may
+            update or remove listings to fix errors or reflect licensing.
+          </p>
+        </section>
+        <section className={"\x73croll-mt-24"}>
+          <h2 className={"mb-2 text-[15px] font-medium \x74ext-[\x76ar(\x2d-text)]"}>
+            Limitation of liability
+          </h2>
+          <p>
+            To the fullest extent permitted by law, {LEGAL_ENTITY} is not liable for indirect,
+            incidental, special, consequential, or punitive damages, or for lost profits or data,
+            arising from your use of {PRODUCT_NAME}. Our total liability for any claim relating to
+            the service is limited to the amount you paid us for the plan at issue in the twelve
+            months before the claim, except where mandatory law says otherwise.
           </p>
         </section>
         <section className={"\x73croll-mt-24"}>
@@ -719,7 +748,8 @@ function ImportedArticleTermsOfService() {
         <section className={"\x73croll-mt-24"}>
           <h2 className={"mb-2 text-[15px] font-medium \x74ext-[\x76ar(\x2d-text)]"}>Operator</h2>
           <p>
-            {PRODUCT_NAME} is operated by {LEGAL_ENTITY}, {LEGAL_ADDRESS}. Questions:{" "}
+            {PRODUCT_NAME} is operated by {LEGAL_ENTITY}, {LEGAL_ADDRESS} (solo founder; no
+            registered company yet). Questions:{" "}
             <a className={"underline \x75nderline-offset-4"} href={`mailto:${SUPPORT_EMAIL}`}>
               {SUPPORT_EMAIL}
             </a>

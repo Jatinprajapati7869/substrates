@@ -1,6 +1,5 @@
 import { withPublicPageHead } from "@/lib/seo";
 import {
-  HOSTING_PROVIDER,
   LEGAL_ADDRESS,
   LEGAL_ENTITY,
   LEGAL_UPDATED,
@@ -101,7 +100,7 @@ function Index() {
               "mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 \x62order-t \x62order-[\x76ar(\x2d-line)] px-4 py-5 text-[11px] \x74ext-[\x76ar(\x2d-text-tertiary)] sm:px-6"
             }
           >
-            <span>© 2026 [LEGAL ENTITY]</span>
+            <span>© 2026 {LEGAL_ENTITY}</span>
             <a className={"\x68over:\x74ext-[\x76ar(\x2d-text)]"} href="/terms">
               Terms
             </a>
@@ -621,8 +620,8 @@ function ImportedArticlePrivacyPolicy() {
         Privacy Policy
       </h1>
       <p className={"mt-3 text-[14px] leading-relaxed \x74ext-[\x76ar(\x2d-text-secondary)]"}>
-        {LEGAL_ENTITY} operates {PRODUCT_NAME}. This page describes the information we use to run
-        accounts, billing, and product delivery.
+        {LEGAL_ENTITY} is operated from {LEGAL_ADDRESS} by a solo founder (no registered company
+        yet). This policy describes what we collect and why when you use {PRODUCT_NAME}.
       </p>
       <div
         className={
@@ -631,14 +630,16 @@ function ImportedArticlePrivacyPolicy() {
       >
         <section className={"\x73croll-mt-24"}>
           <h2 className={"mb-2 text-[15px] font-medium \x74ext-[\x76ar(\x2d-text)]"}>
-            Information we handle
+            Information we collect
           </h2>
           <p>
-            Account email, display name, Firebase user identifier, membership and credit status,
-            template unlock records, and assistant copy you request through the product. If you
-            contact support, we receive what you send. Our providers may process IP address, device
-            and browser details, and security logs. Stripe processes payment method and transaction
-            data; we do not receive your full card number.
+            Account email, display name, and Firebase user identifier; profile fields you choose to
+            save; membership status, template credits, unlock records, video skills status, and
+            purchase records written by our server after payment. If you contact support, we receive
+            what you send. Our hosting and providers may process IP address, device and browser
+            details, request metadata, and security or error logs (including stack traces when error
+            monitoring is enabled). Lemon Squeezy, as merchant of record, processes checkout, tax,
+            receipts, and payment method details; we do not receive your full card number.
           </p>
         </section>
         <section className={"\x73croll-mt-24"}>
@@ -658,15 +659,26 @@ function ImportedArticlePrivacyPolicy() {
             Service providers
           </h2>
           <p>
-            Google Firebase provides authentication; Cloud Firestore stores profiles, entitlements,
-            unlocks, and purchase records written by our server. Stripe processes checkout,
-            subscriptions, the customer billing portal, and webhooks. {HOSTING_PROVIDER} hosts the
-            production application. When configured, OpenAI powers optional on-page product
-            recommendations (your account identifier and catalog context may be sent for that
-            request). Sentry may receive error reports and performance data with sensitive fields
-            scrubbed before transmission. Google sign-in is available as an authentication option.
-            These providers process data under their own terms and privacy notices. We do not sell
-            personal information.
+            Google Firebase provides authentication; Cloud Firestore (Google LLC) stores profiles,
+            entitlements, unlocks, and purchase records written by our server. Lemon Squeezy is the
+            merchant of record for paid purchases: it handles checkout, tax collection, receipts,
+            subscription billing, refunds, and the customer billing portal, and sends webhooks our
+            server uses to update your account. Heroku hosts the production application. When
+            configured, OpenAI powers optional on-page product recommendations (your account
+            identifier and catalog context may be sent for that request). When configured, Sentry
+            may receive error reports with sensitive fields scrubbed before transmission. Google
+            sign-in is available as an authentication option. These providers process data under
+            their own terms and privacy notices. We do not sell personal information.
+          </p>
+        </section>
+        <section className={"\x73croll-mt-24"}>
+          <h2 className={"mb-2 text-[15px] font-medium \x74ext-[\x76ar(\x2d-text)]"}>
+            International transfers
+          </h2>
+          <p>
+            Providers such as Google, Lemon Squeezy, OpenAI, and Sentry may process data in the
+            United States and other countries. Where required, we rely on their contractual
+            safeguards and your use of the service.
           </p>
         </section>
         <section className={"\x73croll-mt-24"} id="cookies">
@@ -676,14 +688,14 @@ function ImportedArticlePrivacyPolicy() {
           <p>
             Your browser may store catalog favorites (
             <code className="text-[12px]">supply-favorites</code>), your cookie-banner choice (
-            <code className="text-[12px]">supply-cookie-choice</code>), and Firebase authentication
-            persistence so you stay signed in. You can clear site data in your browser settings;
-            doing so may sign you out or reset favorites.
+            <code className="text-[12px]">supply-cookie-choice</code>), optional homepage feedback
+            you submit locally (<code className="text-[12px]">supply-feedback</code>), and Firebase
+            authentication persistence so you stay signed in. You can clear site data in your
+            browser settings; doing so may sign you out or reset favorites.
           </p>
           <p className="mt-3">
             The cookie banner lets you Accept or Decline; that choice is saved locally. Accepting or
-            declining does not currently enable third-party analytics scripts in the app. We do not
-            use PostHog, Supabase, or Vercel Web Analytics in this codebase.
+            declining does not currently enable third-party analytics scripts in the app.
           </p>
           <p className="mt-3">
             <button
@@ -707,15 +719,23 @@ function ImportedArticlePrivacyPolicy() {
           </p>
         </section>
         <section className={"\x73croll-mt-24"}>
+          <h2 className={"mb-2 text-[15px] font-medium \x74ext-[\x76ar(\x2d-text)]"}>Children</h2>
+          <p>
+            {PRODUCT_NAME} is not directed at children under 16, and we do not knowingly collect
+            personal information from them. Contact us if you believe a child has provided data.
+          </p>
+        </section>
+        <section className={"\x73croll-mt-24"}>
           <h2 className={"mb-2 text-[15px] font-medium \x74ext-[\x76ar(\x2d-text)]"}>
-            Your choices and contact
+            Your rights and contact
           </h2>
           <p>
             Email{" "}
             <a className={"underline \x75nderline-offset-4"} href={`mailto:${SUPPORT_EMAIL}`}>
               {SUPPORT_EMAIL}
             </a>{" "}
-            to ask about access, correction, or deletion. Some records may need to be kept for
+            to ask about access, correction, or deletion. Account deletion in the product is
+            planned; until then, email us to request deletion. Some records may need to be kept for
             legal, fraud-prevention, or accounting reasons. Depending on where you live, you may
             have additional privacy rights, including the right to object or complain to a
             regulator.

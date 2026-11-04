@@ -94,7 +94,7 @@ function Index() {
               "mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 \x62order-t \x62order-[\x76ar(\x2d-line)] px-4 py-5 text-[11px] \x74ext-[\x76ar(\x2d-text-tertiary)] sm:px-6"
             }
           >
-            <span>© 2026 [LEGAL ENTITY]</span>
+            <span>© 2026 {LEGAL_ENTITY}</span>
             <a className={"\x68over:\x74ext-[\x76ar(\x2d-text)]"} href="/terms">
               Terms
             </a>
@@ -614,7 +614,8 @@ function ImportedArticleRefundPolicy() {
         Refund Policy
       </h1>
       <p className={"mt-3 text-[14px] leading-relaxed \x74ext-[\x76ar(\x2d-text-secondary)]"}>
-        We want you to try a paid plan without being stuck if it is not right for you.
+        Refund terms for paid plans are being finalized before general paid launch (see D15). This
+        page states only what is certain today.
       </p>
       <div
         className={
@@ -623,56 +624,15 @@ function ImportedArticleRefundPolicy() {
       >
         <section className={"\x73croll-mt-24"}>
           <h2 className={"mb-2 text-[15px] font-medium \x74ext-[\x76ar(\x2d-text)]"}>
-            14-day refund window (website plans)
+            Merchant of record
           </h2>
           <p>
-            Email{" "}
+            Paid purchases are processed by Lemon Squeezy as merchant of record. Refund requests and
+            payment disputes are handled through Lemon Squeezy and our support channel at{" "}
             <a className={"underline \x75nderline-offset-4"} href={`mailto:${SUPPORT_EMAIL}`}>
               {SUPPORT_EMAIL}
-            </a>{" "}
-            within 14 calendar days of a Sections, Sections + Templates, or Lifetime charge
-            (including a subscription renewal) to request a refund of that charge to your original
-            payment method. You do not need to give a reason. Refunds may take additional time to
-            appear depending on your bank or card issuer.
-          </p>
-        </section>
-        <section className={"\x73croll-mt-24"}>
-          <h2 className={"mb-2 text-[15px] font-medium \x74ext-[\x76ar(\x2d-text)]"}>
-            What happens after a refund
-          </h2>
-          <p>
-            When Stripe reports a refund, we mark the membership refunded, clear remaining credits,
-            and remove access tied to that purchase. For subscription refunds, credit-based template
-            unlocks created during the refunded billing period are revoked. For a refunded Lifetime
-            purchase, all template unlocks on the account are revoked. You may not keep using
-            prompts or entitlements obtained solely through a refunded charge. Unlocks from
-            separate, non-refunded purchases are unaffected.
-          </p>
-        </section>
-        <section className={"\x73croll-mt-24"}>
-          <h2 className={"mb-2 text-[15px] font-medium \x74ext-[\x76ar(\x2d-text)]"}>
-            Video skills
-          </h2>
-          <p>
-            Video skill plans ($9.99 per month or $79.99 per year on{" "}
-            <a className={"underline \x75nderline-offset-4"} href="/pricing/videos">
-              /pricing/videos
             </a>
-            ) are separate from the three website plans above. Stripe checkout for video is not
-            available in the app yet. When checkout launches, those purchases will be instant
-            digital access; the product page will state whether they qualify for the 14-day window
-            above.
-          </p>
-        </section>
-        <section className={"\x73croll-mt-24"}>
-          <h2 className={"mb-2 text-[15px] font-medium \x74ext-[\x76ar(\x2d-text)]"}>
-            After 14 days
-          </h2>
-          <p>
-            Contact us if you were charged twice, cancellation through the Customer Portal failed, a
-            paid item was unavailable or materially misdescribed, or delivery failed after you were
-            entitled. We will investigate and offer a fix or appropriate refund. Mandatory consumer
-            rights still apply.
+            . Lemon Squeezy&apos;s terms and policies apply to checkout, tax, and receipts.
           </p>
         </section>
         <section className={"\x73croll-mt-24"}>
@@ -680,10 +640,19 @@ function ImportedArticleRefundPolicy() {
             Canceling subscriptions
           </h2>
           <p>
-            Use the Stripe Customer Portal from your account to cancel Sections or Sections +
-            Templates. Cancellation prevents the next renewal but does not automatically refund the
-            current period. Unless refunded, Pro section access and unused credits continue until
-            the paid period ends; templates unlocked before cancellation stay in your library.
+            Use the Lemon Squeezy customer portal from your account to cancel Sections, Sections +
+            Templates, or video skills subscriptions. Cancellation stops the next renewal; it does
+            not by itself refund the current period.
+          </p>
+        </section>
+        <section className={"\x73croll-mt-24"}>
+          <h2 className={"mb-2 text-[15px] font-medium \x74ext-[\x76ar(\x2d-text)]"}>
+            Full policy coming later
+          </h2>
+          <p>
+            A complete refund policy (including any time limits and what happens to entitlements
+            after a refund) will be published on this page before paid launch. Until then, marketing
+            copy on the pricing page may not match final terms.
           </p>
         </section>
         <section className={"\x73croll-mt-24"}>
@@ -691,7 +660,7 @@ function ImportedArticleRefundPolicy() {
             Your legal rights
           </h2>
           <p>
-            This policy adds to, and does not replace, rights you may have under applicable consumer
+            This page adds to, and does not replace, rights you may have under applicable consumer
             law.
           </p>
         </section>

@@ -6,14 +6,16 @@ export const SITE_ORIGIN = "https://substrates.app";
 
 export const SUPPORT_EMAIL = "jatin@substrates.app";
 
-/** Legal entity shown in policies and footers (D14 — replace placeholders after counsel). */
-export const LEGAL_ENTITY = "[LEGAL ENTITY]";
+/** Operator shown in policies (solo founder; no registered company yet — D14). */
+export const LEGAL_ENTITY = "Substrates";
 
-export const LEGAL_ADDRESS = "[LEGAL ADDRESS]";
+export const LEGAL_ADDRESS = "Chennai, India";
 
-export const GOVERNING_LAW = "[GOVERNING LAW]";
+/** Draft governing law text for terms (not legal advice; counsel review pending). */
+export const GOVERNING_LAW =
+  "the laws of India (draft). Disputes are subject to the courts at Chennai, India (draft), except where mandatory local consumer law requires otherwise";
 
-export const LEGAL_UPDATED = "November 3, 2026";
+export const LEGAL_UPDATED = "November 4, 2026";
 
 /** Production host per D3 (Heroku). */
 export const HOSTING_PROVIDER = "Heroku";

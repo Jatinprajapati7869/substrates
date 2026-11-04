@@ -49,7 +49,7 @@ Every prompt reads this first and updates its own row. Mark done only when the p
 | P25 | Billing hardening from the P23 review          | done    | test-mode guard, plan/variant cross-check, P25 tests                       |
 | P26 | Video skills checkout on Lemon Squeezy (S22)   | done    | video variants env, Coming soon gate, `video-skills.test.ts`             |
 | P27 | Kit licenses and the Substrates license        | skipped | deferred by owner (D22)                                                    |
-| P28 | Legal pages for Substrates                     | todo    |                                                                            |
+| P28 | Legal pages for Substrates                     | done    | S18; brand.ts, privacy/terms/refunds, legal-claims.md                      |
 | P29 | Heroku-ready build and runbook                 | todo    |                                                                            |
 | P30 | Firestore rules tests and deploy checklist     | todo    |                                                                            |
 | P31 | Product-content tooling                        | todo    |                                                                            |
