@@ -52,7 +52,7 @@ Every prompt reads this first and updates its own row. Mark done only when the p
 | P28 | Legal pages for Substrates                     | done    | S18; brand.ts, privacy/terms/refunds, legal-claims.md                      |
 | P29 | Heroku-ready build and runbook                 | done    | `app.json`, `docs/runbooks/heroku.md`, CI node-server smoke, Procfile `HOST=0.0.0.0` |
 | P30 | Firestore rules tests and deploy checklist     | done    | `tests/rules/`, `npm run test:rules`, CI `firestore-rules`, `docs/runbooks/firebase.md` |
-| P31 | Product-content tooling                        | todo    |                                                                            |
+| P31 | Product-content tooling                        | done    | validate/upload/status, content-example, launch-products.md                |
 | P32 | Launch catalog gating                          | todo    |                                                                            |
 | P33 | Marketing claims audit                         | todo    |                                                                            |
 | P34 | Account lifecycle                              | todo    |                                                                            |

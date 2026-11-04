@@ -1,24 +1,29 @@
 /**
- * Upload canonical product bodies from git-ignored content/ to Firestore product_content/{slug}.
+ * Upload canonical product bodies to Firestore product_content/{docId}.
  *
- * Usage:
- *   node scripts/upload-product-content.mjs [--dry-run] [--slug=daylight]
+ * Default: dry-run (validation only). Pass --confirm to write.
  *
- * Requires FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY (or GOOGLE_APPLICATION_CREDENTIALS).
+ *   node scripts/upload-product-content.mjs [--confirm] [--all] [--slug=portfolio-collage]
  */
 import { createHash } from "node:crypto";
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { cert, getApps, initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
-import catalog from "../src/lib/catalog.json" with { type: "json" };
+import {
+  listContentMarkdownFiles,
+  parseContentRelativePath,
+  validateProductBody,
+  catalogProductBySlug,
+} from "./lib/product-content-validation.mjs";
 
 const ROOT = join(fileURLToPath(new URL(".", import.meta.url)), "..");
 const CONTENT_DIR = join(ROOT, "content");
-const MAX_BYTES = 900 * 1024;
+const MANIFEST_PATH = join(ROOT, "src/lib/content-manifest.json");
 
-const dryRun = process.argv.includes("--dry-run");
+const confirm = process.argv.includes("--confirm");
+const dryRun = !confirm;
 const slugFilter = process.argv.find((a) => a.startsWith("--slug="))?.slice("--slug=".length);
 
 function adminFirestore() {
@@ -36,94 +41,91 @@ function adminFirestore() {
   return getFirestore();
 }
 
-function walkMarkdown(dir, out = []) {
-  try {
-    if (!statSync(dir).isDirectory()) return out;
-  } catch {
-    return out;
+function loadManifest() {
+  if (!existsSync(MANIFEST_PATH)) {
+    return { updatedAt: null, products: [] };
   }
-  for (const name of readdirSync(dir)) {
-    const path = join(dir, name);
-    if (statSync(path).isDirectory()) walkMarkdown(path, out);
-    else if (name.endsWith(".md")) out.push(path);
-  }
-  return out;
+  return JSON.parse(readFileSync(MANIFEST_PATH, "utf8"));
 }
 
-function catalogProduct(kind, slug) {
-  return catalog.find((p) => p.kind === kind && p.slug === slug);
-}
-
-/** @returns {{ docId: string, kind: "section" | "template", slug: string } | null} */
-function parseFile(relativePath) {
-  const normalized = relativePath.replace(/\\/g, "/");
-  const sectionMatch = /^sections\/(.+)\.md$/.exec(normalized);
-  if (sectionMatch) {
-    const slug = sectionMatch[1];
-    return { docId: slug, kind: "section", slug };
-  }
-  const templateDual = /^templates\/(.+)\.(webflow|framer)\.md$/.exec(normalized);
-  if (templateDual) {
-    const slug = templateDual[1];
-    const platform = templateDual[2];
-    return { docId: `${slug}__${platform}`, kind: "template", slug };
-  }
-  const templateSingle = /^templates\/(.+)\.md$/.exec(normalized);
-  if (templateSingle) {
-    const slug = templateSingle[1];
-    return { docId: slug, kind: "template", slug };
-  }
-  return null;
+function saveManifest(manifest) {
+  manifest.updatedAt = new Date().toISOString();
+  writeFileSync(MANIFEST_PATH, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
 }
 
 async function main() {
-  const files = walkMarkdown(CONTENT_DIR);
+  const files = listContentMarkdownFiles(CONTENT_DIR, join(ROOT, "content-example")).filter((f) =>
+    f.relative.startsWith("content/"),
+  );
+
   if (!files.length) {
     console.log("No markdown files under content/ (nothing to upload).");
     return;
   }
 
-  const db = dryRun ? null : adminFirestore();
-  let uploaded = 0;
-
-  for (const file of files) {
-    const rel = file.slice(CONTENT_DIR.length + 1);
-    const parsed = parseFile(rel);
-    if (!parsed) {
-      console.warn(`Skip (unrecognized path): ${rel}`);
-      continue;
+  for (const { absolute, relative } of files) {
+    const body = readFileSync(absolute, "utf8");
+    const validation = validateProductBody(relative, body);
+    if (!validation.ok) {
+      for (const err of validation.errors) {
+        console.error(`${err.path}:${err.line}: ${err.message}`);
+      }
+      process.exitCode = 1;
+      console.error("Upload aborted: validation failed.");
+      return;
     }
+  }
+
+  const db = dryRun ? null : adminFirestore();
+  const manifest = loadManifest();
+  const byDocId = new Map(manifest.products.map((p) => [p.docId, p]));
+  let processed = 0;
+
+  for (const { absolute, relative } of files) {
+    const parsed = parseContentRelativePath(relative);
+    if (!parsed || !catalogProductBySlug(parsed.slug)) continue;
     if (slugFilter && parsed.slug !== slugFilter) continue;
 
-    const product = catalogProduct(parsed.kind, parsed.slug);
-    if (!product) {
-      console.error(`Unknown catalog slug: ${parsed.kind}/${parsed.slug}`);
-      process.exitCode = 1;
-      continue;
-    }
-
-    const body = readFileSync(file, "utf8");
-    if (body.length > MAX_BYTES) {
-      console.error(`Body too large (${body.length} bytes): ${rel}`);
-      process.exitCode = 1;
-      continue;
-    }
-
+    const body = readFileSync(absolute, "utf8");
+    const bytes = Buffer.byteLength(body, "utf8");
     const sha256 = createHash("sha256").update(body).digest("hex");
-    const payload = { body, updatedAt: new Date(), bodyVersion: 1, sha256 };
+    const existing = byDocId.get(parsed.docId);
+    if (existing?.sha256 === sha256) {
+      console.log(`Skip unchanged ${parsed.docId} (${bytes} bytes)`);
+      processed += 1;
+      continue;
+    }
+
+    const bodyVersion = (existing?.bodyVersion ?? 0) + 1;
+    const payload = { body, updatedAt: new Date(), bodyVersion, sha256 };
 
     if (dryRun) {
-      console.log(`[dry-run] product_content/${parsed.docId} (${body.length} bytes)`);
-      uploaded += 1;
+      console.log(`[dry-run] product_content/${parsed.docId} (${bytes} bytes, v${bodyVersion})`);
+      processed += 1;
       continue;
     }
 
     await db.collection("product_content").doc(parsed.docId).set(payload, { merge: true });
-    console.log(`Uploaded product_content/${parsed.docId}`);
-    uploaded += 1;
+    console.log(`Uploaded product_content/${parsed.docId} (v${bodyVersion}, ${bytes} bytes)`);
+
+    byDocId.set(parsed.docId, {
+      docId: parsed.docId,
+      slug: parsed.slug,
+      kind: parsed.kind,
+      bodyVersion,
+      sha256,
+      bytes,
+    });
+    processed += 1;
   }
 
-  console.log(`Done. ${uploaded} document(s) ${dryRun ? "validated" : "written"}.`);
+  if (!dryRun && processed > 0) {
+    manifest.products = [...byDocId.values()].sort((a, b) => a.docId.localeCompare(b.docId));
+    saveManifest(manifest);
+    console.log(`Updated ${MANIFEST_PATH}`);
+  }
+
+  console.log(`Done. ${processed} document(s) ${dryRun ? "validated (dry-run)" : "written"}.`);
 }
 
 main().catch((err) => {
