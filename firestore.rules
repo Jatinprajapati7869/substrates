@@ -10,7 +10,7 @@ service cloud.firestore {
     }
 
     function billingProfileFields() {
-      return ['billingCustomerId'];
+      return ['billingCustomerId', 'stripeCustomerId'];
     }
 
     function profileClientCreateOk() {

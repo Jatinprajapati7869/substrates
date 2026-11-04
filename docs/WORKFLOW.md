@@ -28,16 +28,16 @@
 
 ## Checks
 
-| Command                 | When                   |
-| ----------------------- | ---------------------- |
+| Command                 | When                                                        |
+| ----------------------- | ----------------------------------------------------------- |
 | `npm run verify`        | full gate (lint → typecheck → test → build → check:vendors) |
-| `npm run lint`          | every prompt           |
-| `npm run typecheck`     | every prompt after P05 |
-| `npm test`              | every prompt           |
-| `npm run build`         | every prompt           |
-| `npm run check:vendors` | after P03              |
+| `npm run lint`          | every prompt                                                |
+| `npm run typecheck`     | every prompt after P05                                      |
+| `npm test`              | every prompt                                                |
+| `npm run build`         | every prompt                                                |
+| `npm run check:vendors` | after P03                                                   |
 
-CI runs `npm run verify` on every PR and on push to `main` (build step uses placeholder `VITE_FIREBASE_*` like local smoke).
+CI runs `npm run verify` and job **`firestore-rules`** (`npm run test:rules`, needs Java) on every PR and on push to `main`. Mark both **`verify`** and **`firestore-rules`** required in branch protection (human).
 
 ## Local pre-commit (optional)
 

@@ -29,8 +29,8 @@ Updated **2026-11-03** after P20 (110 Vitest tests). Historical P01 counts below
 | S2  | manual | `src/routes/signin.tsx` profile writes; no Vitest for OAuth create |
 | S3  | proven | `src/test/account-validation.test.ts`                              |
 | S4  | proven | `src/test/checkout.functions.test.ts`, `checkout-plans.test.ts`    |
-| S5  | proven | `src/test/lemonsqueezy-webhook.test.ts`                              |
-| S6  | manual | `firestore.rules`; `docs/QA/rules-checklist.md` emulator steps     |
+| S5  | proven | `src/test/lemonsqueezy-webhook.test.ts`                            |
+| S6  | proven | `tests/rules/*.test.ts` via `npm run test:rules`; `firestore.rules`              |
 | S7  | proven | `src/test/billing-portal.test.ts`                                  |
 | S8  | proven | `deliver-product-prompt.test.ts`, `build-output-leak.test.ts`      |
 | S9  | proven | `recommend.functions.test.ts`                                      |
@@ -48,7 +48,7 @@ Updated **2026-11-03** after P20 (110 Vitest tests). Historical P01 counts below
 | S21 | proven | `lemonsqueezy-webhook.test.ts` refund/cancel paths                 |
 | S22 | proven | `src/test/video-skills.test.ts`; `VIDEO_PLANS` in `plans.ts`       |
 
-**Counts:** proven **20**. manual **3** (S2, S6, S18). open **0**.
+**Counts:** proven **21**. manual **2** (S2, S18). open **0**.
 
 ## Historical P01 snapshot (2026-11-03 morning)
 

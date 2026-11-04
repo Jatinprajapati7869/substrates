@@ -1,55 +1,47 @@
 # Firestore rules checklist (S6)
 
-Automated `@firebase/rules-unit-testing` is **not** in this repo (adding it needs explicit approval). Run these steps manually with the [Firebase Emulator Suite](https://firebase.google.com/docs/emulator-suite) before each rules change ships.
+**Automated:** `npm run test:rules` (Firestore emulator + `@firebase/rules-unit-testing`). Tests live under `tests/rules/` — one file per collection in `firestore.rules`. CI job: **`firestore-rules`** in `.github/workflows/ci.yml`.
 
-## Setup (once)
+**Requires Java (JDK 21+)** for the emulator (`firebase-tools` requirement). Default `npm test` does not run rules tests.
 
-1. Install Firebase CLI: `npm install -g firebase-tools`
-2. From repo root: `firebase init emulators` (Firestore only) if `firebase.json` is not configured yet.
-3. Start emulators: `firebase emulators:start --only firestore`
-4. In the Emulator UI or with the REST API, create two test users (uid `user-a`, `user-b`) and obtain ID tokens (Auth emulator or custom tokens).
+## Run locally
 
-## S6 — purchases isolation
+```bash
+npm run test:rules
+```
 
-| Step | Action                                                        | Expected |
-| ---- | ------------------------------------------------------------- | -------- |
-| 1    | As **user-a**, read `purchases/{id}` where `userId == user-a` | Allow    |
-| 2    | As **user-a**, read `purchases/{id}` where `userId == user-b` | Deny     |
-| 3    | As **user-a**, create/update/delete any `purchases/*`         | Deny     |
+If Java is missing, the command fails with a JVM error — install [Eclipse Temurin](https://adoptium.net/) and retry.
 
-## Profile billing fields (S6 / checkout hardening)
+## What the tests cover
 
-| Step | Action                                                               | Expected |
-| ---- | -------------------------------------------------------------------- | -------- |
-| 4    | As **user-a**, create `profiles/user-a` with `{ displayName: "A" }`  | Allow    |
-| 5    | As **user-a**, update profile to set `stripeCustomerId: "cus_x"`     | Deny     |
-| 6    | As **user-a**, create profile with `stripeCustomerId` on first write | Deny     |
+| Area | File | Allow | Deny |
+| ---- | ---- | ----- | ---- |
+| Profiles (owner read/create/update; no `billingCustomerId`; no cross-user read) | `profiles.test.ts` | ✓ | ✓ |
+| Purchases (read own by `userId`; no client write) | `purchases.test.ts` | ✓ | ✓ |
+| Entitlements (owner read only) | `entitlements.test.ts` | ✓ | ✓ |
+| Unlocks (read own doc id prefix; no write) | `unlocks.test.ts` | ✓ | ✓ |
+| `product_content` (no client access) | `product_content.test.ts` | — | ✓ |
+| `billing_processed_events` (no client access) | `billing_processed_events.test.ts` | — | ✓ |
+| Default deny on unknown paths | `catchall.test.ts` | — | ✓ |
 
-## Entitlements and unlocks (read own only)
+Each collection rule includes at least one **allow** test where the rules permit access, and **deny** tests elsewhere. Every file includes an **unauthenticated read denied** case where reads exist in rules.
 
-| Step | Action                                             | Expected |
-| ---- | -------------------------------------------------- | -------- |
-| 7    | As **user-a**, read `entitlements/user-a`          | Allow    |
-| 8    | As **user-a**, read `entitlements/user-b`          | Deny     |
-| 9    | As **user-a**, write any `entitlements/*`          | Deny     |
-| 10   | As **user-a**, read `unlocks/user-a_template-slug` | Allow    |
-| 11   | As **user-a**, read `unlocks/user-b_template-slug` | Deny     |
-| 12   | As **user-a**, write any `unlocks/*`               | Deny     |
+## Manual spot-check (optional)
 
-## Server-only collections
+Use the [Emulator UI](https://firebase.google.com/docs/emulator-suite) only if debugging a failing test. Normal workflow: fix `firestore.rules`, run `npm run test:rules`, merge, then deploy (see below).
 
-| Step | Action                                                                                  | Expected       |
-| ---- | --------------------------------------------------------------------------------------- | -------------- |
-| 13   | As **user-a**, read or write `product_content/any-slug`                                 | Deny           |
-| 14   | As **user-a**, read or write `stripe_events/evt_1`                                      | Deny           |
-| 15   | As **user-a**, read/write a random top-level collection not listed in `firestore.rules` | Deny (default) |
+## Deploy (production)
 
-## Deploy
-
-After emulator checks pass on the branch you merge:
+After automated tests pass on the branch you merge:
 
 ```bash
 firebase deploy --only firestore:rules
 ```
 
+See **`docs/runbooks/firebase.md`** for project setup, authorized domains, Spark quotas, and quota exhaustion.
+
 Confirm production rules match `firestore.rules` in the deployed commit.
+
+## Branch protection (human)
+
+In GitHub → **Settings** → **Branches** → protection on `main`: require status check **`firestore-rules`** (in addition to **`verify`**).
