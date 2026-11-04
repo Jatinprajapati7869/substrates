@@ -35,6 +35,8 @@ export function mapLemonSqueezyWebhookToEvents(
     | "LEMONSQUEEZY_VARIANT_ID_SECTIONS"
     | "LEMONSQUEEZY_VARIANT_ID_SECTIONS_TEMPLATES"
     | "LEMONSQUEEZY_VARIANT_ID_LIFETIME"
+    | "LEMONSQUEEZY_VARIANT_ID_VIDEO_MONTHLY"
+    | "LEMONSQUEEZY_VARIANT_ID_VIDEO_YEARLY"
   >,
 ): WebhookMapResult {
   const eventName = payload.meta?.event_name;
@@ -141,13 +143,23 @@ export function mapLemonSqueezyWebhookToEvents(
     }
     case "subscription_cancelled":
     case "subscription_expired": {
+      const periodEnd =
+        isoToUnixSeconds(attrString(attrs, "ends_at")) ??
+        isoToUnixSeconds(attrString(attrs, "renews_at"));
       return {
         releaseClaimOnEmpty: false,
         events: [
           {
             type: "subscription_canceled",
             eventKey,
-            ...optionalFields({ userId, plan: planMeta, customerId, status: "canceled" }),
+            ...optionalFields({
+              userId,
+              plan: planMeta,
+              customerId,
+              status: "canceled",
+              periodEnd,
+              immediateRevoke: eventName === "subscription_expired",
+            }),
           },
         ],
       };

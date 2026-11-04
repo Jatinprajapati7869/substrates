@@ -116,6 +116,7 @@ export function VideoCheckoutButton({
   children,
   disabled,
   title,
+  checkoutAvailable = true,
 }: {
   plan: VideoPlanId;
   className?: string;
@@ -123,6 +124,8 @@ export function VideoCheckoutButton({
   children: ReactNode;
   disabled?: boolean;
   title?: string;
+  /** When false, show Coming soon and block checkout (missing video variant env). */
+  checkoutAvailable?: boolean;
 }) {
   const { user, loading } = useAccount();
   const router = useRouter();
@@ -133,6 +136,7 @@ export function VideoCheckoutButton({
 
   async function go() {
     setError("");
+    if (!checkoutAvailable) return;
     if (!user) {
       void router.navigate({
         href: `/signin?next=${encodeURIComponent(videoCheckoutResumePath(plan))}`,
@@ -149,13 +153,16 @@ export function VideoCheckoutButton({
   }
 
   useEffect(() => {
-    if (loading || !user || resumed.current) return;
+    if (loading || !user || resumed.current || !checkoutAvailable) return;
     if (new URLSearchParams(window.location.search).get("checkout") === plan) {
       resumed.current = true;
       void go();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, user, plan]);
+  }, [loading, user, plan, checkoutAvailable]);
+
+  const blocked = disabled || !checkoutAvailable;
+  const label = !checkoutAvailable ? "Coming soon" : busy ? "Opening checkout…" : children;
 
   return (
     <>
@@ -164,11 +171,11 @@ export function VideoCheckoutButton({
         className={className}
         style={style}
         onClick={() => void go()}
-        disabled={disabled || busy}
+        disabled={blocked || busy}
         aria-busy={busy}
-        title={title}
+        title={!checkoutAvailable ? "Video checkout will open when billing is configured." : title}
       >
-        {busy ? "Opening checkout…" : children}
+        {label}
       </button>
       {error && (
         <p role="alert" style={{ marginTop: 8, fontSize: 13, color: "#b42318" }}>

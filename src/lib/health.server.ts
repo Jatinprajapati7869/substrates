@@ -2,6 +2,7 @@ import {
   isFirebaseClientEnvConfigured,
   isOpenAiEnvConfigured,
   isServerEnvGroupConfigured,
+  isVideoSkillsCheckoutConfigured,
 } from "./env.server";
 import { lemonSqueezyHealthWarnings } from "./billing/lemonsqueezy-provider";
 
@@ -9,6 +10,7 @@ export type HealthConfigured = {
   firebaseClient: boolean;
   firebaseAdmin: boolean;
   lemonsqueezy: boolean;
+  videoConfigured: boolean;
   openai: boolean;
 };
 
@@ -32,6 +34,7 @@ export function buildHealthPayload(): HealthPayload {
       firebaseClient: isFirebaseClientEnvConfigured(),
       firebaseAdmin: isServerEnvGroupConfigured("firebaseAdmin"),
       lemonsqueezy: isServerEnvGroupConfigured("lemonsqueezy"),
+      videoConfigured: isVideoSkillsCheckoutConfigured(),
       openai: isOpenAiEnvConfigured(),
     },
     ...(warnings.length ? { warnings } : {}),

@@ -18,11 +18,11 @@ Do these in order before P23 deploy. Mark items **check in dashboard** when the 
 
 Create three products or variants matching `src/lib/plans.ts` (USD):
 
-| Plan | Price | Billing |
-| ---- | ----- | ------- |
-| Sections | $15/mo | Subscription |
+| Plan                 | Price  | Billing      |
+| -------------------- | ------ | ------------ |
+| Sections             | $15/mo | Subscription |
 | Sections + Templates | $39/mo | Subscription |
-| Lifetime | $499 | One-time |
+| Lifetime             | $499   | One-time     |
 
 Record each **Variant ID** for:
 
@@ -30,7 +30,14 @@ Record each **Variant ID** for:
 - `LEMONSQUEEZY_VARIANT_ID_SECTIONS_TEMPLATES`
 - `LEMONSQUEEZY_VARIANT_ID_LIFETIME`
 
-Video skills variants are **out of scope** for this migration (P21).
+### Video skills (S22 / P26)
+
+Optional until the owner creates the video product. When ready, add two subscription variants ($9.99/mo, $79.99/yr):
+
+- `LEMONSQUEEZY_VARIANT_ID_VIDEO_MONTHLY`
+- `LEMONSQUEEZY_VARIANT_ID_VIDEO_YEARLY`
+
+Until **both** are set, `/pricing/videos` checkout buttons stay disabled (**Coming soon**) and `/api/health` reports `configured.videoConfigured: false`.
 
 ## 4. Test mode
 
@@ -55,7 +62,8 @@ Video skills variants are **out of scope** for this migration (P21).
 In checkout API calls (P23), set `product_options.redirect_url` to:
 
 - Success: `https://substrates.app/checkout-success` (or Heroku preview URL during testing)
-- Cancel: `https://substrates.app/pricing?checkout=cancelled`
+- Cancel (templates): `https://substrates.app/pricing?checkout=cancelled`
+- Cancel (video): `https://substrates.app/pricing/videos?checkout=cancelled`
 
 Use the same trusted origin helper as today’s Stripe checkout (not user-controlled `Origin`).
 

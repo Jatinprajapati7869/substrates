@@ -5,6 +5,7 @@ import {
   applyVideoInvoicePaidEntitlement,
   refreshProviderPortalUrl,
   resolveUserIdByBillingCustomer,
+  revokeVideoSkillsAccess,
   setEntitlementStatus,
   setVideoSkillsStatus,
 } from "@/lib/entitlements.server";
@@ -70,8 +71,14 @@ export async function dispatchBillingEvent(
     case "subscription_canceled": {
       const uid = event.userId;
       const plan = event.plan;
-      if (uid && plan && isVideoPlanId(plan)) await deps.setVideoStatus(uid, "canceled");
-      else if (uid) await deps.setStatus(uid, "canceled");
+      if (uid && plan && isVideoPlanId(plan)) {
+        if (event.immediateRevoke) {
+          await revokeVideoSkillsAccess(uid);
+        } else {
+          const periodEnd = event.periodEnd != null ? new Date(event.periodEnd * 1000) : null;
+          await setVideoSkillsStatus(uid, "canceled", periodEnd);
+        }
+      } else if (uid) await deps.setStatus(uid, "canceled");
       break;
     }
     case "subscription_past_due": {

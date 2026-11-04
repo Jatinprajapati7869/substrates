@@ -1,6 +1,7 @@
 import { findProduct } from "./catalog";
 import type { EntitlementDoc, EntitlementStatus } from "./entitlements.types";
-import { PLANS, isPlanId, type PlanId } from "./plans";
+import { hasVideoSkillsAccess } from "./video-skills-access";
+import { PLANS, VIDEO_PLANS, isPlanId, isVideoPlanId, type PlanId } from "./plans";
 
 export type AccountPurchaseRow = { plan: string; created_at: string };
 
@@ -23,6 +24,15 @@ export type AccountDashboardView = {
     showCredits: boolean;
     membershipSummary: string;
   };
+  video: {
+    hasMembership: boolean;
+    planName: string | null;
+    status: EntitlementStatus | null;
+    statusLabel: string;
+    accessActive: boolean;
+    periodEndLabel: string | null;
+    summary: string;
+  };
   billing: {
     canManageBilling: boolean;
     unavailableReason: string;
@@ -33,8 +43,27 @@ export type AccountDashboardView = {
 
 export function planDisplayName(plan: string): string {
   if (isPlanId(plan)) return PLANS[plan].name;
+  if (isVideoPlanId(plan)) return VIDEO_PLANS[plan].name;
   if (plan.startsWith("template:")) return `Template: ${plan.slice("template:".length)}`;
   return plan;
+}
+
+function videoMembershipSummary(ent: EntitlementDoc | null, accessActive: boolean): string {
+  if (!ent?.videoSkillsStatus) {
+    return "No video skills membership. Premium styles stay locked on the demo pages.";
+  }
+  if (accessActive) {
+    return ent.videoSkillsStatus === "canceled"
+      ? "Video access stays on until the end of your paid period."
+      : "Video skills membership is active.";
+  }
+  if (ent.videoSkillsStatus === "past_due") {
+    return "Video payment is past due. Update billing to restore access.";
+  }
+  if (ent.videoSkillsStatus === "refunded") {
+    return "Video membership was refunded.";
+  }
+  return "Video membership ended.";
 }
 
 export function formatMembershipDate(iso: string): string {
@@ -102,6 +131,10 @@ export function buildAccountDashboardView(input: AccountDashboardInput): Account
     })
     .filter((row): row is { slug: string; name: string; image: string } => row !== null);
 
+  const videoAccessActive = hasVideoSkillsAccess(ent);
+  const videoPlanId = ent?.videoSkillsPlan ?? null;
+  const videoStatus = ent?.videoSkillsStatus ?? null;
+
   return {
     membership: {
       hasPlan,
@@ -113,6 +146,15 @@ export function buildAccountDashboardView(input: AccountDashboardInput): Account
       creditsResetLabel: formatCreditsReset(ent?.creditsPeriodEnd ?? null),
       showCredits,
       membershipSummary: membershipSummary(ent),
+    },
+    video: {
+      hasMembership: Boolean(videoStatus),
+      planName: videoPlanId ? planDisplayName(videoPlanId) : null,
+      status: videoStatus,
+      statusLabel: videoStatus ? statusLabel(videoStatus) : "No video membership",
+      accessActive: videoAccessActive,
+      periodEndLabel: formatCreditsReset(ent?.videoSkillsPeriodEnd ?? null),
+      summary: videoMembershipSummary(ent, videoAccessActive),
     },
     billing: {
       canManageBilling: Boolean(input.providerCustomerPortalUrl),

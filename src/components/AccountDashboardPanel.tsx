@@ -84,7 +84,7 @@ export function AccountDashboardPanel({
   billingBusy: boolean;
   onManageBilling: () => void;
 }) {
-  const { membership, billing, unlocks, purchases } = view;
+  const { membership, video, billing, unlocks, purchases } = view;
 
   return (
     <div className="mt-4 space-y-6 text-sm text-text" data-testid="account-dashboard">
@@ -129,6 +129,38 @@ export function AccountDashboardPanel({
             ) : null}
           </dl>
         ) : null}
+      </section>
+
+      <section aria-labelledby="account-video-heading" data-testid="account-video">
+        <h2 id="account-video-heading" className="text-[13px] font-semibold text-text">
+          Video skills
+        </h2>
+        {video.hasMembership ? (
+          <dl className="mt-2 space-y-1">
+            <div className="flex justify-between gap-2">
+              <dt className="text-muted-foreground">Plan</dt>
+              <dd className="font-medium">{video.planName}</dd>
+            </div>
+            <div className="flex justify-between gap-2">
+              <dt className="text-muted-foreground">Status</dt>
+              <dd>{video.statusLabel}</dd>
+            </div>
+            {video.periodEndLabel ? (
+              <div className="flex justify-between gap-2">
+                <dt className="text-muted-foreground">Access until</dt>
+                <dd>{video.periodEndLabel}</dd>
+              </div>
+            ) : null}
+          </dl>
+        ) : (
+          <p className="mt-2 text-muted-foreground">
+            No video membership.{" "}
+            <a className="underline" href="/pricing/videos">
+              See video pricing
+            </a>
+          </p>
+        )}
+        <p className="mt-2 text-muted-foreground">{video.summary}</p>
       </section>
 
       <section aria-labelledby="account-library-heading">

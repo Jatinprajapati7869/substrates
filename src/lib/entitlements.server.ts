@@ -38,9 +38,7 @@ export async function getEntitlement(userId: string): Promise<EntitlementDoc | n
   return snap.data() as EntitlementDoc;
 }
 
-export function hasVideoSkillsAccess(ent: EntitlementDoc | null | undefined): boolean {
-  return ent?.videoSkillsStatus === "active";
-}
+export { hasVideoSkillsAccess } from "./video-skills-access";
 
 export async function resolveUserIdByBillingCustomer(customerId: string): Promise<string | null> {
   const db = await getAdminFirestore();
@@ -153,13 +151,13 @@ export async function applyVideoInvoicePaidEntitlement(
 ): Promise<void> {
   const videoPlan = videoPlanFromMetadata(planMeta);
   if (!videoPlan) return;
-  void periodStartUnix;
-  void periodEndUnix;
+  const periodEnd = new Date(periodEndUnix * 1000);
   const db = await getAdminFirestore();
   await db.collection("entitlements").doc(userId).set(
     {
       videoSkillsStatus: "active",
       videoSkillsPlan: videoPlan.id,
+      videoSkillsPeriodEnd: periodEnd,
       videoBillingSubscriptionId: subscriptionId,
       billingCustomerId: customerId,
       updatedAt: new Date(),
@@ -171,12 +169,34 @@ export async function applyVideoInvoicePaidEntitlement(
 export async function setVideoSkillsStatus(
   userId: string,
   status: EntitlementStatus,
+  periodEnd?: Date | null,
 ): Promise<void> {
   const db = await getAdminFirestore();
   await db
     .collection("entitlements")
     .doc(userId)
-    .set({ videoSkillsStatus: status, updatedAt: new Date() }, { merge: true });
+    .set(
+      {
+        videoSkillsStatus: status,
+        ...(periodEnd !== undefined ? { videoSkillsPeriodEnd: periodEnd } : {}),
+        updatedAt: new Date(),
+      },
+      { merge: true },
+    );
+}
+
+export async function revokeVideoSkillsAccess(userId: string): Promise<void> {
+  const db = await getAdminFirestore();
+  await db.collection("entitlements").doc(userId).set(
+    {
+      videoSkillsStatus: "refunded",
+      videoSkillsPlan: null,
+      videoSkillsPeriodEnd: null,
+      videoBillingSubscriptionId: null,
+      updatedAt: new Date(),
+    },
+    { merge: true },
+  );
 }
 
 export async function setEntitlementStatus(
@@ -202,6 +222,7 @@ export async function applyRefundedEntitlement(
       {
         videoSkillsStatus: "refunded",
         videoSkillsPlan: null,
+        videoSkillsPeriodEnd: null,
         videoBillingSubscriptionId: null,
         updatedAt: new Date(),
       },

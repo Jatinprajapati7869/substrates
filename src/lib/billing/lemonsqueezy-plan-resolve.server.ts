@@ -1,8 +1,8 @@
 import { findProduct } from "@/lib/catalog";
-import { PLANS, isPlanId, type PlanId } from "@/lib/plans";
+import { PLANS, isPlanId, isVideoPlanId, type PlanId } from "@/lib/plans";
 import type { LemonSqueezyEnv } from "@/lib/env.server";
 import { logBillingWarn } from "./lemonsqueezy-log.server";
-import { planIdFromVariantId } from "./lemonsqueezy-shared.server";
+import { planIdFromVariantId, videoPlanIdFromVariantId } from "./lemonsqueezy-shared.server";
 
 export type PlanResolveResult =
   | { ok: true; plan: string }
@@ -22,11 +22,19 @@ function variantPlanOrUnknown(
     | "LEMONSQUEEZY_VARIANT_ID_SECTIONS"
     | "LEMONSQUEEZY_VARIANT_ID_SECTIONS_TEMPLATES"
     | "LEMONSQUEEZY_VARIANT_ID_LIFETIME"
+    | "LEMONSQUEEZY_VARIANT_ID_VIDEO_MONTHLY"
+    | "LEMONSQUEEZY_VARIANT_ID_VIDEO_YEARLY"
   >,
-): PlanId | null | "unknown" {
+): PlanId | import("@/lib/plans").VideoPlanId | null | "unknown" {
   if (!variantId) return null;
-  const mapped = planIdFromVariantId(variantId, env);
-  return mapped ?? "unknown";
+  const templatePlan = planIdFromVariantId(variantId, env);
+  if (templatePlan) return templatePlan;
+  const videoPlan = videoPlanIdFromVariantId(variantId, env);
+  if (videoPlan) return videoPlan;
+  if (env.LEMONSQUEEZY_VARIANT_ID_VIDEO_MONTHLY || env.LEMONSQUEEZY_VARIANT_ID_VIDEO_YEARLY) {
+    return "unknown";
+  }
+  return "unknown";
 }
 
 function assertVariantMatchesPlanMeta(
@@ -37,11 +45,17 @@ function assertVariantMatchesPlanMeta(
     | "LEMONSQUEEZY_VARIANT_ID_SECTIONS"
     | "LEMONSQUEEZY_VARIANT_ID_SECTIONS_TEMPLATES"
     | "LEMONSQUEEZY_VARIANT_ID_LIFETIME"
+    | "LEMONSQUEEZY_VARIANT_ID_VIDEO_MONTHLY"
+    | "LEMONSQUEEZY_VARIANT_ID_VIDEO_YEARLY"
   >,
 ): boolean {
   if (!variantId) return true;
   if (planMeta.startsWith("template:")) {
     return variantId === env.LEMONSQUEEZY_VARIANT_ID_LIFETIME;
+  }
+  if (isVideoPlanId(planMeta)) {
+    const fromVariant = videoPlanIdFromVariantId(variantId, env);
+    return fromVariant === planMeta;
   }
   if (!isPlanId(planMeta)) return false;
   const fromVariant = planIdFromVariantId(variantId, env);
@@ -139,6 +153,8 @@ export function resolveSubscriptionPlan(params: {
     | "LEMONSQUEEZY_VARIANT_ID_SECTIONS"
     | "LEMONSQUEEZY_VARIANT_ID_SECTIONS_TEMPLATES"
     | "LEMONSQUEEZY_VARIANT_ID_LIFETIME"
+    | "LEMONSQUEEZY_VARIANT_ID_VIDEO_MONTHLY"
+    | "LEMONSQUEEZY_VARIANT_ID_VIDEO_YEARLY"
   >;
 }): PlanResolveResult {
   const { planMeta, variantId, eventName, env } = params;
@@ -150,6 +166,18 @@ export function resolveSubscriptionPlan(params: {
   }
 
   if (planMeta && isPlanId(planMeta)) {
+    if (!assertVariantMatchesPlanMeta(planMeta, variantId, env)) {
+      logBillingWarn("plan_variant_mismatch", {
+        eventName,
+        plan: planMeta,
+        variantId: variantId ?? "none",
+      });
+      return { ok: false, reason: "plan_variant_mismatch" };
+    }
+    return { ok: true, plan: planMeta };
+  }
+
+  if (planMeta && isVideoPlanId(planMeta)) {
     if (!assertVariantMatchesPlanMeta(planMeta, variantId, env)) {
       logBillingWarn("plan_variant_mismatch", {
         eventName,

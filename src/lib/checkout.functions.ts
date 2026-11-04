@@ -5,17 +5,39 @@ import { requireFirebaseAuth } from "@/integrations/firebase/auth-middleware";
 import { trustedCheckoutOrigin } from "@/lib/checkout-origin.server";
 import { createBillingPortalUrl } from "@/lib/billing-portal.server";
 import { getDefaultBillingProvider } from "@/lib/billing/lemonsqueezy-provider";
+import { isVideoSkillsCheckoutConfigured } from "@/lib/env.server";
 import { listPurchasesForUser } from "@/lib/purchases.server";
 import { getEntitlement, hasVideoSkillsAccess } from "./entitlements.server";
-import { isPlanId, isVideoPlanId } from "./plans";
+import { isPlanId, isVideoPlanId, type VideoPlanId } from "./plans";
+
+export const getVideoCheckoutAvailability = createServerFn({ method: "GET" }).handler(async () => ({
+  available: isVideoSkillsCheckoutConfigured(),
+}));
 
 export const startVideoCheckout = createServerFn({ method: "POST" })
   .middleware([requireFirebaseAuth])
   .inputValidator((d) => z.object({ plan: z.string().refine(isVideoPlanId) }).parse(d))
-  .handler(async () => ({
-    url: null as string | null,
-    error: "Video membership checkout is not available yet on Lemon Squeezy.",
-  }));
+  .handler(async ({ data, context }) => {
+    if (!isVideoSkillsCheckoutConfigured()) {
+      return {
+        url: null as string | null,
+        error: "Video membership checkout is not available yet.",
+      };
+    }
+    const origin = trustedCheckoutOrigin(getRequest());
+    const email = context.email ?? undefined;
+    try {
+      const url = await getDefaultBillingProvider().createCheckout({
+        plan: data.plan as VideoPlanId,
+        userId: context.userId,
+        ...(email ? { email } : {}),
+        origin,
+      });
+      return { url, error: null as string | null };
+    } catch (e) {
+      return { url: null, error: e instanceof Error ? e.message : "Checkout failed." };
+    }
+  });
 
 export const startCheckout = createServerFn({ method: "POST" })
   .middleware([requireFirebaseAuth])

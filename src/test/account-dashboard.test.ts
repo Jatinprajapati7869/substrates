@@ -28,6 +28,8 @@ describe("account dashboard view", () => {
       providerCustomerPortalUrl: null,
     });
     expect(view.membership.hasPlan).toBe(false);
+    expect(view.video.hasMembership).toBe(false);
+    expect(view.video.accessActive).toBe(false);
     expect(view.membership.planName).toBeNull();
     expect(view.membership.statusLabel).toBe("No membership");
     expect(view.membership.showCredits).toBe(false);

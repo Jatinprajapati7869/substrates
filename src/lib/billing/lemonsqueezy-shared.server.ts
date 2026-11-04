@@ -1,5 +1,5 @@
 import { timingSafeEqual } from "node:crypto";
-import type { PlanId } from "@/lib/plans";
+import type { PlanId, VideoPlanId } from "@/lib/plans";
 import type { LemonSqueezyEnv } from "@/lib/env.server";
 
 export type LemonMeta = {
@@ -38,6 +38,31 @@ export function planIdFromVariantId(
   if (variantId === env.LEMONSQUEEZY_VARIANT_ID_SECTIONS_TEMPLATES) return "sections-templates";
   if (variantId === env.LEMONSQUEEZY_VARIANT_ID_LIFETIME) return "lifetime";
   return null;
+}
+
+export function videoPlanIdFromVariantId(
+  variantId: string,
+  env: Pick<
+    LemonSqueezyEnv,
+    "LEMONSQUEEZY_VARIANT_ID_VIDEO_MONTHLY" | "LEMONSQUEEZY_VARIANT_ID_VIDEO_YEARLY"
+  >,
+): VideoPlanId | null {
+  if (!env.LEMONSQUEEZY_VARIANT_ID_VIDEO_MONTHLY || !env.LEMONSQUEEZY_VARIANT_ID_VIDEO_YEARLY)
+    return null;
+  if (variantId === env.LEMONSQUEEZY_VARIANT_ID_VIDEO_MONTHLY) return "video-monthly";
+  if (variantId === env.LEMONSQUEEZY_VARIANT_ID_VIDEO_YEARLY) return "video-yearly";
+  return null;
+}
+
+export function variantIdForVideoPlan(plan: VideoPlanId, env: LemonSqueezyEnv): string {
+  if (plan === "video-monthly") {
+    const id = env.LEMONSQUEEZY_VARIANT_ID_VIDEO_MONTHLY;
+    if (!id) throw new Error("Video checkout is not available yet.");
+    return id;
+  }
+  const id = env.LEMONSQUEEZY_VARIANT_ID_VIDEO_YEARLY;
+  if (!id) throw new Error("Video checkout is not available yet.");
+  return id;
 }
 
 export function variantIdForPlan(plan: PlanId, env: LemonSqueezyEnv): string {
@@ -137,4 +162,8 @@ export function subscriptionVariantId(attrs: Record<string, unknown>): string | 
 
 export function pricingCheckoutCancelledUrl(origin: string): string {
   return `${origin.replace(/\/$/, "")}/pricing?checkout=cancelled`;
+}
+
+export function videoPricingCheckoutCancelledUrl(origin: string): string {
+  return `${origin.replace(/\/$/, "")}/pricing/videos?checkout=cancelled`;
 }

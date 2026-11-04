@@ -1,5 +1,9 @@
 import { findProduct } from "@/lib/catalog";
-import { getServerEnv, type LemonSqueezyEnv } from "@/lib/env.server";
+import {
+  getServerEnv,
+  isVideoSkillsCheckoutConfigured,
+  type LemonSqueezyEnv,
+} from "@/lib/env.server";
 import { PLANS, isPlanId, isVideoPlanId } from "@/lib/plans";
 import type { CreateCheckoutInput } from "./types";
 import { logBillingWarn } from "./lemonsqueezy-log.server";
@@ -7,6 +11,8 @@ import {
   lemonSqueezyTestModeFromEnv,
   pricingCheckoutCancelledUrl,
   variantIdForPlan,
+  variantIdForVideoPlan,
+  videoPricingCheckoutCancelledUrl,
 } from "./lemonsqueezy-shared.server";
 
 export function buildLemonSqueezyCheckoutBody(
@@ -15,13 +21,17 @@ export function buildLemonSqueezyCheckoutBody(
   origin: string,
 ) {
   const { plan, userId, email } = input;
-  if (isVideoPlanId(plan)) throw new Error("Video checkout is not available yet.");
 
   let variantId: string;
   let customPrice: number | undefined;
   let planForCustom = plan;
+  let cancelUrl = pricingCheckoutCancelledUrl(origin);
 
-  if (typeof plan === "string" && plan.startsWith("template:")) {
+  if (isVideoPlanId(plan)) {
+    if (!isVideoSkillsCheckoutConfigured()) throw new Error("Video checkout is not available yet.");
+    variantId = variantIdForVideoPlan(plan, env);
+    cancelUrl = videoPricingCheckoutCancelledUrl(origin);
+  } else if (typeof plan === "string" && plan.startsWith("template:")) {
     const slug = plan.slice("template:".length);
     const product = findProduct("template", slug);
     if (!product || typeof product.priceUsd !== "number" || product.priceUsd <= 0)
@@ -44,7 +54,7 @@ export function buildLemonSqueezyCheckoutBody(
     },
     product_options: {
       redirect_url: `${successOrigin}/checkout-success?plan=${redirectPlan}`,
-      receipt_link_url: pricingCheckoutCancelledUrl(successOrigin),
+      receipt_link_url: cancelUrl,
       receipt_button_text: "Return to pricing",
     },
     test_mode: lemonSqueezyTestModeFromEnv(env.LEMONSQUEEZY_TEST_MODE),

@@ -39,6 +39,8 @@ export type BillingEvent = {
   checkoutReference?: string;
   paid?: boolean;
   checkoutPayload?: BillingCheckoutPayload;
+  /** When true (subscription_expired), revoke access immediately instead of end-of-period cancel. */
+  immediateRevoke?: boolean;
 };
 
 export type BillingCheckoutPlan = PlanId | VideoPlanId | `template:${string}`;

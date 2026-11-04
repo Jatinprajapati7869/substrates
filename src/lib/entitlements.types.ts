@@ -18,6 +18,7 @@ export type EntitlementDoc = {
   /** Video skills product — independent of template plan (D16). */
   videoSkillsStatus?: EntitlementStatus;
   videoSkillsPlan?: string | null;
+  videoSkillsPeriodEnd?: Date | null;
   videoBillingSubscriptionId?: string | null;
   updatedAt: Date;
 };

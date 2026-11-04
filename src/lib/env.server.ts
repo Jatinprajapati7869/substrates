@@ -24,6 +24,11 @@ const LEMONSQUEEZY_KEYS = [
   "LEMONSQUEEZY_VARIANT_ID_LIFETIME",
 ] as const;
 
+const LEMONSQUEEZY_VIDEO_VARIANT_KEYS = [
+  "LEMONSQUEEZY_VARIANT_ID_VIDEO_MONTHLY",
+  "LEMONSQUEEZY_VARIANT_ID_VIDEO_YEARLY",
+] as const;
+
 const cache = new Map<ServerEnvGroup, unknown>();
 
 export function clearServerEnvCacheForTests(): void {
@@ -56,6 +61,8 @@ const lemonsqueezyShape = z.object({
   LEMONSQUEEZY_VARIANT_ID_SECTIONS: z.string().min(1),
   LEMONSQUEEZY_VARIANT_ID_SECTIONS_TEMPLATES: z.string().min(1),
   LEMONSQUEEZY_VARIANT_ID_LIFETIME: z.string().min(1),
+  LEMONSQUEEZY_VARIANT_ID_VIDEO_MONTHLY: z.string().min(1).optional(),
+  LEMONSQUEEZY_VARIANT_ID_VIDEO_YEARLY: z.string().min(1).optional(),
   LEMONSQUEEZY_TEST_MODE: z.string().optional(),
 });
 
@@ -106,6 +113,12 @@ function parseLemonSqueezy(): LemonSqueezyEnv {
       "LEMONSQUEEZY_VARIANT_ID_SECTIONS_TEMPLATES",
     ),
     LEMONSQUEEZY_VARIANT_ID_LIFETIME: envValue("LEMONSQUEEZY_VARIANT_ID_LIFETIME"),
+    ...(envValue("LEMONSQUEEZY_VARIANT_ID_VIDEO_MONTHLY")
+      ? { LEMONSQUEEZY_VARIANT_ID_VIDEO_MONTHLY: envValue("LEMONSQUEEZY_VARIANT_ID_VIDEO_MONTHLY") }
+      : {}),
+    ...(envValue("LEMONSQUEEZY_VARIANT_ID_VIDEO_YEARLY")
+      ? { LEMONSQUEEZY_VARIANT_ID_VIDEO_YEARLY: envValue("LEMONSQUEEZY_VARIANT_ID_VIDEO_YEARLY") }
+      : {}),
     ...(envValue("LEMONSQUEEZY_TEST_MODE")
       ? { LEMONSQUEEZY_TEST_MODE: envValue("LEMONSQUEEZY_TEST_MODE") }
       : {}),
@@ -191,6 +204,11 @@ export function isServerEnvGroupConfigured(
 
 export function isOpenAiEnvConfigured(): boolean {
   return envValue("OPENAI_API_KEY") !== undefined;
+}
+
+/** Both video variant ids set — required before video checkout is offered (S22 / P26). */
+export function isVideoSkillsCheckoutConfigured(): boolean {
+  return groupKeysPresent(LEMONSQUEEZY_VIDEO_VARIANT_KEYS);
 }
 
 export type SentryServerEnv = {

@@ -36,6 +36,7 @@ describe("buildHealthPayload", () => {
     expect(body.configured.firebaseAdmin).toBe(false);
     expect(body.configured.lemonsqueezy).toBe(false);
     expect(body.configured.openai).toBe(false);
+    expect(body.configured.videoConfigured).toBe(false);
     expect(serialized).not.toContain("lsk_live_never_leak");
     expect(serialized).not.toContain("pk");
   });

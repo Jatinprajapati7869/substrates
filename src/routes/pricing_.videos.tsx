@@ -1,10 +1,11 @@
 import { withPublicPageHead } from "@/lib/seo";
 import { Button } from "@/components/ui/button";
 import { CheckoutCancelledNote, VideoCheckoutButton } from "@/components/CheckoutButton";
-import { useSupplyShell } from "@/lib/use-supply-shell";
-import type { CSSProperties } from "react";
-import { useEffect } from "react";
+import { getVideoCheckoutAvailability } from "@/lib/checkout.functions";
+import { useServerFn } from "@tanstack/react-start";
+import { useEffect, useState, type CSSProperties } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { useSupplyShell } from "@/lib/use-supply-shell";
 import capturedCSS from "../styles/pages/pricing.videos.css?raw";
 
 export const Route = createFileRoute("/pricing_/videos")({
@@ -37,6 +38,11 @@ export const Route = createFileRoute("/pricing_/videos")({
 function Index() {
   useSupplyShell();
   useImportedLayout();
+  const loadVideoCheckout = useServerFn(getVideoCheckoutAvailability);
+  const [videoCheckoutAvailable, setVideoCheckoutAvailable] = useState(false);
+  useEffect(() => {
+    void loadVideoCheckout().then((r) => setVideoCheckoutAvailable(r.available));
+  }, [loadVideoCheckout]);
   return (
     <>
       <style>{capturedCSS}</style>
@@ -368,6 +374,7 @@ function Index() {
                   <div className="mt-8">
                     <VideoCheckoutButton
                       plan="video-monthly"
+                      checkoutAvailable={videoCheckoutAvailable}
                       className={
                         "flex h-12 w-full items-center justify-center rounded-full text-[14px] font-semibold transition-transform \x61ctive:\x73cale-[\x30.\x398] disabled:opacity-70 \x62g-[#\x3111] text-white"
                       }
@@ -597,6 +604,7 @@ function Index() {
                   <div className="mt-8">
                     <VideoCheckoutButton
                       plan="video-yearly"
+                      checkoutAvailable={videoCheckoutAvailable}
                       className={
                         "flex h-12 w-full items-center justify-center rounded-full text-[14px] font-semibold transition-transform \x61ctive:\x73cale-[\x30.\x398] disabled:opacity-70 bg-white text-black"
                       }
